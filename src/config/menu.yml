@@ -1,8 +1,8 @@
 title: HMI Demo
 status: ONLINE
 navigation:
-  previousLabel: Prec
-  nextLabel: Succ
+  previousLabel: Precedente
+  nextLabel: Successiva
 pages:
   - id: menu
     label: Menu

@@ -7,8 +7,8 @@ const fallbackConfig = {
   title: 'HMI Demo',
   status: 'ONLINE',
   navigation: {
-    previousLabel: 'Prec',
-    nextLabel: 'Succ',
+    previousLabel: 'Precedente',
+    nextLabel: 'Successiva',
   },
   pages: [
     {
@@ -76,7 +76,9 @@ const buildConfig = () => {
 const menuConfig = buildConfig()
 const currentPageIndex = ref(0)
 
-const currentPage = computed(() => menuConfig.pages[currentPageIndex.value])
+const currentPage = computed(
+  () => menuConfig.pages[currentPageIndex.value] ?? menuConfig.pages[0] ?? fallbackConfig.pages[0],
+)
 const canGoPrevious = computed(() => currentPageIndex.value > 0)
 const canGoNext = computed(() => currentPageIndex.value < menuConfig.pages.length - 1)
 const pageCounterLabel = computed(() => `${currentPageIndex.value + 1}/${menuConfig.pages.length}`)
@@ -110,9 +112,9 @@ const goNextPage = () => {
       <button type="button" :disabled="!canGoPrevious" @click="goPreviousPage">
         ← {{ menuConfig.navigation.previousLabel }}
       </button>
-      <button type="button" class="menu-indicator" disabled>
+      <span class="menu-indicator" role="status" aria-live="polite">
         {{ currentPage.label }} ({{ pageCounterLabel }})
-      </button>
+      </span>
       <button type="button" :disabled="!canGoNext" @click="goNextPage">
         {{ menuConfig.navigation.nextLabel }} →
       </button>
@@ -179,8 +181,17 @@ button:disabled {
 }
 
 .menu-indicator {
-  cursor: default;
-  opacity: 1;
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 3rem;
+  border: 2px solid #0f380f;
+  border-radius: 0.4rem;
+  background: #9bbc0f;
+  color: #0f380f;
+  font-size: 1rem;
+  font-weight: 700;
 }
 
 h1 {
