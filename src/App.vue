@@ -528,6 +528,8 @@ h1 {
   margin: 0;
   letter-spacing: 0.02em;
   text-transform: uppercase;
+}
+
 /* ── Menu breadcrumb ────────────────────────────────────── */
 .menu-breadcrumb {
   display: flex;
@@ -606,6 +608,8 @@ h1 {
   padding: 0 0.9rem;
   color: var(--text-secondary);
   font-size: 0.9rem;
+}
+
 .menu-item--current {
   border-color: #388bfd;
   background: #388bfd22;
