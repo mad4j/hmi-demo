@@ -58,12 +58,12 @@ const isActive = computed(() => props.type === 'boolean' && Boolean(props.value)
   flex-direction: column;
   width: 100%;
   min-height: 5.5rem;
-  border: 1px solid #30363d;
+  border: 1px solid var(--border);
   border-radius: 0.45rem;
   overflow: hidden;
-  background: #21262d;
-  color: #e6edf3;
-  transition: border-color 0.15s;
+  background: var(--bg-btn);
+  color: var(--text-primary);
+  transition: border-color 0.15s, background 0.25s, color 0.25s;
 }
 
 .param-name {
@@ -73,12 +73,13 @@ const isActive = computed(() => props.type === 'boolean' && Boolean(props.value)
   font-weight: 700;
   letter-spacing: 0.07em;
   text-transform: uppercase;
-  color: #8b949e;
-  border-bottom: 1px solid #30363d;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  background: #161b22;
+  background: var(--bg-main);
+  transition: background 0.25s, color 0.25s, border-color 0.25s;
 }
 
 .param-value {
@@ -92,34 +93,34 @@ const isActive = computed(() => props.type === 'boolean' && Boolean(props.value)
   line-height: 1.1;
   text-align: center;
   overflow-wrap: break-word;
-  color: #e6edf3;
+  color: var(--text-primary);
 }
 
 /* ── Boolean: OFF state ──────────────────────────────────── */
 .param-widget--boolean .param-value {
   font-size: 1rem;
-  color: #8b949e;
+  color: var(--text-secondary);
 }
 
 /* ── Boolean: ON / active state ──────────────────────────── */
 .param-widget--boolean.param-widget--active {
-  border-color: rgba(63, 185, 80, 0.5);
+  border-color: var(--active-border);
 }
 
 .param-widget--boolean.param-widget--active .param-name {
-  background: rgba(35, 134, 54, 0.2);
-  border-bottom-color: rgba(63, 185, 80, 0.4);
-  color: #3fb950;
+  background: var(--active-name-bg);
+  border-bottom-color: var(--active-name-border);
+  color: var(--active-text);
 }
 
 .param-widget--boolean.param-widget--active .param-value {
-  color: #3fb950;
+  color: var(--active-text);
   font-size: 1rem;
 }
 
 /* ── Enum widget ─────────────────────────────────────────── */
 .param-widget--enum .param-value {
   font-size: 1rem;
-  color: #58a6ff;
+  color: var(--text-blue);
 }
 </style>
