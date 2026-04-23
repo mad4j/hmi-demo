@@ -146,9 +146,17 @@ const currentPageId = ref(selectablePages[0]?.id ?? fallbackConfig.pages[0].id)
 const menuPath = ref([])
 const menuModeEnabled = ref(false)
 
-// Reactive map of parameter id → current value (null = not yet received from model)
-const allParameters = selectablePages.flatMap((page) => page.parameters)
-const parameterValues = reactive(Object.fromEntries(allParameters.map((p) => [p.id, null])))
+// Reactive map of parameter id → current value (null = not yet received from model).
+// Only the first occurrence of each id is kept to avoid accidental cross-page aliasing.
+const seenParameterIds = new Set()
+const uniqueParameters = selectablePages
+  .flatMap((page) => page.parameters)
+  .filter((p) => {
+    if (seenParameterIds.has(p.id)) return false
+    seenParameterIds.add(p.id)
+    return true
+  })
+const parameterValues = reactive(Object.fromEntries(uniqueParameters.map((p) => [p.id, null])))
 
 const toggleMenuMode = () => {
   menuModeEnabled.value = !menuModeEnabled.value

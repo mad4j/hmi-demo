@@ -88,7 +88,7 @@ const isActive = computed(() => props.type === 'boolean' && Boolean(props.value)
   font-weight: 700;
   line-height: 1.1;
   text-align: center;
-  word-break: break-all;
+  overflow-wrap: break-word;
 }
 
 /* Boolean widget: invert colours when active (true) */
