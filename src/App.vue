@@ -79,45 +79,59 @@ const currentPageIndex = ref(0)
 const currentPage = computed(
   () => menuConfig.pages[currentPageIndex.value] ?? menuConfig.pages[0] ?? fallbackConfig.pages[0],
 )
-const canGoPrevious = computed(() => currentPageIndex.value > 0)
-const canGoNext = computed(() => currentPageIndex.value < menuConfig.pages.length - 1)
 const pageCounterLabel = computed(() => `${currentPageIndex.value + 1}/${menuConfig.pages.length}`)
+const menuModeEnabled = ref(false)
 
-const goPreviousPage = () => {
-  if (canGoPrevious.value) {
-    currentPageIndex.value -= 1
-  }
+const toggleMenuMode = () => {
+  menuModeEnabled.value = !menuModeEnabled.value
 }
 
-const goNextPage = () => {
-  if (canGoNext.value) {
-    currentPageIndex.value += 1
-  }
+const selectPage = (index) => {
+  currentPageIndex.value = index
+  menuModeEnabled.value = false
 }
 </script>
 
 <template>
   <div class="hmi-shell">
     <header class="bar top-bar">
-      <span>{{ menuConfig.title }}</span>
+      <div class="top-left">
+        <button
+          class="icon-button"
+          type="button"
+          :aria-pressed="menuModeEnabled"
+          aria-label="Apri menu"
+          @click="toggleMenuMode"
+        >
+          ☰
+        </button>
+        <span>{{ menuConfig.title }}</span>
+      </div>
       <span class="status">{{ menuConfig.status }}</span>
     </header>
 
     <main class="content">
-      <h1>{{ currentPage.title }}</h1>
-      <p>{{ currentPage.content }}</p>
+      <template v-if="menuModeEnabled">
+        <h1>Menu</h1>
+        <ul class="menu-list">
+          <li v-for="(page, index) in menuConfig.pages" :key="page.id">
+            <button class="menu-item" type="button" @click="selectPage(index)">
+              {{ page.label }}
+            </button>
+          </li>
+        </ul>
+      </template>
+      <template v-else>
+        <h1>{{ currentPage.title }}</h1>
+        <p>{{ currentPage.content }}</p>
+      </template>
     </main>
 
     <footer class="bar bottom-bar">
-      <button type="button" :disabled="!canGoPrevious" @click="goPreviousPage">
-        ← {{ menuConfig.navigation.previousLabel }}
-      </button>
       <span class="menu-indicator" role="status" aria-live="polite">
         {{ currentPage.label }} ({{ pageCounterLabel }})
       </span>
-      <button type="button" :disabled="!canGoNext" @click="goNextPage">
-        {{ menuConfig.navigation.nextLabel }} →
-      </button>
+      <span class="menu-hint">Attiva ☰ per scorrere e selezionare il menu</span>
     </footer>
   </div>
 </template>
@@ -128,7 +142,7 @@ const goNextPage = () => {
   grid-template-rows: 4rem 1fr 4.5rem;
   width: 100%;
   height: 100%;
-  background: #9bbc0f;
+  background: #829258;
   color: #0f380f;
   border: 2px solid #0f380f;
 }
@@ -138,9 +152,15 @@ const goNextPage = () => {
   align-items: center;
   justify-content: space-between;
   padding: 0 1rem;
-  background: #8bac0f;
+  background: #829258;
   border-bottom: 2px solid #0f380f;
   font-weight: 700;
+}
+
+.top-left {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
 }
 
 .bottom-bar {
@@ -162,36 +182,58 @@ const goNextPage = () => {
   padding: 1rem;
   text-align: center;
   font-size: 1.05rem;
+  overflow: hidden;
 }
 
 button {
-  flex: 1;
-  height: 3rem;
   border: 2px solid #0f380f;
   border-radius: 0.4rem;
-  background: #9bbc0f;
+  background: #829258;
   color: #0f380f;
   font-size: 1rem;
   font-weight: 700;
   touch-action: manipulation;
 }
 
-button:disabled {
-  opacity: 0.55;
-}
-
-.menu-indicator {
-  flex: 1;
+.icon-button {
+  width: 2.2rem;
+  height: 2.2rem;
+  padding: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 3rem;
-  border: 2px solid #0f380f;
-  border-radius: 0.4rem;
-  background: #9bbc0f;
+  font-size: 1.1rem;
+}
+
+.menu-indicator {
+  flex: 0 1 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   color: #0f380f;
   font-size: 1rem;
   font-weight: 700;
+}
+
+.menu-hint {
+  font-size: 0.95rem;
+}
+
+.menu-list {
+  width: min(100%, 30rem);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  overflow-y: auto;
+}
+
+.menu-item {
+  width: 100%;
+  min-height: 2.8rem;
+  padding: 0.45rem 0.8rem;
 }
 
 h1 {
