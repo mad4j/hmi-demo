@@ -1,5 +1,6 @@
 <script setup>
 import { computed, ref } from 'vue'
+import ParameterWidget from './components/ParameterWidget.vue'
 import { load } from 'js-yaml'
 import rawMenuConfig from './config/menu.yml?raw'
 
@@ -213,7 +214,16 @@ const goToParentMenu = () => {
       </template>
       <template v-else>
         <h1>{{ currentPage.title }}</h1>
-        <p>{{ currentPage.content }}</p>
+        <p v-if="currentPage.content">{{ currentPage.content }}</p>
+        <div class="widget-grid">
+          <ParameterWidget name="Velocità" :value="87.3" type="number" unit="km/h" :precision="1" />
+          <ParameterWidget name="Temperatura" :value="42" type="number" unit="°C" />
+          <ParameterWidget name="Pressione" :value="2.45" type="number" unit="bar" :precision="2" />
+          <ParameterWidget name="Modalità" :value="'AUTO'" type="enum" />
+          <ParameterWidget name="Stato" :value="'PRONTO'" type="enum" />
+          <ParameterWidget name="Acceso" :value="true" type="boolean" />
+          <ParameterWidget name="Allarme" :value="false" type="boolean" />
+        </div>
       </template>
     </main>
 
@@ -347,5 +357,14 @@ h1 {
 
 p {
   max-width: 60ch;
+}
+
+.widget-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  justify-content: center;
+  align-items: flex-start;
+  width: 100%;
 }
 </style>
