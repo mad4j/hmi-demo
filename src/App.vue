@@ -1,5 +1,6 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, reactive, ref } from 'vue'
+import ParameterWidget from './components/ParameterWidget.vue'
 import { load } from 'js-yaml'
 import rawMenuConfig from './config/menu.yml?raw'
 
@@ -17,11 +18,25 @@ const fallbackConfig = {
       title: 'Menu principale',
       content: 'Interfaccia ottimizzata per 800x600 e uso su mezzi mobili.',
       submenus: [],
+      parameters: [],
     },
   ],
 }
 
 const MAX_MENU_DEPTH = 8
+
+const normalizeParameters = (params) => {
+  if (!Array.isArray(params)) return []
+  return params
+    .filter((p) => p && typeof p === 'object' && typeof p.id === 'string' && p.id.trim())
+    .map((p) => ({
+      id: p.id.trim(),
+      name: typeof p.name === 'string' && p.name.trim() ? p.name : p.id.trim(),
+      type: ['number', 'enum', 'boolean'].includes(p.type) ? p.type : 'number',
+      unit: typeof p.unit === 'string' ? p.unit : '',
+      precision: typeof p.precision === 'number' ? p.precision : null,
+    }))
+}
 
 const normalizeMenuItems = (items, idPrefix = 'page', depth = 0) =>
   items
@@ -43,6 +58,7 @@ const normalizeMenuItems = (items, idPrefix = 'page', depth = 0) =>
           typeof item.title === 'string' && item.title.trim() ? item.title : `Pagina ${index + 1}`,
         content: typeof item.content === 'string' ? item.content : '',
         submenus: normalizedSubmenus,
+        parameters: normalizeParameters(item.parameters),
       }
     })
 
@@ -130,6 +146,18 @@ const currentPageId = ref(selectablePages[0]?.id ?? fallbackConfig.pages[0].id)
 const menuPath = ref([])
 const menuModeEnabled = ref(false)
 
+// Reactive map of parameter id → current value (null = not yet received from model).
+// Only the first occurrence of each id is kept to avoid accidental cross-page aliasing.
+const seenParameterIds = new Set()
+const uniqueParameters = selectablePages
+  .flatMap((page) => page.parameters)
+  .filter((p) => {
+    if (seenParameterIds.has(p.id)) return false
+    seenParameterIds.add(p.id)
+    return true
+  })
+const parameterValues = reactive(Object.fromEntries(uniqueParameters.map((p) => [p.id, null])))
+
 const toggleMenuMode = () => {
   menuModeEnabled.value = !menuModeEnabled.value
   if (menuModeEnabled.value) {
@@ -213,7 +241,18 @@ const goToParentMenu = () => {
       </template>
       <template v-else>
         <h1>{{ currentPage.title }}</h1>
-        <p>{{ currentPage.content }}</p>
+        <p v-if="currentPage.content">{{ currentPage.content }}</p>
+        <div v-if="currentPage.parameters.length" class="widget-grid">
+          <ParameterWidget
+            v-for="param in currentPage.parameters"
+            :key="param.id"
+            :name="param.name"
+            :type="param.type"
+            :unit="param.unit"
+            :precision="param.precision"
+            :value="parameterValues[param.id]"
+          />
+        </div>
       </template>
     </main>
 
@@ -347,5 +386,14 @@ h1 {
 
 p {
   max-width: 60ch;
+}
+
+.widget-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  justify-content: center;
+  align-items: flex-start;
+  width: 100%;
 }
 </style>
