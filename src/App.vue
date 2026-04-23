@@ -21,14 +21,18 @@ const fallbackConfig = {
   ],
 }
 
-const normalizeMenuItems = (items, idPrefix = 'page') =>
+const MAX_MENU_DEPTH = 8
+
+const normalizeMenuItems = (items, idPrefix = 'page', depth = 0) =>
   items
     .filter((item) => item && typeof item === 'object')
     .map((item, index) => {
       const id =
         typeof item.id === 'string' && item.id.trim() ? item.id : `${idPrefix}-${index + 1}`
       const normalizedSubmenus = Array.isArray(item.submenus)
-        ? normalizeMenuItems(item.submenus, `${id}-submenu`)
+        ? depth < MAX_MENU_DEPTH
+          ? normalizeMenuItems(item.submenus, `${id}-submenu`, depth + 1)
+          : []
         : []
 
       return {
@@ -121,6 +125,9 @@ const buildConfig = () => {
 
 const menuConfig = buildConfig()
 const selectablePages = flattenSelectablePages(menuConfig.pages)
+const selectablePageIndexById = new Map(
+  selectablePages.map((page, index) => [page.id, index + 1]),
+)
 const currentPageId = ref(selectablePages[0]?.id ?? fallbackConfig.pages[0].id)
 const menuPath = ref([])
 const menuModeEnabled = ref(false)
@@ -140,8 +147,7 @@ const currentPage = computed(
 )
 
 const pageCounterLabel = computed(() => {
-  const currentPageIndex = selectablePages.findIndex((page) => page.id === currentPage.value.id)
-  const safeIndex = currentPageIndex >= 0 ? currentPageIndex + 1 : 1
+  const safeIndex = selectablePageIndexById.get(currentPage.value.id) ?? 1
   const total = selectablePages.length || 1
   return `${safeIndex}/${total}`
 })
