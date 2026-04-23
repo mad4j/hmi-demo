@@ -206,10 +206,23 @@ onMounted(() => {
   document.body.dataset.theme = isDark.value ? 'dark' : 'light'
 })
 
+const findPathToPage = (pages, targetId, currentPath = []) => {
+  for (const page of pages) {
+    if (page.id === targetId) {
+      return currentPath
+    }
+    if (page.submenus?.length) {
+      const result = findPathToPage(page.submenus, targetId, [...currentPath, page.id])
+      if (result !== null) return result
+    }
+  }
+  return null
+}
+
 const toggleMenuMode = () => {
   menuModeEnabled.value = !menuModeEnabled.value
   if (menuModeEnabled.value) {
-    menuPath.value = []
+    menuPath.value = findPathToPage(menuConfig.pages, currentPageId.value) ?? []
   }
 }
 
@@ -225,6 +238,19 @@ const pageCounterLabel = computed(() => {
   const total = selectablePages.length || 1
   return `${safeIndex}/${total}`
 })
+
+const breadcrumbs = computed(() => {
+  const crumbs = [{ id: null, label: 'Menu' }]
+  for (const id of menuPath.value) {
+    const item = findPageById(menuConfig.pages, id)
+    if (item) crumbs.push({ id, label: item.label })
+  }
+  return crumbs
+})
+
+const navigateToBreadcrumb = (index) => {
+  menuPath.value = menuPath.value.slice(0, index)
+}
 
 const visibleMenuItems = computed(() => getMenuItemsByPath(menuConfig.pages, menuPath.value))
 const currentMenuTitle = computed(() => {
@@ -284,13 +310,26 @@ const goToParentMenu = () => {
 
     <main class="content">
       <template v-if="menuModeEnabled">
-        <h1>{{ currentMenuTitle }}</h1>
-        <button v-if="menuPath.length" class="menu-back-button" type="button" @click="goToParentMenu">
-          ← Indietro
-        </button>
+        <nav class="menu-breadcrumb" aria-label="Percorso menu">
+          <template v-for="(crumb, i) in breadcrumbs" :key="crumb.id ?? 'root'">
+            <span v-if="i > 0" class="breadcrumb-sep" aria-hidden="true">›</span>
+            <button
+              v-if="i < breadcrumbs.length - 1"
+              type="button"
+              class="breadcrumb-item"
+              @click="navigateToBreadcrumb(i)"
+            >{{ crumb.label }}</button>
+            <span v-else class="breadcrumb-item breadcrumb-item--current">{{ crumb.label }}</span>
+          </template>
+        </nav>
         <ul class="menu-list">
           <li v-for="item in visibleMenuItems" :key="item.id">
-            <button class="menu-item" type="button" @click="selectMenuItem(item)">
+            <button
+              class="menu-item"
+              :class="{ 'menu-item--current': item.id === currentPageId }"
+              type="button"
+              @click="selectMenuItem(item)"
+            >
               <span>{{ item.label }}</span>
               <span v-if="item.submenus.length" class="submenu-indicator" aria-hidden="true">›</span>
             </button>
@@ -454,6 +493,12 @@ button:active {
   border-color: var(--btn-active-border);
 }
 
+.icon-button[aria-pressed='true'] {
+  background: #388bfd22;
+  border-color: #388bfd;
+  color: #58a6ff;
+}
+
 .icon-button {
   width: 2.4rem;
   height: 2.4rem;
@@ -483,7 +528,48 @@ h1 {
   margin: 0;
   letter-spacing: 0.02em;
   text-transform: uppercase;
+/* ── Menu breadcrumb ────────────────────────────────────── */
+.menu-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex-wrap: wrap;
+  width: min(100%, 32rem);
 }
+
+.breadcrumb-item {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #8b949e;
+  padding: 0.2rem 0.45rem;
+  min-height: unset;
+  border: 1px solid transparent;
+  background: transparent;
+  border-radius: 0.3rem;
+  transition: color 0.12s, background 0.12s;
+}
+
+.breadcrumb-item:not(.breadcrumb-item--current):hover {
+  color: #e6edf3;
+  background: #21262d;
+  border-color: #30363d;
+}
+
+.breadcrumb-item--current {
+  color: #e6edf3;
+  cursor: default;
+  display: inline-flex;
+  align-items: center;
+}
+
+.breadcrumb-sep {
+  color: #484f58;
+  font-size: 1rem;
+  line-height: 1;
+  user-select: none;
+}
+
+/* ── Menu list ──────────────────────────────────────────── */
 
 .menu-list {
   width: min(100%, 32rem);
@@ -520,6 +606,10 @@ h1 {
   padding: 0 0.9rem;
   color: var(--text-secondary);
   font-size: 0.9rem;
+.menu-item--current {
+  border-color: #388bfd;
+  background: #388bfd22;
+  color: #58a6ff;
 }
 
 .submenu-indicator {
