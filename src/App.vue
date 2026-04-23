@@ -16,8 +16,66 @@ const fallbackConfig = {
       label: 'Menu',
       title: 'Menu principale',
       content: 'Interfaccia ottimizzata per 800x600 e uso su mezzi mobili.',
+      submenus: [],
     },
   ],
+}
+
+const normalizeMenuItems = (items, idPrefix = 'page') =>
+  items
+    .filter((item) => item && typeof item === 'object')
+    .map((item, index) => {
+      const id =
+        typeof item.id === 'string' && item.id.trim() ? item.id : `${idPrefix}-${index + 1}`
+      const normalizedSubmenus = Array.isArray(item.submenus)
+        ? normalizeMenuItems(item.submenus, `${id}-submenu`)
+        : []
+
+      return {
+        id,
+        label:
+          typeof item.label === 'string' && item.label.trim() ? item.label : `Pagina ${index + 1}`,
+        title:
+          typeof item.title === 'string' && item.title.trim() ? item.title : `Pagina ${index + 1}`,
+        content: typeof item.content === 'string' ? item.content : '',
+        submenus: normalizedSubmenus,
+      }
+    })
+
+const flattenSelectablePages = (pages) =>
+  pages.flatMap((page) =>
+    page.submenus.length ? flattenSelectablePages(page.submenus) : [page],
+  )
+
+const findPageById = (pages, targetId) => {
+  for (const page of pages) {
+    if (page.id === targetId) {
+      return page
+    }
+
+    if (page.submenus.length) {
+      const nestedPage = findPageById(page.submenus, targetId)
+      if (nestedPage) {
+        return nestedPage
+      }
+    }
+  }
+
+  return null
+}
+
+const getMenuItemsByPath = (pages, path) => {
+  let currentItems = pages
+
+  for (const id of path) {
+    const currentNode = currentItems.find((item) => item.id === id)
+    if (!currentNode || !currentNode.submenus.length) {
+      return pages
+    }
+    currentItems = currentNode.submenus
+  }
+
+  return currentItems
 }
 
 const buildConfig = () => {
@@ -26,22 +84,10 @@ const buildConfig = () => {
     const sourceConfig =
       parsedConfig && typeof parsedConfig === 'object' ? parsedConfig : {}
     const sourcePages = Array.isArray(sourceConfig.pages) ? sourceConfig.pages : []
-    const normalizedPages = sourcePages
-      .filter((page) => page && typeof page === 'object')
-      .map((page, index) => ({
-        id: typeof page.id === 'string' && page.id.trim() ? page.id : `page-${index + 1}`,
-        label:
-          typeof page.label === 'string' && page.label.trim()
-            ? page.label
-            : `Pagina ${index + 1}`,
-        title:
-          typeof page.title === 'string' && page.title.trim()
-            ? page.title
-            : `Pagina ${index + 1}`,
-        content: typeof page.content === 'string' ? page.content : '',
-      }))
+    const normalizedPages = normalizeMenuItems(sourcePages)
+    const selectablePages = flattenSelectablePages(normalizedPages)
 
-    if (!normalizedPages.length) {
+    if (!normalizedPages.length || !selectablePages.length) {
       return fallbackConfig
     }
 
@@ -74,21 +120,57 @@ const buildConfig = () => {
 }
 
 const menuConfig = buildConfig()
-const currentPageIndex = ref(0)
-
-const currentPage = computed(
-  () => menuConfig.pages[currentPageIndex.value] ?? menuConfig.pages[0] ?? fallbackConfig.pages[0],
-)
-const pageCounterLabel = computed(() => `${currentPageIndex.value + 1}/${menuConfig.pages.length}`)
+const selectablePages = flattenSelectablePages(menuConfig.pages)
+const currentPageId = ref(selectablePages[0]?.id ?? fallbackConfig.pages[0].id)
+const menuPath = ref([])
 const menuModeEnabled = ref(false)
 
 const toggleMenuMode = () => {
   menuModeEnabled.value = !menuModeEnabled.value
+  if (menuModeEnabled.value) {
+    menuPath.value = []
+  }
 }
 
-const selectPage = (index) => {
-  currentPageIndex.value = index
+const currentPage = computed(
+  () =>
+    findPageById(menuConfig.pages, currentPageId.value) ??
+    selectablePages[0] ??
+    fallbackConfig.pages[0],
+)
+
+const pageCounterLabel = computed(() => {
+  const currentPageIndex = selectablePages.findIndex((page) => page.id === currentPage.value.id)
+  const safeIndex = currentPageIndex >= 0 ? currentPageIndex + 1 : 1
+  const total = selectablePages.length || 1
+  return `${safeIndex}/${total}`
+})
+
+const visibleMenuItems = computed(() => getMenuItemsByPath(menuConfig.pages, menuPath.value))
+const currentMenuTitle = computed(() => {
+  if (!menuPath.value.length) {
+    return 'Menu'
+  }
+  const currentContainer = findPageById(menuConfig.pages, menuPath.value[menuPath.value.length - 1])
+  return currentContainer?.label ?? 'Menu'
+})
+
+const selectMenuItem = (item) => {
+  if (item.submenus.length) {
+    menuPath.value = [...menuPath.value, item.id]
+    return
+  }
+
+  currentPageId.value = item.id
   menuModeEnabled.value = false
+  menuPath.value = []
+}
+
+const goToParentMenu = () => {
+  if (!menuPath.value.length) {
+    return
+  }
+  menuPath.value = menuPath.value.slice(0, -1)
 }
 </script>
 
@@ -112,11 +194,15 @@ const selectPage = (index) => {
 
     <main class="content">
       <template v-if="menuModeEnabled">
-        <h1>Menu</h1>
+        <h1>{{ currentMenuTitle }}</h1>
+        <button v-if="menuPath.length" class="menu-back-button" type="button" @click="goToParentMenu">
+          ← Indietro
+        </button>
         <ul class="menu-list">
-          <li v-for="(page, index) in menuConfig.pages" :key="page.id">
-            <button class="menu-item" type="button" @click="selectPage(index)">
-              {{ page.label }}
+          <li v-for="item in visibleMenuItems" :key="item.id">
+            <button class="menu-item" type="button" @click="selectMenuItem(item)">
+              <span>{{ item.label }}</span>
+              <span v-if="item.submenus.length" class="submenu-indicator" aria-hidden="true">›</span>
             </button>
           </li>
         </ul>
@@ -131,7 +217,7 @@ const selectPage = (index) => {
       <span class="menu-indicator" role="status" aria-live="polite">
         {{ currentPage.label }} ({{ pageCounterLabel }})
       </span>
-      <span class="menu-hint">Attiva ☰ per scorrere e selezionare il menu</span>
+      <span class="menu-hint">Attiva ☰ per aprire, entrare nei sottomenu e selezionare</span>
     </footer>
   </div>
 </template>
@@ -234,6 +320,20 @@ button {
   width: 100%;
   min-height: 2.8rem;
   padding: 0.45rem 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.menu-back-button {
+  min-height: 2.5rem;
+  padding: 0.35rem 0.8rem;
+}
+
+.submenu-indicator {
+  margin-left: 0.65rem;
+  font-size: 1.2rem;
+  line-height: 1;
 }
 
 h1 {

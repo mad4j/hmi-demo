@@ -36,3 +36,8 @@ npm run dev
 ```sh
 npm run build
 ```
+
+## Menu configuration
+
+The HMI menu is configured in `/src/config/menu.yml`.
+Each page entry can define nested `submenus` entries to create selectable submenus.
