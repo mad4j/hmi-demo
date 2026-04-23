@@ -1,5 +1,5 @@
 <script setup>
-import { computed, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import ParameterWidget from './components/ParameterWidget.vue'
 import { load } from 'js-yaml'
 import rawMenuConfig from './config/menu.yml?raw'
@@ -195,6 +195,17 @@ const parameterValues = reactive(
   Object.fromEntries(uniqueParameters.map((p) => [p.id, sampleValues[p.id] ?? null])),
 )
 
+const isDark = ref(true)
+
+const toggleTheme = () => {
+  isDark.value = !isDark.value
+  document.body.dataset.theme = isDark.value ? 'dark' : 'light'
+}
+
+onMounted(() => {
+  document.body.dataset.theme = isDark.value ? 'dark' : 'light'
+})
+
 const toggleMenuMode = () => {
   menuModeEnabled.value = !menuModeEnabled.value
   if (menuModeEnabled.value) {
@@ -244,7 +255,7 @@ const goToParentMenu = () => {
 </script>
 
 <template>
-  <div class="hmi-shell">
+  <div class="hmi-shell" :data-theme="isDark ? 'dark' : 'light'">
     <header class="bar top-bar">
       <div class="top-left">
         <button
@@ -258,7 +269,17 @@ const goToParentMenu = () => {
         </button>
         <span>{{ menuConfig.title }}</span>
       </div>
-      <span class="status">{{ menuConfig.status }}</span>
+      <div class="top-right">
+        <button
+          class="icon-button"
+          type="button"
+          :aria-label="isDark ? 'Passa al tema chiaro' : 'Passa al tema scuro'"
+          @click="toggleTheme"
+        >
+          {{ isDark ? '☀️' : '🌙' }}
+        </button>
+        <span class="status">{{ menuConfig.status }}</span>
+      </div>
     </header>
 
     <main class="content">
@@ -300,17 +321,60 @@ const goToParentMenu = () => {
 </template>
 
 <style scoped>
+/* ── Theme: dark (default) ──────────────────────────────── */
+.hmi-shell[data-theme='dark'] {
+  --bg-main: #161b22;
+  --bg-bar: #0d1117;
+  --bg-btn: #21262d;
+  --border: #30363d;
+  --text-primary: #e6edf3;
+  --text-secondary: #8b949e;
+  --text-blue: #58a6ff;
+  --text-green: #3fb950;
+  --status-bg: rgba(35, 134, 54, 0.2);
+  --status-border: rgba(63, 185, 80, 0.4);
+  --status-color: #3fb950;
+  --btn-active-bg: #388bfd22;
+  --btn-active-border: #388bfd;
+  --active-border: rgba(63, 185, 80, 0.5);
+  --active-name-bg: rgba(35, 134, 54, 0.2);
+  --active-name-border: rgba(63, 185, 80, 0.4);
+  --active-text: #3fb950;
+}
+
+/* ── Theme: light ───────────────────────────────────────── */
+.hmi-shell[data-theme='light'] {
+  --bg-main: #f6f8fa;
+  --bg-bar: #ffffff;
+  --bg-btn: #f0f3f6;
+  --border: #d0d7de;
+  --text-primary: #1f2328;
+  --text-secondary: #57606a;
+  --text-blue: #0550ae;
+  --text-green: #1a7f37;
+  --status-bg: rgba(31, 136, 61, 0.1);
+  --status-border: rgba(31, 136, 61, 0.35);
+  --status-color: #1a7f37;
+  --btn-active-bg: rgba(5, 80, 174, 0.1);
+  --btn-active-border: #0550ae;
+  --active-border: rgba(31, 136, 61, 0.45);
+  --active-name-bg: rgba(31, 136, 61, 0.1);
+  --active-name-border: rgba(31, 136, 61, 0.35);
+  --active-text: #1a7f37;
+}
+
 /* ── Shell ──────────────────────────────────────────────── */
 .hmi-shell {
   display: grid;
   grid-template-rows: 3.5rem 1fr 3.5rem;
   width: 100%;
   height: 100%;
-  background: #161b22;
-  color: #e6edf3;
-  border: 1px solid #30363d;
+  background: var(--bg-main);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
   border-radius: 0.5rem;
   overflow: hidden;
+  transition: background 0.25s, color 0.25s, border-color 0.25s;
 }
 
 /* ── Bars ───────────────────────────────────────────────── */
@@ -319,11 +383,12 @@ const goToParentMenu = () => {
   align-items: center;
   justify-content: space-between;
   padding: 0 1rem;
-  background: #0d1117;
-  border-bottom: 1px solid #30363d;
+  background: var(--bg-bar);
+  border-bottom: 1px solid var(--border);
   font-weight: 700;
   font-size: 0.95rem;
   letter-spacing: 0.03em;
+  transition: background 0.25s, border-color 0.25s;
 }
 
 .top-left {
@@ -332,12 +397,18 @@ const goToParentMenu = () => {
   gap: 0.75rem;
 }
 
+.top-right {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
 .bottom-bar {
   border-bottom: 0;
-  border-top: 1px solid #30363d;
+  border-top: 1px solid var(--border);
   gap: 0.75rem;
   font-size: 0.9rem;
-  color: #8b949e;
+  color: var(--text-secondary);
 }
 
 /* Status badge */
@@ -348,9 +419,10 @@ const goToParentMenu = () => {
   text-transform: uppercase;
   padding: 0.2rem 0.6rem;
   border-radius: 999px;
-  background: rgba(35, 134, 54, 0.2);
-  color: #3fb950;
-  border: 1px solid rgba(63, 185, 80, 0.4);
+  background: var(--status-bg);
+  color: var(--status-color);
+  border: 1px solid var(--status-border);
+  transition: background 0.25s, color 0.25s, border-color 0.25s;
 }
 
 /* ── Content ────────────────────────────────────────────── */
@@ -366,20 +438,20 @@ const goToParentMenu = () => {
 
 /* ── Buttons ────────────────────────────────────────────── */
 button {
-  border: 1px solid #30363d;
+  border: 1px solid var(--border);
   border-radius: 0.4rem;
-  background: #21262d;
-  color: #e6edf3;
+  background: var(--bg-btn);
+  color: var(--text-primary);
   font-size: 1rem;
   font-weight: 600;
   touch-action: manipulation;
   cursor: pointer;
-  transition: background 0.12s, border-color 0.12s;
+  transition: background 0.12s, border-color 0.12s, color 0.12s;
 }
 
 button:active {
-  background: #388bfd22;
-  border-color: #388bfd;
+  background: var(--btn-active-bg);
+  border-color: var(--btn-active-border);
 }
 
 .icon-button {
@@ -407,7 +479,7 @@ button:active {
 h1 {
   font-size: 1.1rem;
   font-weight: 700;
-  color: #e6edf3;
+  color: var(--text-primary);
   margin: 0;
   letter-spacing: 0.02em;
   text-transform: uppercase;
@@ -432,28 +504,28 @@ h1 {
   align-items: center;
   justify-content: space-between;
   border-radius: 0.4rem;
-  border: 1px solid #30363d;
-  background: #21262d;
+  border: 1px solid var(--border);
+  background: var(--bg-btn);
   font-size: 1rem;
-  color: #e6edf3;
+  color: var(--text-primary);
 }
 
 .menu-item:active {
-  background: #388bfd22;
-  border-color: #388bfd;
+  background: var(--btn-active-bg);
+  border-color: var(--btn-active-border);
 }
 
 .menu-back-button {
   min-height: 2.6rem;
   padding: 0 0.9rem;
-  color: #8b949e;
+  color: var(--text-secondary);
   font-size: 0.9rem;
 }
 
 .submenu-indicator {
   margin-left: 0.65rem;
   font-size: 1.15rem;
-  color: #8b949e;
+  color: var(--text-secondary);
   line-height: 1;
 }
 
