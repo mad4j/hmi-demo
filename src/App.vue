@@ -125,9 +125,7 @@ const buildConfig = () => {
 
 const menuConfig = buildConfig()
 const selectablePages = flattenSelectablePages(menuConfig.pages)
-const selectablePageIndexById = new Map(
-  selectablePages.map((page, index) => [page.id, index + 1]),
-)
+const selectablePageIndexById = new Map(selectablePages.map((page, index) => [page.id, index]))
 const currentPageId = ref(selectablePages[0]?.id ?? fallbackConfig.pages[0].id)
 const menuPath = ref([])
 const menuModeEnabled = ref(false)
@@ -147,7 +145,7 @@ const currentPage = computed(
 )
 
 const pageCounterLabel = computed(() => {
-  const safeIndex = selectablePageIndexById.get(currentPage.value.id) ?? 1
+  const safeIndex = (selectablePageIndexById.get(currentPage.value.id) ?? 0) + 1
   const total = selectablePages.length || 1
   return `${safeIndex}/${total}`
 })
