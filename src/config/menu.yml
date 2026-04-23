@@ -1,0 +1,18 @@
+title: HMI Demo
+status: ONLINE
+navigation:
+  previousLabel: Precedente
+  nextLabel: Successiva
+pages:
+  - id: menu
+    label: Menu
+    title: Menu principale
+    content: Accesso rapido alle funzioni principali del veicolo.
+  - id: allarmi
+    label: Allarmi
+    title: Stato allarmi
+    content: Nessun allarme critico attivo. Controllare periodicamente i sensori.
+  - id: info
+    label: Info
+    title: Informazioni sistema
+    content: Versione HMI demo 1.0 - collegamento rete stabile.
