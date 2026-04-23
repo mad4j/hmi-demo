@@ -55,7 +55,7 @@ const isActive = computed(() => props.type === 'boolean' && Boolean(props.value)
 .param-widget {
   display: flex;
   flex-direction: column;
-  width: 9rem;
+  width: 100%;
   min-height: 5.5rem;
   border: 2px solid #0f380f;
   border-radius: 0.3rem;

@@ -156,7 +156,44 @@ const uniqueParameters = selectablePages
     seenParameterIds.add(p.id)
     return true
   })
-const parameterValues = reactive(Object.fromEntries(uniqueParameters.map((p) => [p.id, null])))
+const sampleValues = {
+  temp_abitacolo: 21.5,
+  temp_impostata: 22.0,
+  temp_esterna: 14.2,
+  umidita: 65,
+  ventilazione_attiva: true,
+  aria_ricircolo: false,
+  velocita_ventola: 3,
+  modalita_clima: 'AUTO',
+  porta_ant_sx: false,
+  porta_ant_dx: false,
+  porta_post_sx: false,
+  porta_post_dx: false,
+  blocco_centrale: true,
+  cofano: false,
+  portabagagli: false,
+  finestre_chiuse: true,
+  allarme_batteria: false,
+  allarme_temp_motore: false,
+  allarme_pressione: false,
+  allarme_olio: false,
+  allarme_abs: false,
+  allarme_airbag: false,
+  allarme_carburante: true,
+  livello_carburante: 23,
+  versione_hmi: '1.0.3',
+  stato_rete: 'ONLINE',
+  connessione: 'CAN-BUS',
+  uptime: 142,
+  tensione_batteria: 12.4,
+  temperatura_cpu: 48,
+  data_sistema: '23/04/2026',
+  ora_sistema: '17:30',
+}
+
+const parameterValues = reactive(
+  Object.fromEntries(uniqueParameters.map((p) => [p.id, sampleValues[p.id] ?? null])),
+)
 
 const toggleMenuMode = () => {
   menuModeEnabled.value = !menuModeEnabled.value
@@ -382,11 +419,9 @@ p {
 }
 
 .widget-grid {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
   gap: 0.6rem;
-  justify-content: center;
-  align-items: flex-start;
   width: 100%;
 }
 </style>

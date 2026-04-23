@@ -24,9 +24,27 @@ pages:
             type: number
             unit: "°C"
             precision: 1
+          - id: temp_esterna
+            name: Temp. esterna
+            type: number
+            unit: "°C"
+            precision: 1
+          - id: umidita
+            name: Umidità
+            type: number
+            unit: "%"
+            precision: 0
           - id: ventilazione_attiva
             name: Ventilazione
             type: boolean
+          - id: aria_ricircolo
+            name: Ricircolo
+            type: boolean
+          - id: velocita_ventola
+            name: Velocità ventola
+            type: number
+            unit: "lv"
+            precision: 0
           - id: modalita_clima
             name: Modalità
             type: enum
@@ -47,6 +65,18 @@ pages:
           - id: porta_post_dx
             name: Post. DX
             type: boolean
+          - id: blocco_centrale
+            name: Blocco centr.
+            type: boolean
+          - id: cofano
+            name: Cofano
+            type: boolean
+          - id: portabagagli
+            name: Bagagliaio
+            type: boolean
+          - id: finestre_chiuse
+            name: Finestre
+            type: boolean
   - id: allarmi
     label: Allarmi
     title: Stato allarmi
@@ -61,6 +91,23 @@ pages:
       - id: allarme_pressione
         name: Pressione
         type: boolean
+      - id: allarme_olio
+        name: Olio motore
+        type: boolean
+      - id: allarme_abs
+        name: ABS
+        type: boolean
+      - id: allarme_airbag
+        name: Airbag
+        type: boolean
+      - id: allarme_carburante
+        name: Carburante
+        type: boolean
+      - id: livello_carburante
+        name: Livello carb.
+        type: number
+        unit: "%"
+        precision: 0
   - id: info
     label: Info
     title: Informazioni sistema
@@ -72,7 +119,27 @@ pages:
       - id: stato_rete
         name: Stato rete
         type: enum
+      - id: connessione
+        name: Connessione
+        type: enum
       - id: uptime
         name: Uptime
         type: number
         unit: min
+        precision: 0
+      - id: tensione_batteria
+        name: Tensione batt.
+        type: number
+        unit: "V"
+        precision: 1
+      - id: temperatura_cpu
+        name: Temp. CPU
+        type: number
+        unit: "°C"
+        precision: 0
+      - id: data_sistema
+        name: Data
+        type: enum
+      - id: ora_sistema
+        name: Ora
+        type: enum
