@@ -52,29 +52,33 @@ const isActive = computed(() => props.type === 'boolean' && Boolean(props.value)
 </template>
 
 <style scoped>
+/* ── Base widget ─────────────────────────────────────────── */
 .param-widget {
   display: flex;
   flex-direction: column;
   width: 100%;
   min-height: 5.5rem;
-  border: 2px solid #0f380f;
-  border-radius: 0.3rem;
+  border: 1px solid #30363d;
+  border-radius: 0.45rem;
   overflow: hidden;
-  background: #829258;
-  color: #0f380f;
+  background: #21262d;
+  color: #e6edf3;
+  transition: border-color 0.15s;
 }
 
 .param-name {
   flex: 0 0 auto;
-  padding: 0.2rem 0.45rem;
-  font-size: 0.65rem;
+  padding: 0.25rem 0.55rem;
+  font-size: 0.62rem;
   font-weight: 700;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.07em;
   text-transform: uppercase;
-  border-bottom: 2px solid #0f380f;
+  color: #8b949e;
+  border-bottom: 1px solid #30363d;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  background: #161b22;
 }
 
 .param-value {
@@ -82,28 +86,40 @@ const isActive = computed(() => props.type === 'boolean' && Boolean(props.value)
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0.3rem 0.45rem;
-  font-size: 1.6rem;
+  padding: 0.3rem 0.4rem;
+  font-size: 1.55rem;
   font-weight: 700;
   line-height: 1.1;
   text-align: center;
   overflow-wrap: break-word;
+  color: #e6edf3;
 }
 
-/* Boolean widget: invert colours when active (true) */
+/* ── Boolean: OFF state ──────────────────────────────────── */
+.param-widget--boolean .param-value {
+  font-size: 1rem;
+  color: #8b949e;
+}
+
+/* ── Boolean: ON / active state ──────────────────────────── */
 .param-widget--boolean.param-widget--active {
-  background: #0f380f;
-  color: #9bbc0f;
+  border-color: rgba(63, 185, 80, 0.5);
 }
 
 .param-widget--boolean.param-widget--active .param-name {
-  background: #0a2a0a;
-  border-bottom-color: #9bbc0f;
-  color: #9bbc0f;
+  background: rgba(35, 134, 54, 0.2);
+  border-bottom-color: rgba(63, 185, 80, 0.4);
+  color: #3fb950;
 }
 
-/* Enum widget: slightly smaller value text to fit longer labels */
+.param-widget--boolean.param-widget--active .param-value {
+  color: #3fb950;
+  font-size: 1rem;
+}
+
+/* ── Enum widget ─────────────────────────────────────────── */
 .param-widget--enum .param-value {
-  font-size: 1.1rem;
+  font-size: 1rem;
+  color: #58a6ff;
 }
 </style>

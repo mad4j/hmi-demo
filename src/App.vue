@@ -300,128 +300,172 @@ const goToParentMenu = () => {
 </template>
 
 <style scoped>
+/* ── Shell ──────────────────────────────────────────────── */
 .hmi-shell {
   display: grid;
-  grid-template-rows: 4rem 1fr 4.5rem;
+  grid-template-rows: 3.5rem 1fr 3.5rem;
   width: 100%;
   height: 100%;
-  background: #829258;
-  color: #0f380f;
-  border: 2px solid #0f380f;
+  background: #161b22;
+  color: #e6edf3;
+  border: 1px solid #30363d;
+  border-radius: 0.5rem;
+  overflow: hidden;
 }
 
+/* ── Bars ───────────────────────────────────────────────── */
 .bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 1rem;
-  background: #829258;
-  border-bottom: 2px solid #0f380f;
+  background: #0d1117;
+  border-bottom: 1px solid #30363d;
   font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 0.03em;
 }
 
 .top-left {
   display: inline-flex;
   align-items: center;
-  gap: 0.65rem;
+  gap: 0.75rem;
 }
 
 .bottom-bar {
   border-bottom: 0;
-  border-top: 2px solid #0f380f;
+  border-top: 1px solid #30363d;
   gap: 0.75rem;
-}
-
-.status {
   font-size: 0.9rem;
+  color: #8b949e;
 }
 
+/* Status badge */
+.status {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  background: rgba(35, 134, 54, 0.2);
+  color: #3fb950;
+  border: 1px solid rgba(63, 185, 80, 0.4);
+}
+
+/* ── Content ────────────────────────────────────────────── */
 .content {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.6rem;
   align-items: center;
   justify-content: center;
-  padding: 1rem;
-  text-align: center;
-  font-size: 1.05rem;
+  padding: 0.75rem;
   overflow: hidden;
 }
 
+/* ── Buttons ────────────────────────────────────────────── */
 button {
-  border: 2px solid #0f380f;
+  border: 1px solid #30363d;
   border-radius: 0.4rem;
-  background: #829258;
-  color: #0f380f;
+  background: #21262d;
+  color: #e6edf3;
   font-size: 1rem;
-  font-weight: 700;
+  font-weight: 600;
   touch-action: manipulation;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s;
+}
+
+button:active {
+  background: #388bfd22;
+  border-color: #388bfd;
 }
 
 .icon-button {
-  width: 2.2rem;
-  height: 2.2rem;
+  width: 2.4rem;
+  height: 2.4rem;
   padding: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
+  border-radius: 0.4rem;
 }
 
+/* ── Menu indicator ─────────────────────────────────────── */
 .menu-indicator {
   flex: 0 1 auto;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: #0f380f;
-  font-size: 1rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+/* ── Menu list ──────────────────────────────────────────── */
+h1 {
+  font-size: 1.1rem;
   font-weight: 700;
+  color: #e6edf3;
+  margin: 0;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
 }
 
 .menu-list {
-  width: min(100%, 30rem);
+  width: min(100%, 32rem);
   list-style: none;
   padding: 0;
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.65rem;
+  gap: 0.45rem;
   overflow-y: auto;
 }
 
 .menu-item {
   width: 100%;
-  min-height: 2.8rem;
-  padding: 0.45rem 0.8rem;
+  min-height: 3.2rem;
+  padding: 0 1rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  border-radius: 0.4rem;
+  border: 1px solid #30363d;
+  background: #21262d;
+  font-size: 1rem;
+  color: #e6edf3;
+}
+
+.menu-item:active {
+  background: #388bfd22;
+  border-color: #388bfd;
 }
 
 .menu-back-button {
-  min-height: 2.5rem;
-  padding: 0.35rem 0.8rem;
+  min-height: 2.6rem;
+  padding: 0 0.9rem;
+  color: #8b949e;
+  font-size: 0.9rem;
 }
 
 .submenu-indicator {
   margin-left: 0.65rem;
-  font-size: 1.2rem;
+  font-size: 1.15rem;
+  color: #8b949e;
   line-height: 1;
-}
-
-h1 {
-  font-size: 1.3rem;
-  font-weight: 700;
 }
 
 p {
   max-width: 60ch;
 }
 
+/* ── Widget grid ────────────────────────────────────────── */
 .widget-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 0.6rem;
+  gap: 0.5rem;
   width: 100%;
 }
 </style>
