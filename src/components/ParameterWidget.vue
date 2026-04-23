@@ -25,6 +25,7 @@ const props = defineProps({
 })
 
 const displayValue = computed(() => {
+  if (props.value === null || props.value === undefined) return '—'
   if (props.type === 'boolean') {
     return props.value ? 'ON' : 'OFF'
   }

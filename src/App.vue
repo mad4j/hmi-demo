@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import ParameterWidget from './components/ParameterWidget.vue'
 import { load } from 'js-yaml'
 import rawMenuConfig from './config/menu.yml?raw'
@@ -18,11 +18,25 @@ const fallbackConfig = {
       title: 'Menu principale',
       content: 'Interfaccia ottimizzata per 800x600 e uso su mezzi mobili.',
       submenus: [],
+      parameters: [],
     },
   ],
 }
 
 const MAX_MENU_DEPTH = 8
+
+const normalizeParameters = (params) => {
+  if (!Array.isArray(params)) return []
+  return params
+    .filter((p) => p && typeof p === 'object' && typeof p.id === 'string' && p.id.trim())
+    .map((p) => ({
+      id: p.id.trim(),
+      name: typeof p.name === 'string' && p.name.trim() ? p.name : p.id.trim(),
+      type: ['number', 'enum', 'boolean'].includes(p.type) ? p.type : 'number',
+      unit: typeof p.unit === 'string' ? p.unit : '',
+      precision: typeof p.precision === 'number' ? p.precision : null,
+    }))
+}
 
 const normalizeMenuItems = (items, idPrefix = 'page', depth = 0) =>
   items
@@ -44,6 +58,7 @@ const normalizeMenuItems = (items, idPrefix = 'page', depth = 0) =>
           typeof item.title === 'string' && item.title.trim() ? item.title : `Pagina ${index + 1}`,
         content: typeof item.content === 'string' ? item.content : '',
         submenus: normalizedSubmenus,
+        parameters: normalizeParameters(item.parameters),
       }
     })
 
@@ -131,6 +146,10 @@ const currentPageId = ref(selectablePages[0]?.id ?? fallbackConfig.pages[0].id)
 const menuPath = ref([])
 const menuModeEnabled = ref(false)
 
+// Reactive map of parameter id → current value (null = not yet received from model)
+const allParameters = selectablePages.flatMap((page) => page.parameters)
+const parameterValues = reactive(Object.fromEntries(allParameters.map((p) => [p.id, null])))
+
 const toggleMenuMode = () => {
   menuModeEnabled.value = !menuModeEnabled.value
   if (menuModeEnabled.value) {
@@ -215,14 +234,16 @@ const goToParentMenu = () => {
       <template v-else>
         <h1>{{ currentPage.title }}</h1>
         <p v-if="currentPage.content">{{ currentPage.content }}</p>
-        <div class="widget-grid">
-          <ParameterWidget name="Velocità" :value="87.3" type="number" unit="km/h" :precision="1" />
-          <ParameterWidget name="Temperatura" :value="42" type="number" unit="°C" />
-          <ParameterWidget name="Pressione" :value="2.45" type="number" unit="bar" :precision="2" />
-          <ParameterWidget name="Modalità" :value="'AUTO'" type="enum" />
-          <ParameterWidget name="Stato" :value="'PRONTO'" type="enum" />
-          <ParameterWidget name="Acceso" :value="true" type="boolean" />
-          <ParameterWidget name="Allarme" :value="false" type="boolean" />
+        <div v-if="currentPage.parameters.length" class="widget-grid">
+          <ParameterWidget
+            v-for="param in currentPage.parameters"
+            :key="param.id"
+            :name="param.name"
+            :type="param.type"
+            :unit="param.unit"
+            :precision="param.precision"
+            :value="parameterValues[param.id]"
+          />
         </div>
       </template>
     </main>

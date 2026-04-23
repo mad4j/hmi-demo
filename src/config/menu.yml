@@ -13,15 +13,66 @@ pages:
         label: Climatizzazione
         title: Controllo clima
         content: Temperatura abitacolo impostata a 21°C. Ventilazione automatica attiva.
+        parameters:
+          - id: temp_abitacolo
+            name: Temperatura
+            type: number
+            unit: "°C"
+            precision: 1
+          - id: temp_impostata
+            name: Impostata
+            type: number
+            unit: "°C"
+            precision: 1
+          - id: ventilazione_attiva
+            name: Ventilazione
+            type: boolean
+          - id: modalita_clima
+            name: Modalità
+            type: enum
       - id: porte
         label: Porte
         title: Stato porte
         content: Tutte le porte risultano chiuse e bloccate.
+        parameters:
+          - id: porta_ant_sx
+            name: Ant. SX
+            type: boolean
+          - id: porta_ant_dx
+            name: Ant. DX
+            type: boolean
+          - id: porta_post_sx
+            name: Post. SX
+            type: boolean
+          - id: porta_post_dx
+            name: Post. DX
+            type: boolean
   - id: allarmi
     label: Allarmi
     title: Stato allarmi
     content: Nessun allarme critico attivo. Controllare periodicamente i sensori.
+    parameters:
+      - id: allarme_batteria
+        name: Batteria
+        type: boolean
+      - id: allarme_temp_motore
+        name: Temp. motore
+        type: boolean
+      - id: allarme_pressione
+        name: Pressione
+        type: boolean
   - id: info
     label: Info
     title: Informazioni sistema
     content: Versione HMI demo 1.0 - collegamento rete stabile.
+    parameters:
+      - id: versione_hmi
+        name: Versione HMI
+        type: enum
+      - id: stato_rete
+        name: Stato rete
+        type: enum
+      - id: uptime
+        name: Uptime
+        type: number
+        unit: min
