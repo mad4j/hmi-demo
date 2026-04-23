@@ -8,6 +8,15 @@ pages:
     label: Menu
     title: Menu principale
     content: Accesso rapido alle funzioni principali del veicolo.
+    submenus:
+      - id: climatizzazione
+        label: Climatizzazione
+        title: Controllo clima
+        content: Temperatura abitacolo impostata a 21°C. Ventilazione automatica attiva.
+      - id: porte
+        label: Porte
+        title: Stato porte
+        content: Tutte le porte risultano chiuse e bloccate.
   - id: allarmi
     label: Allarmi
     title: Stato allarmi
