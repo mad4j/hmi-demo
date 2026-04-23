@@ -240,8 +240,6 @@ const goToParentMenu = () => {
         </ul>
       </template>
       <template v-else>
-        <h1>{{ currentPage.title }}</h1>
-        <p v-if="currentPage.content">{{ currentPage.content }}</p>
         <div v-if="currentPage.parameters.length" class="widget-grid">
           <ParameterWidget
             v-for="param in currentPage.parameters"
@@ -260,7 +258,6 @@ const goToParentMenu = () => {
       <span class="menu-indicator" role="status" aria-live="polite">
         {{ currentPage.label }} ({{ pageCounterLabel }})
       </span>
-      <span class="menu-hint">Attiva ☰ per aprire, entrare nei sottomenu e selezionare</span>
     </footer>
   </div>
 </template>
@@ -342,10 +339,6 @@ button {
   color: #0f380f;
   font-size: 1rem;
   font-weight: 700;
-}
-
-.menu-hint {
-  font-size: 0.95rem;
 }
 
 .menu-list {

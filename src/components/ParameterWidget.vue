@@ -72,7 +72,6 @@ const isActive = computed(() => props.type === 'boolean' && Boolean(props.value)
   letter-spacing: 0.04em;
   text-transform: uppercase;
   border-bottom: 2px solid #0f380f;
-  background: #6a7a48;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
