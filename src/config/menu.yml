@@ -77,6 +77,9 @@ pages:
           - id: finestre_chiuse
             name: Finestre
             type: boolean
+          - id: portellone
+            name: Portellone
+            type: boolean
   - id: allarmi
     label: Allarmi
     title: Stato allarmi
