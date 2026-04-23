@@ -634,4 +634,16 @@ p {
   gap: 0.5rem;
   width: 100%;
 }
+
+@media (max-width: 599px) {
+  .widget-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 399px) {
+  .widget-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
 </style>
