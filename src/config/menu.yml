@@ -31,8 +31,7 @@ pages:
             precision: 1
           - id: umidita
             name: Umidità
-            type: number
-            unit: "%"
+            type: percentage
             precision: 0
           - id: ventilazione_attiva
             name: Ventilazione
@@ -109,8 +108,7 @@ pages:
         type: boolean
       - id: livello_carburante
         name: Livello carb.
-        type: number
-        unit: "%"
+        type: percentage
         precision: 0
   - id: info
     label: Info
