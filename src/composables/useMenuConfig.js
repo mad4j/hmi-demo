@@ -29,7 +29,7 @@ export const normalizeParameters = (params) => {
     .map((p) => ({
       id: p.id.trim(),
       name: typeof p.name === 'string' && p.name.trim() ? p.name : p.id.trim(),
-      type: ['number', 'enum', 'boolean'].includes(p.type) ? p.type : 'number',
+      type: ['number', 'percentage', 'enum', 'boolean'].includes(p.type) ? p.type : 'number',
       unit: typeof p.unit === 'string' ? p.unit : '',
       precision: typeof p.precision === 'number' ? p.precision : null,
       options: Array.isArray(p.options) ? p.options.map(String) : [],

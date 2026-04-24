@@ -85,6 +85,12 @@ export const useMenuState = () => {
     }
   }
 
+  const setParameterValue = (id, value) => {
+    if (id in parameterValues) {
+      parameterValues[id] = value
+    }
+  }
+
   // ── Theme ─────────────────────────────────────────────────
   const isDark = ref(true)
 
@@ -205,6 +211,7 @@ export const useMenuState = () => {
     isOnHomePage,
     // actions
     toggleParameter,
+    setParameterValue,
     toggleTheme,
     toggleMenuMode,
     navigateToBreadcrumb,

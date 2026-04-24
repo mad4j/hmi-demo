@@ -12,7 +12,7 @@ const props = defineProps({
   type: {
     type: String,
     default: 'number',
-    validator: (v) => ['number', 'enum', 'boolean'].includes(v),
+    validator: (v) => ['number', 'percentage', 'enum', 'boolean'].includes(v),
   },
   unit: {
     type: String,
@@ -28,12 +28,18 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['toggle'])
+const emit = defineEmits(['toggle', 'edit'])
 
 const displayValue = computed(() => {
   if (props.value === null || props.value === undefined) return '—'
   if (props.type === 'boolean') {
     return props.value ? 'ON' : 'OFF'
+  }
+  if (props.type === 'percentage') {
+    const num = Number(props.value)
+    if (Number.isNaN(num)) return '—'
+    const formatted = props.precision !== null ? num.toFixed(props.precision) : String(props.value)
+    return `${formatted}%`
   }
   if (props.type === 'number') {
     const num = Number(props.value)
@@ -50,11 +56,17 @@ const displayValue = computed(() => {
 const isActive = computed(() => props.type === 'boolean' && Boolean(props.value))
 
 const isClickable = computed(
-  () => props.type === 'boolean' || (props.type === 'enum' && props.options.length > 0),
+  () =>
+    props.type === 'boolean' ||
+    props.type === 'percentage' ||
+    (props.type === 'enum' && props.options.length > 0),
 )
 
 const handleClick = () => {
-  if (isClickable.value) {
+  if (!isClickable.value) return
+  if (props.type === 'percentage') {
+    emit('edit')
+  } else {
     emit('toggle')
   }
 }
@@ -158,5 +170,14 @@ const handleClick = () => {
 .param-widget--enum .param-value {
   font-size: 1rem;
   color: var(--text-blue);
+}
+
+/* ── Percentage widget ───────────────────────────────────── */
+.param-widget--percentage .param-value {
+  color: var(--text-blue);
+}
+
+.param-widget--percentage.param-widget--clickable:hover .param-value {
+  color: var(--active-text);
 }
 </style>

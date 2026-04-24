@@ -1,0 +1,244 @@
+<script setup>
+import { ref, watch } from 'vue'
+
+const props = defineProps({
+  name: {
+    type: String,
+    required: true,
+  },
+  value: {
+    type: Number,
+    required: true,
+  },
+  min: {
+    type: Number,
+    default: 0,
+  },
+  max: {
+    type: Number,
+    default: 100,
+  },
+  step: {
+    type: Number,
+    default: 1,
+  },
+})
+
+const emit = defineEmits(['confirm', 'cancel'])
+
+const localValue = ref(Math.round(Number(props.value) || 0))
+
+watch(
+  () => props.value,
+  (v) => {
+    localValue.value = Math.round(Number(v) || 0)
+  },
+)
+
+const decrement = () => {
+  localValue.value = Math.max(props.min, localValue.value - props.step)
+}
+
+const increment = () => {
+  localValue.value = Math.min(props.max, localValue.value + props.step)
+}
+
+const handleConfirm = () => emit('confirm', localValue.value)
+const handleCancel = () => emit('cancel')
+</script>
+
+<template>
+  <div class="modal-backdrop" @click.self="handleCancel">
+    <div
+      class="modal"
+      role="dialog"
+      :aria-label="`Modifica ${name}`"
+      aria-modal="true"
+    >
+      <div class="modal-header">{{ name }}</div>
+
+      <div class="modal-body">
+        <div class="value-display" aria-live="polite" aria-atomic="true">
+          {{ localValue }}%
+        </div>
+
+        <input
+          class="slider"
+          type="range"
+          :min="min"
+          :max="max"
+          :step="step"
+          v-model.number="localValue"
+          aria-label="Valore percentuale"
+        />
+
+        <div class="stepper">
+          <button
+            class="step-btn"
+            type="button"
+            :disabled="localValue <= min"
+            aria-label="Diminuisci"
+            @click="decrement"
+          >
+            −
+          </button>
+          <button
+            class="step-btn"
+            type="button"
+            :disabled="localValue >= max"
+            aria-label="Aumenta"
+            @click="increment"
+          >
+            +
+          </button>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-cancel" type="button" @click="handleCancel">Annulla</button>
+        <button class="btn btn-confirm" type="button" @click="handleConfirm">OK</button>
+      </div>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+/* ── Backdrop ────────────────────────────────────────────── */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.55);
+  padding: 1rem;
+}
+
+/* ── Modal panel ─────────────────────────────────────────── */
+.modal {
+  display: flex;
+  flex-direction: column;
+  width: min(22rem, 100%);
+  border: 1px solid var(--border);
+  border-radius: 0.6rem;
+  background: var(--bg-main);
+  color: var(--text-primary);
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+}
+
+/* ── Header ──────────────────────────────────────────────── */
+.modal-header {
+  padding: 0.55rem 1rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-bar);
+}
+
+/* ── Body ────────────────────────────────────────────────── */
+.modal-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem 1.25rem 0.75rem;
+}
+
+.value-display {
+  font-size: 2.8rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--text-blue);
+  min-width: 5ch;
+  text-align: center;
+}
+
+/* ── Slider ──────────────────────────────────────────────── */
+.slider {
+  width: 100%;
+  accent-color: var(--text-blue);
+  cursor: pointer;
+  height: 0.4rem;
+}
+
+/* ── Stepper buttons ─────────────────────────────────────── */
+.stepper {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.step-btn {
+  width: 3.2rem;
+  height: 3.2rem;
+  border: 1px solid var(--border);
+  border-radius: 0.45rem;
+  background: var(--bg-btn);
+  color: var(--text-primary);
+  font-size: 1.8rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.12s, border-color 0.12s;
+  touch-action: manipulation;
+  user-select: none;
+}
+
+.step-btn:active:not(:disabled) {
+  background: var(--btn-active-bg);
+  border-color: var(--btn-active-border);
+}
+
+.step-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* ── Footer ──────────────────────────────────────────────── */
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-top: 1px solid var(--border);
+  background: var(--bg-bar);
+}
+
+.btn {
+  padding: 0.45rem 1.1rem;
+  border-radius: 0.4rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  transition: background 0.12s, border-color 0.12s;
+  touch-action: manipulation;
+}
+
+.btn-cancel {
+  background: var(--bg-btn);
+  color: var(--text-secondary);
+}
+
+.btn-cancel:active {
+  background: var(--btn-active-bg);
+  border-color: var(--btn-active-border);
+}
+
+.btn-confirm {
+  background: var(--btn-active-bg);
+  border-color: var(--btn-active-border);
+  color: var(--text-blue);
+}
+
+.btn-confirm:active {
+  opacity: 0.8;
+}
+</style>

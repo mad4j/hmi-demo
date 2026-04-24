@@ -1,6 +1,8 @@
 <script setup>
 import ParameterWidget from './components/ParameterWidget.vue'
 import AppMenu from './components/AppMenu.vue'
+import PercentageEditorModal from './components/PercentageEditorModal.vue'
+import { ref, computed } from 'vue'
 import { useMenuState } from './composables/useMenuState.js'
 
 const {
@@ -14,6 +16,7 @@ const {
   breadcrumbs,
   visibleMenuItems,
   toggleParameter,
+  setParameterValue,
   toggleTheme,
   toggleMenuMode,
   navigateToBreadcrumb,
@@ -21,6 +24,30 @@ const {
   isOnHomePage,
   goHome,
 } = useMenuState()
+
+// ── Percentage editor state ───────────────────────────────
+const editingParamId = ref(null)
+
+const editingParam = computed(() =>
+  editingParamId.value
+    ? currentPage.value.parameters.find((p) => p.id === editingParamId.value) ?? null
+    : null,
+)
+
+const startEditParameter = (id) => {
+  editingParamId.value = id
+}
+
+const confirmEdit = (newValue) => {
+  if (editingParamId.value !== null) {
+    setParameterValue(editingParamId.value, newValue)
+  }
+  editingParamId.value = null
+}
+
+const cancelEdit = () => {
+  editingParamId.value = null
+}
 </script>
 
 <template>
@@ -85,6 +112,7 @@ const {
             :options="param.options"
             :value="parameterValues[param.id]"
             @toggle="toggleParameter(param.id)"
+            @edit="startEditParameter(param.id)"
           />
         </div>
       </template>
@@ -95,6 +123,14 @@ const {
         {{ currentPage.label }} ({{ pageCounterLabel }})
       </span>
     </footer>
+
+    <PercentageEditorModal
+      v-if="editingParam"
+      :name="editingParam.name"
+      :value="parameterValues[editingParam.id] ?? 0"
+      @confirm="confirmEdit"
+      @cancel="cancelEdit"
+    />
   </div>
 </template>
 
