@@ -62,6 +62,15 @@ const snapToMark = () => {
   const snapped = Math.round(localValue.value / TICK_INTERVAL) * TICK_INTERVAL
   localValue.value = Math.max(props.min, Math.min(props.max, snapped))
 }
+
+// Haptic feedback when crossing a tick mark
+let lastVibratedAt = null
+const handleSliderInput = () => {
+  if ('vibrate' in navigator && localValue.value % TICK_INTERVAL === 0 && localValue.value !== lastVibratedAt) {
+    navigator.vibrate(10)
+    lastVibratedAt = localValue.value
+  }
+}
 </script>
 
 <template>
@@ -88,6 +97,7 @@ const snapToMark = () => {
             :step="step"
             v-model.number="localValue"
             aria-label="Valore percentuale"
+            @input="handleSliderInput"
             @change="snapToMark"
             @mouseup="snapToMark"
             @touchend="snapToMark"
@@ -193,6 +203,7 @@ const snapToMark = () => {
   width: 100%;
   display: flex;
   flex-direction: column;
+  --thumb-size: 1rem;
 }
 
 .slider {
@@ -202,11 +213,21 @@ const snapToMark = () => {
   height: 0.4rem;
 }
 
+.slider::-webkit-slider-thumb {
+  width: var(--thumb-size);
+  height: var(--thumb-size);
+}
+
+.slider::-moz-range-thumb {
+  width: var(--thumb-size);
+  height: var(--thumb-size);
+}
+
 /* ── Tick marks ──────────────────────────────────────────── */
 .ticks {
   display: flex;
   justify-content: space-between;
-  padding: 0 0.55rem;
+  padding: 0 calc(var(--thumb-size) / 2);
   margin-top: 0.25rem;
 }
 
