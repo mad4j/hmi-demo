@@ -211,7 +211,8 @@ const {
   align-items: center;
   justify-content: center;
   padding: 0.75rem;
-  overflow: hidden;
+  min-height: 0;
+  overflow-y: auto;
 }
 
 /* ── Buttons ────────────────────────────────────────────── */
