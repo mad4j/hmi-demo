@@ -291,4 +291,11 @@ p {
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+@media (max-width: 600px), (max-height: 600px) {
+  .hmi-shell {
+    border-radius: 0;
+    border: none;
+  }
+}
 </style>

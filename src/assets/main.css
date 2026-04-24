@@ -4,6 +4,13 @@
   margin: 0 auto;
 }
 
+@media (max-width: 600px), (max-height: 600px) {
+  #app {
+    width: 100vw;
+    height: 100vh;
+  }
+}
+
 html,
 body {
   overflow: hidden;
