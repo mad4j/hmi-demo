@@ -13,6 +13,7 @@ const {
   pageCounterLabel,
   breadcrumbs,
   visibleMenuItems,
+  toggleParameter,
   toggleTheme,
   toggleMenuMode,
   navigateToBreadcrumb,
@@ -68,6 +69,7 @@ const {
             :unit="param.unit"
             :precision="param.precision"
             :value="parameterValues[param.id]"
+            @toggle="toggleParameter(param.id)"
           />
         </div>
       </template>
