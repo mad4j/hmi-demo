@@ -48,6 +48,7 @@ pages:
           - id: modalita_clima
             name: Modalità
             type: enum
+            options: [AUTO, MANUAL, ECO, SPORT]
       - id: porte
         label: Porte
         title: Stato porte
@@ -122,9 +123,11 @@ pages:
       - id: stato_rete
         name: Stato rete
         type: enum
+        options: [ONLINE, OFFLINE]
       - id: connessione
         name: Connessione
         type: enum
+        options: [CAN-BUS, WIFI, ETH]
       - id: uptime
         name: Uptime
         type: number

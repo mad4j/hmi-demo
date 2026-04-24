@@ -22,6 +22,10 @@ const props = defineProps({
     type: Number,
     default: null,
   },
+  options: {
+    type: Array,
+    default: () => [],
+  },
 })
 
 const emit = defineEmits(['toggle'])
@@ -45,8 +49,12 @@ const displayValue = computed(() => {
 
 const isActive = computed(() => props.type === 'boolean' && Boolean(props.value))
 
+const isClickable = computed(
+  () => props.type === 'boolean' || (props.type === 'enum' && props.options.length > 0),
+)
+
 const handleClick = () => {
-  if (props.type === 'boolean') {
+  if (isClickable.value) {
     emit('toggle')
   }
 }
@@ -55,11 +63,11 @@ const handleClick = () => {
 <template>
   <div
     class="param-widget"
-    :class="{ 'param-widget--active': isActive, [`param-widget--${type}`]: true, 'param-widget--clickable': type === 'boolean' }"
-    :role="type === 'boolean' ? 'button' : undefined"
-    :tabindex="type === 'boolean' ? 0 : undefined"
+    :class="{ 'param-widget--active': isActive, [`param-widget--${type}`]: true, 'param-widget--clickable': isClickable }"
+    :role="isClickable ? 'button' : undefined"
+    :tabindex="isClickable ? 0 : undefined"
     :aria-pressed="type === 'boolean' ? isActive : undefined"
-    :aria-label="type === 'boolean' ? name : undefined"
+    :aria-label="isClickable ? name : undefined"
     @click="handleClick"
     @keydown.enter.space.prevent="handleClick"
   >

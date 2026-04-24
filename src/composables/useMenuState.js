@@ -75,6 +75,13 @@ export const useMenuState = () => {
   const toggleParameter = (id) => {
     if (typeof parameterValues[id] === 'boolean') {
       parameterValues[id] = !parameterValues[id]
+      return
+    }
+    const param = uniqueParameters.find((p) => p.id === id)
+    if (param?.type === 'enum' && param.options?.length > 0) {
+      const currentIndex = param.options.indexOf(String(parameterValues[id]))
+      const nextIndex = currentIndex === -1 ? 0 : (currentIndex + 1) % param.options.length
+      parameterValues[id] = param.options[nextIndex]
     }
   }
 

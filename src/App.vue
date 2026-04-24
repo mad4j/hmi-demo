@@ -82,6 +82,7 @@ const {
             :type="param.type"
             :unit="param.unit"
             :precision="param.precision"
+            :options="param.options"
             :value="parameterValues[param.id]"
             @toggle="toggleParameter(param.id)"
           />
