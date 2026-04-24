@@ -132,6 +132,12 @@ export const useMenuState = () => {
     menuPath.value = menuPath.value.slice(0, -1)
   }
 
+  const goHome = () => {
+    currentPageId.value = selectablePages[0]?.id ?? menuConfig.pages[0].id
+    menuPath.value = []
+    menuModeEnabled.value = false
+  }
+
   // ── Computed ──────────────────────────────────────────────
   const currentPage = computed(
     () =>
@@ -157,6 +163,10 @@ export const useMenuState = () => {
 
   const visibleMenuItems = computed(() =>
     getMenuItemsByPath(menuConfig.pages, menuPath.value),
+  )
+
+  const isOnHomePage = computed(
+    () => currentPageId.value === (selectablePages[0]?.id ?? menuConfig.pages[0].id),
   )
 
   const currentMenuTitle = computed(() => {
@@ -185,6 +195,7 @@ export const useMenuState = () => {
     breadcrumbs,
     visibleMenuItems,
     currentMenuTitle,
+    isOnHomePage,
     // actions
     toggleParameter,
     toggleTheme,
@@ -192,5 +203,6 @@ export const useMenuState = () => {
     navigateToBreadcrumb,
     selectMenuItem,
     goToParentMenu,
+    goHome,
   }
 }

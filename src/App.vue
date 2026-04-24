@@ -18,6 +18,8 @@ const {
   toggleMenuMode,
   navigateToBreadcrumb,
   selectMenuItem,
+  isOnHomePage,
+  goHome,
 } = useMenuState()
 </script>
 
@@ -33,6 +35,18 @@ const {
           @click="toggleMenuMode"
         >
           ☰
+        </button>
+        <button
+          v-if="menuModeEnabled || !isOnHomePage"
+          class="icon-button"
+          type="button"
+          aria-label="Torna alla pagina principale"
+          @click="goHome"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9.5z"/>
+            <polyline points="9 21 9 12 15 12 15 21"/>
+          </svg>
         </button>
         <span>{{ menuConfig.title }}</span>
       </div>
