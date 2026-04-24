@@ -24,6 +24,8 @@ const props = defineProps({
   },
 })
 
+const emit = defineEmits(['toggle'])
+
 const displayValue = computed(() => {
   if (props.value === null || props.value === undefined) return '—'
   if (props.type === 'boolean') {
@@ -42,10 +44,25 @@ const displayValue = computed(() => {
 })
 
 const isActive = computed(() => props.type === 'boolean' && Boolean(props.value))
+
+const handleClick = () => {
+  if (props.type === 'boolean') {
+    emit('toggle')
+  }
+}
 </script>
 
 <template>
-  <div class="param-widget" :class="{ 'param-widget--active': isActive, [`param-widget--${type}`]: true }">
+  <div
+    class="param-widget"
+    :class="{ 'param-widget--active': isActive, [`param-widget--${type}`]: true, 'param-widget--clickable': type === 'boolean' }"
+    :role="type === 'boolean' ? 'button' : undefined"
+    :tabindex="type === 'boolean' ? 0 : undefined"
+    :aria-pressed="type === 'boolean' ? isActive : undefined"
+    :aria-label="type === 'boolean' ? name : undefined"
+    @click="handleClick"
+    @keydown.enter.space.prevent="handleClick"
+  >
     <div class="param-name">{{ name }}</div>
     <div class="param-value">{{ displayValue }}</div>
   </div>
@@ -94,6 +111,17 @@ const isActive = computed(() => props.type === 'boolean' && Boolean(props.value)
   text-align: center;
   overflow-wrap: break-word;
   color: var(--text-primary);
+}
+
+/* ── Boolean: clickable ──────────────────────────────────── */
+.param-widget--clickable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.param-widget--clickable:focus-visible {
+  outline: 2px solid var(--active-border);
+  outline-offset: 2px;
 }
 
 /* ── Boolean: OFF state ──────────────────────────────────── */

@@ -71,6 +71,13 @@ export const useMenuState = () => {
     Object.fromEntries(uniqueParameters.map((p) => [p.id, sampleValues[p.id] ?? null])),
   )
 
+  // ── Parameter actions ─────────────────────────────────────
+  const toggleParameter = (id) => {
+    if (typeof parameterValues[id] === 'boolean') {
+      parameterValues[id] = !parameterValues[id]
+    }
+  }
+
   // ── Theme ─────────────────────────────────────────────────
   const isDark = ref(true)
 
@@ -179,6 +186,7 @@ export const useMenuState = () => {
     visibleMenuItems,
     currentMenuTitle,
     // actions
+    toggleParameter,
     toggleTheme,
     toggleMenuMode,
     navigateToBreadcrumb,
