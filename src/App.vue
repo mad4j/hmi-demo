@@ -3,27 +3,28 @@ import ParameterWidget from './components/ParameterWidget.vue'
 import AppMenu from './components/AppMenu.vue'
 import PercentageEditorModal from './components/PercentageEditorModal.vue'
 import { ref, computed } from 'vue'
-import { useMenuState } from './composables/useMenuState.js'
+import { menuConfig } from './composables/useMenuConfig.js'
+import { useMenuNavigation } from './composables/useMenuNavigation.js'
+import { useTheme } from './composables/useTheme.js'
+import { useParameterStore } from './composables/useParameterStore.js'
 
 const {
-  menuConfig,
   currentPageId,
   menuModeEnabled,
-  parameterValues,
-  isDark,
   currentPage,
   pageCounterLabel,
   breadcrumbs,
   visibleMenuItems,
-  toggleParameter,
-  setParameterValue,
-  toggleTheme,
   toggleMenuMode,
   navigateToBreadcrumb,
   selectMenuItem,
   isOnHomePage,
   goHome,
-} = useMenuState()
+} = useMenuNavigation()
+
+const { isDark, toggleTheme } = useTheme()
+
+const { parameterValues, toggleParameter, setParameterValue } = useParameterStore()
 
 // ── Percentage editor state ───────────────────────────────
 const editingParamId = ref(null)

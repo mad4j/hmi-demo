@@ -83,6 +83,17 @@ export const findPageById = (pages, targetId) => {
   return null
 }
 
+export const findPathToPage = (pages, targetId, currentPath = []) => {
+  for (const page of pages) {
+    if (page.id === targetId) return currentPath
+    if (page.submenus?.length) {
+      const result = findPathToPage(page.submenus, targetId, [...currentPath, page.id])
+      if (result !== null) return result
+    }
+  }
+  return null
+}
+
 export const getMenuItemsByPath = (pages, path) => {
   let currentItems = pages
 
