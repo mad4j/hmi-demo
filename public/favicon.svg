@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Panel background -->
+  <rect width="32" height="32" rx="6" fill="#0d1117"/>
+  <!-- Screen bezel -->
+  <rect x="3" y="4" width="26" height="18" rx="2" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+  <!-- Waveform on screen -->
+  <polyline
+    points="5,17 8,14 10,19 13,10 16,15 18,12 21,16 24,14 27,17"
+    fill="none"
+    stroke="#3fb950"
+    stroke-width="1.5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <!-- Status LEDs at bottom -->
+  <circle cx="10" cy="27" r="2" fill="#3fb950"/>
+  <circle cx="16" cy="27" r="2" fill="#58a6ff"/>
+  <circle cx="22" cy="27" r="2" fill="#30363d"/>
+</svg>
