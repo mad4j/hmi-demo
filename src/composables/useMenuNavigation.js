@@ -3,8 +3,6 @@ import {
   menuConfig,
   flattenSelectablePages,
   findPageById,
-  getMenuItemsByPath,
-  findPathToPage,
 } from './useMenuConfig.js'
 
 // ── Singleton state ───────────────────────────────────────
@@ -14,41 +12,30 @@ const selectablePageIndexById = new Map(
 )
 
 const currentPageId = ref(selectablePages[0]?.id ?? menuConfig.pages[0].id)
-const menuPath = ref([])
-const menuModeEnabled = ref(false)
+const showingSecondLevel = ref(false)
+const secondLevelParentId = ref(null)
 
 export const useMenuNavigation = () => {
   // ── Actions ───────────────────────────────────────────────
-  const toggleMenuMode = () => {
-    menuModeEnabled.value = !menuModeEnabled.value
-    if (menuModeEnabled.value) {
-      menuPath.value = findPathToPage(menuConfig.pages, currentPageId.value) ?? []
-    }
-  }
-
-  const navigateToBreadcrumb = (index) => {
-    menuPath.value = menuPath.value.slice(0, index)
-  }
-
-  const selectMenuItem = (item) => {
+  const selectLevel1Item = (item) => {
     if (item.submenus.length) {
-      menuPath.value = [...menuPath.value, item.id]
-      return
+      secondLevelParentId.value = item.id
+      showingSecondLevel.value = true
+    } else {
+      currentPageId.value = item.id
+      showingSecondLevel.value = false
+      secondLevelParentId.value = null
     }
+  }
+
+  const selectLevel2Item = (item) => {
     currentPageId.value = item.id
-    menuModeEnabled.value = false
-    menuPath.value = []
+    showingSecondLevel.value = false
+    secondLevelParentId.value = null
   }
 
-  const goToParentMenu = () => {
-    if (!menuPath.value.length) return
-    menuPath.value = menuPath.value.slice(0, -1)
-  }
-
-  const goHome = () => {
-    currentPageId.value = selectablePages[0]?.id ?? menuConfig.pages[0].id
-    menuPath.value = []
-    menuModeEnabled.value = false
+  const goBack = () => {
+    showingSecondLevel.value = false
   }
 
   // ── Computed ──────────────────────────────────────────────
@@ -65,49 +52,39 @@ export const useMenuNavigation = () => {
     return `${safeIndex}/${total}`
   })
 
-  const breadcrumbs = computed(() => {
-    const crumbs = [{ id: null, label: 'Menu' }]
-    for (const id of menuPath.value) {
-      const item = findPageById(menuConfig.pages, id)
-      if (item) crumbs.push({ id, label: item.label })
-    }
-    return crumbs
+  const level1Items = computed(() => menuConfig.pages)
+
+  const secondLevelItems = computed(() => {
+    if (!secondLevelParentId.value) return []
+    const parent = menuConfig.pages.find((p) => p.id === secondLevelParentId.value)
+    return parent?.submenus ?? []
   })
 
-  const visibleMenuItems = computed(() =>
-    getMenuItemsByPath(menuConfig.pages, menuPath.value),
-  )
-
-  const isOnHomePage = computed(
-    () => currentPageId.value === (selectablePages[0]?.id ?? menuConfig.pages[0].id),
-  )
-
-  const currentMenuTitle = computed(() => {
-    if (!menuPath.value.length) return 'Menu'
-    const currentContainer = findPageById(
-      menuConfig.pages,
-      menuPath.value[menuPath.value.length - 1],
-    )
-    return currentContainer?.label ?? 'Menu'
+  const activeLevel1Id = computed(() => {
+    if (showingSecondLevel.value) return secondLevelParentId.value
+    const direct = menuConfig.pages.find((p) => p.id === currentPageId.value)
+    if (direct) return direct.id
+    for (const page of menuConfig.pages) {
+      if (page.submenus.some((s) => s.id === currentPageId.value)) {
+        return page.id
+      }
+    }
+    return null
   })
 
   return {
     // state
     currentPageId,
-    menuPath,
-    menuModeEnabled,
+    showingSecondLevel,
     // computed
     currentPage,
     pageCounterLabel,
-    breadcrumbs,
-    visibleMenuItems,
-    isOnHomePage,
-    currentMenuTitle,
+    level1Items,
+    secondLevelItems,
+    activeLevel1Id,
     // actions
-    toggleMenuMode,
-    navigateToBreadcrumb,
-    selectMenuItem,
-    goToParentMenu,
-    goHome,
+    selectLevel1Item,
+    selectLevel2Item,
+    goBack,
   }
 }
