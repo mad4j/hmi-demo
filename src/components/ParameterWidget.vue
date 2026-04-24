@@ -85,11 +85,17 @@ const handleClick = () => {
     :tabindex="isClickable ? 0 : undefined"
     :aria-pressed="type === 'boolean' ? isActive : undefined"
     :aria-label="isClickable ? name : undefined"
-    :aria-readonly="readonly ? true : undefined"
+    :aria-readonly="readonly || undefined"
     @click="handleClick"
     @keydown.enter.space.prevent="handleClick"
   >
-    <div class="param-name">{{ name }}</div>
+    <div class="param-name">
+      {{ name }}
+      <svg v-if="readonly" class="readonly-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+      </svg>
+    </div>
     <div class="param-value">{{ displayValue }}</div>
   </div>
 </template>
@@ -192,10 +198,13 @@ const handleClick = () => {
   opacity: 0.75;
 }
 
-.param-widget--readonly .param-name::after {
-  content: ' 🔒';
-  font-size: 0.55rem;
-  opacity: 0.6;
+.readonly-icon {
+  display: inline-block;
+  width: 0.6rem;
+  height: 0.6rem;
+  margin-left: 0.2rem;
   vertical-align: middle;
+  opacity: 0.6;
+  flex-shrink: 0;
 }
 </style>
