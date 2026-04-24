@@ -64,7 +64,6 @@ const cancelEdit = () => {
           ☰
         </button>
         <button
-          v-if="menuModeEnabled || !isOnHomePage"
           class="icon-button"
           type="button"
           aria-label="Torna alla pagina principale"
