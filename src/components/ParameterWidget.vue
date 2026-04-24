@@ -26,6 +26,10 @@ const props = defineProps({
     type: Array,
     default: () => [],
   },
+  readonly: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const emit = defineEmits(['toggle', 'edit'])
@@ -57,9 +61,10 @@ const isActive = computed(() => props.type === 'boolean' && Boolean(props.value)
 
 const isClickable = computed(
   () =>
-    props.type === 'boolean' ||
-    props.type === 'percentage' ||
-    (props.type === 'enum' && props.options.length > 0),
+    !props.readonly &&
+    (props.type === 'boolean' ||
+      props.type === 'percentage' ||
+      (props.type === 'enum' && props.options.length > 0)),
 )
 
 const handleClick = () => {
@@ -75,11 +80,12 @@ const handleClick = () => {
 <template>
   <div
     class="param-widget"
-    :class="{ 'param-widget--active': isActive, [`param-widget--${type}`]: true, 'param-widget--clickable': isClickable }"
+    :class="{ 'param-widget--active': isActive, [`param-widget--${type}`]: true, 'param-widget--clickable': isClickable, 'param-widget--readonly': readonly }"
     :role="isClickable ? 'button' : undefined"
     :tabindex="isClickable ? 0 : undefined"
     :aria-pressed="type === 'boolean' ? isActive : undefined"
     :aria-label="isClickable ? name : undefined"
+    :aria-readonly="readonly ? true : undefined"
     @click="handleClick"
     @keydown.enter.space.prevent="handleClick"
   >
@@ -179,5 +185,17 @@ const handleClick = () => {
 
 .param-widget--percentage.param-widget--clickable:hover .param-value {
   color: var(--active-text);
+}
+
+/* ── Read-only widget ────────────────────────────────────── */
+.param-widget--readonly {
+  opacity: 0.75;
+}
+
+.param-widget--readonly .param-name::after {
+  content: ' 🔒';
+  font-size: 0.55rem;
+  opacity: 0.6;
+  vertical-align: middle;
 }
 </style>

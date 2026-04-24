@@ -33,6 +33,7 @@ export const normalizeParameters = (params) => {
       unit: typeof p.unit === 'string' ? p.unit : '',
       precision: typeof p.precision === 'number' ? p.precision : null,
       options: Array.isArray(p.options) ? p.options.map(String) : [],
+      readonly: p.readonly === true,
     }))
 }
 
