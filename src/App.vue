@@ -355,6 +355,7 @@ button:active {
 }
 
 .submenu-tile {
+  /* fixed height prevents tiles from overflowing the content area on wide screens */
   height: 5.5rem;
   padding: 0.5rem;
   font-size: 0.9rem;
