@@ -24,6 +24,8 @@ const { isDark, toggleTheme } = useTheme()
 const { parameterValues, toggleParameter, setParameterValue } = useParameterStore()
 
 // ── Percentage editor state ───────────────────────────────
+const SETTINGS_PAGE_ID = 'impostazioni'
+
 const editingParamId = ref(null)
 
 const editingParam = computed(() =>
@@ -55,14 +57,6 @@ const cancelEdit = () => {
         <span>{{ menuConfig.title }}</span>
       </div>
       <div class="top-right">
-        <button
-          class="icon-button"
-          type="button"
-          :aria-label="isDark ? 'Passa al tema chiaro' : 'Passa al tema scuro'"
-          @click="toggleTheme"
-        >
-          {{ isDark ? '☀️' : '🌙' }}
-        </button>
         <span class="status">{{ menuConfig.status }}</span>
       </div>
     </header>
@@ -96,7 +90,21 @@ const cancelEdit = () => {
         </div>
       </template>
       <template v-else>
-        <div v-if="currentPage.parameters.length" class="widget-grid">
+        <div v-if="currentPage.id === SETTINGS_PAGE_ID" class="settings-page">
+          <div class="settings-row">
+            <span class="settings-row-label">Tema interfaccia</span>
+            <button
+              class="settings-theme-btn"
+              type="button"
+              :aria-label="isDark ? 'Passa al tema chiaro' : 'Passa al tema scuro'"
+              @click="toggleTheme"
+            >
+              <span aria-hidden="true">{{ isDark ? '🌙' : '☀️' }}</span>
+              {{ isDark ? 'Scuro' : 'Chiaro' }}
+            </button>
+          </div>
+        </div>
+        <div v-else-if="currentPage.parameters.length" class="widget-grid">
           <ParameterWidget
             v-for="param in currentPage.parameters"
             :key="param.id"
@@ -297,9 +305,10 @@ const cancelEdit = () => {
   flex-direction: column;
   gap: 0.6rem;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   padding: 0.75rem;
   min-height: 0;
+  overflow-x: hidden;
   overflow-y: auto;
 }
 
@@ -380,6 +389,39 @@ button:active {
   grid-template-columns: repeat(4, 1fr);
   gap: 0.5rem;
   width: 100%;
+  margin: auto 0;
+}
+
+/* ── Settings page ──────────────────────────────────────── */
+.settings-page {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: auto 0;
+}
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: var(--bg-btn);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+}
+
+.settings-row-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.settings-theme-btn {
+  padding: 0.35rem 0.85rem;
+  font-size: 0.85rem;
+  border-radius: 0.4rem;
 }
 
 @media (max-width: 599px) {
