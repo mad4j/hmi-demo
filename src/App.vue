@@ -1,6 +1,7 @@
 <script setup>
 import ParameterWidget from './components/ParameterWidget.vue'
 import PercentageEditorModal from './components/PercentageEditorModal.vue'
+import AppIcon from './components/AppIcon.vue'
 import { ref, computed } from 'vue'
 import { menuConfig } from './composables/useMenuConfig.js'
 import { useMenuNavigation } from './composables/useMenuNavigation.js'
@@ -69,21 +70,27 @@ const cancelEdit = () => {
     <main class="content">
       <template v-if="showingSecondLevel">
         <div class="submenu-page">
-          <button class="back-button" type="button" aria-label="Indietro" @click="goBack">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <polyline points="15 18 9 12 15 6"/>
-            </svg>
-            Indietro
-          </button>
           <div class="submenu-grid">
+            <!-- back tile (always first) -->
+            <button
+              class="submenu-tile submenu-tile--back"
+              type="button"
+              aria-label="Indietro"
+              @click="goBack"
+            >
+              <AppIcon name="back" :size="28" />
+              <span class="tile-label">Indietro</span>
+            </button>
+            <!-- second-level items -->
             <button
               v-for="item in secondLevelItems"
               :key="item.id"
-              class="submenu-button"
+              class="submenu-tile"
               type="button"
               @click="selectLevel2Item(item)"
             >
-              {{ item.label }}
+              <AppIcon v-if="item.icon" :name="item.icon" :size="28" />
+              <span class="tile-label">{{ item.label }}</span>
             </button>
           </div>
         </div>
@@ -116,7 +123,7 @@ const cancelEdit = () => {
         type="button"
         @click="selectLevel1Item(item)"
       >
-        <span class="tab-icon" aria-hidden="true">{{ item.icon }}</span>
+        <AppIcon v-if="item.icon" :name="item.icon" :size="22" class="tab-icon" />
         <span class="tab-label">{{ item.label }}</span>
       </button>
     </footer>
@@ -275,8 +282,9 @@ const cancelEdit = () => {
 }
 
 .tab-icon {
-  font-size: 1.4rem;
-  line-height: 1;
+  width: 1.5rem;
+  height: 1.5rem;
+  flex-shrink: 0;
 }
 
 .tab-label {
@@ -332,32 +340,38 @@ button:active {
   gap: 0.75rem;
 }
 
-.back-button {
-  align-self: flex-start;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-  padding: 0.35rem 0.75rem;
-  font-size: 0.88rem;
-}
-
 .submenu-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 0.75rem;
   width: 100%;
 }
 
-.submenu-button {
-  min-height: 4rem;
-  padding: 1rem;
-  font-size: 1rem;
+.submenu-tile {
+  aspect-ratio: 1 / 1;
+  padding: 0.5rem;
+  font-size: 0.9rem;
   font-weight: 600;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 0.4rem;
   text-align: center;
-  border-radius: 0.5rem;
+  border-radius: 0.6rem;
+}
+
+.submenu-tile--back {
+  color: var(--text-secondary);
+  border-color: var(--border);
+}
+
+.tile-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 1.2;
 }
 
 /* ── Widget grid ────────────────────────────────────────── */

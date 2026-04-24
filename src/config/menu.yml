@@ -6,7 +6,7 @@ navigation:
 pages:
   - id: menu
     label: Menu
-    icon: "⚙️"
+    icon: "menu"
     title: Menu principale
     content: Accesso rapido alle funzioni principali del veicolo.
     submenus:
@@ -86,7 +86,7 @@ pages:
             type: boolean
   - id: allarmi
     label: Allarmi
-    icon: "🔔"
+    icon: "alarm"
     title: Stato allarmi
     content: Nessun allarme critico attivo. Controllare periodicamente i sensori.
     parameters:
@@ -125,7 +125,7 @@ pages:
         readonly: true
   - id: info
     label: Info
-    icon: "ℹ️"
+    icon: "info"
     title: Informazioni sistema
     content: Versione HMI demo 1.0 - collegamento rete stabile.
     parameters:
