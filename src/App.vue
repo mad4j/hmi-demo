@@ -1,6 +1,5 @@
 <script setup>
 import ParameterWidget from './components/ParameterWidget.vue'
-import AppMenu from './components/AppMenu.vue'
 import PercentageEditorModal from './components/PercentageEditorModal.vue'
 import { ref, computed } from 'vue'
 import { menuConfig } from './composables/useMenuConfig.js'
@@ -9,17 +8,14 @@ import { useTheme } from './composables/useTheme.js'
 import { useParameterStore } from './composables/useParameterStore.js'
 
 const {
-  currentPageId,
-  menuModeEnabled,
   currentPage,
-  pageCounterLabel,
-  breadcrumbs,
-  visibleMenuItems,
-  toggleMenuMode,
-  navigateToBreadcrumb,
-  selectMenuItem,
-  isOnHomePage,
-  goHome,
+  showingSecondLevel,
+  level1Items,
+  secondLevelItems,
+  activeLevel1Id,
+  selectLevel1Item,
+  selectLevel2Item,
+  goBack,
 } = useMenuNavigation()
 
 const { isDark, toggleTheme } = useTheme()
@@ -55,26 +51,6 @@ const cancelEdit = () => {
   <div class="hmi-shell" :data-theme="isDark ? 'dark' : 'light'">
     <header class="bar top-bar">
       <div class="top-left">
-        <button
-          class="icon-button"
-          type="button"
-          :aria-pressed="menuModeEnabled"
-          aria-label="Apri menu"
-          @click="toggleMenuMode"
-        >
-          ☰
-        </button>
-        <button
-          class="icon-button"
-          type="button"
-          aria-label="Torna alla pagina principale"
-          @click="goHome"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9.5z"/>
-            <polyline points="9 21 9 12 15 12 15 21"/>
-          </svg>
-        </button>
         <span>{{ menuConfig.title }}</span>
       </div>
       <div class="top-right">
@@ -91,14 +67,26 @@ const cancelEdit = () => {
     </header>
 
     <main class="content">
-      <template v-if="menuModeEnabled">
-        <AppMenu
-          :breadcrumbs="breadcrumbs"
-          :visible-menu-items="visibleMenuItems"
-          :current-page-id="currentPageId"
-          @navigate-breadcrumb="navigateToBreadcrumb"
-          @select-item="selectMenuItem"
-        />
+      <template v-if="showingSecondLevel">
+        <div class="submenu-page">
+          <button class="back-button" type="button" aria-label="Indietro" @click="goBack">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="15 18 9 12 15 6"/>
+            </svg>
+            Indietro
+          </button>
+          <div class="submenu-grid">
+            <button
+              v-for="item in secondLevelItems"
+              :key="item.id"
+              class="submenu-button"
+              type="button"
+              @click="selectLevel2Item(item)"
+            >
+              {{ item.label }}
+            </button>
+          </div>
+        </div>
       </template>
       <template v-else>
         <div v-if="currentPage.parameters.length" class="widget-grid">
@@ -120,9 +108,17 @@ const cancelEdit = () => {
     </main>
 
     <footer class="bar bottom-bar">
-      <span class="menu-indicator" role="status" aria-live="polite">
-        {{ currentPage.label }} ({{ pageCounterLabel }})
-      </span>
+      <button
+        v-for="item in level1Items"
+        :key="item.id"
+        class="tab-button"
+        :class="{ 'tab-button--active': item.id === activeLevel1Id }"
+        type="button"
+        @click="selectLevel1Item(item)"
+      >
+        <span class="tab-icon" aria-hidden="true">{{ item.icon }}</span>
+        <span class="tab-label">{{ item.label }}</span>
+      </button>
     </footer>
 
     <PercentageEditorModal
@@ -181,7 +177,7 @@ const cancelEdit = () => {
 /* ── Shell ──────────────────────────────────────────────── */
 .hmi-shell {
   display: grid;
-  grid-template-rows: 3.5rem 1fr 3.5rem;
+  grid-template-rows: 3.5rem 1fr 4.5rem;
   width: 100%;
   height: 100%;
   background: var(--bg-main);
@@ -218,14 +214,6 @@ const cancelEdit = () => {
   gap: 0.6rem;
 }
 
-.bottom-bar {
-  border-bottom: 0;
-  border-top: 1px solid var(--border);
-  gap: 0.75rem;
-  font-size: 0.9rem;
-  color: var(--text-secondary);
-}
-
 /* Status badge */
 .status {
   font-size: 0.78rem;
@@ -238,6 +226,61 @@ const cancelEdit = () => {
   color: var(--status-color);
   border: 1px solid var(--status-border);
   transition: background 0.25s, color 0.25s, border-color 0.25s;
+}
+
+/* ── Bottom tab bar ─────────────────────────────────────── */
+.bottom-bar {
+  border-bottom: 0;
+  border-top: 1px solid var(--border);
+  padding: 0;
+  gap: 0;
+  align-items: stretch;
+  justify-content: space-around;
+}
+
+.tab-button {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  padding: 0.35rem 0.25rem;
+  border: none;
+  border-left: 1px solid var(--border);
+  border-radius: 0;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  touch-action: manipulation;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
+}
+
+.tab-button:first-child {
+  border-left: none;
+}
+
+.tab-button:active {
+  background: var(--btn-active-bg);
+}
+
+.tab-button--active {
+  color: var(--text-blue);
+  background: var(--btn-active-bg);
+  border-top: 2px solid var(--btn-active-border);
+}
+
+.tab-icon {
+  font-size: 1.4rem;
+  line-height: 1;
+}
+
+.tab-label {
+  font-size: 0.68rem;
 }
 
 /* ── Content ────────────────────────────────────────────── */
@@ -270,12 +313,6 @@ button:active {
   border-color: var(--btn-active-border);
 }
 
-.icon-button[aria-pressed='true'] {
-  background: #388bfd22;
-  border-color: #388bfd;
-  color: #58a6ff;
-}
-
 .icon-button {
   width: 2.4rem;
   height: 2.4rem;
@@ -287,28 +324,40 @@ button:active {
   border-radius: 0.4rem;
 }
 
-/* ── Menu indicator ─────────────────────────────────────── */
-.menu-indicator {
-  flex: 0 1 auto;
+/* ── Second-level submenu page ──────────────────────────── */
+.submenu-page {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.back-button {
+  align-self: flex-start;
   display: inline-flex;
   align-items: center;
-  justify-content: center;
+  gap: 0.3rem;
+  padding: 0.35rem 0.75rem;
   font-size: 0.88rem;
+}
+
+.submenu-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.submenu-button {
+  min-height: 4rem;
+  padding: 1rem;
+  font-size: 1rem;
   font-weight: 600;
-}
-
-/* ── Menu list ──────────────────────────────────────────── */
-h1 {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  margin: 0;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-}
-
-p {
-  max-width: 60ch;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border-radius: 0.5rem;
 }
 
 /* ── Widget grid ────────────────────────────────────────── */

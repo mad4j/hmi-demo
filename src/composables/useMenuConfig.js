@@ -53,6 +53,7 @@ export const normalizeMenuItems = (items, idPrefix = 'page', depth = 0) =>
         id,
         label:
           typeof item.label === 'string' && item.label.trim() ? item.label : `Pagina ${index + 1}`,
+        icon: typeof item.icon === 'string' ? item.icon : '',
         title:
           typeof item.title === 'string' && item.title.trim() ? item.title : `Pagina ${index + 1}`,
         content: typeof item.content === 'string' ? item.content : '',
