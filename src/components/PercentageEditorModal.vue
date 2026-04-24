@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 
 const props = defineProps({
   name: {
@@ -45,6 +45,23 @@ const increment = () => {
 
 const handleConfirm = () => emit('confirm', localValue.value)
 const handleCancel = () => emit('cancel')
+
+// Tick marks at every 5 units (minor) and every 10 units (major)
+const TICK_INTERVAL = 5
+
+const ticks = computed(() => {
+  const marks = []
+  for (let v = props.min; v <= props.max; v += TICK_INTERVAL) {
+    marks.push(v)
+  }
+  return marks
+})
+
+// Snap to nearest TICK_INTERVAL on slider release
+const snapToMark = () => {
+  const snapped = Math.round(localValue.value / TICK_INTERVAL) * TICK_INTERVAL
+  localValue.value = Math.max(props.min, Math.min(props.max, snapped))
+}
 </script>
 
 <template>
@@ -62,15 +79,28 @@ const handleCancel = () => emit('cancel')
           {{ localValue }}%
         </div>
 
-        <input
-          class="slider"
-          type="range"
-          :min="min"
-          :max="max"
-          :step="step"
-          v-model.number="localValue"
-          aria-label="Valore percentuale"
-        />
+        <div class="slider-wrapper">
+          <input
+            class="slider"
+            type="range"
+            :min="min"
+            :max="max"
+            :step="step"
+            v-model.number="localValue"
+            aria-label="Valore percentuale"
+            @change="snapToMark"
+            @mouseup="snapToMark"
+            @touchend="snapToMark"
+          />
+          <div class="ticks" aria-hidden="true">
+            <span
+              v-for="tick in ticks"
+              :key="tick"
+              class="tick"
+              :class="{ major: tick % 10 === 0 }"
+            ></span>
+          </div>
+        </div>
 
         <div class="stepper">
           <button
@@ -95,8 +125,8 @@ const handleCancel = () => emit('cancel')
       </div>
 
       <div class="modal-footer">
-        <button class="btn btn-cancel" type="button" @click="handleCancel">Annulla</button>
-        <button class="btn btn-confirm" type="button" @click="handleConfirm">OK</button>
+        <button class="btn btn-cancel" type="button" aria-label="Annulla" title="Annulla" @click="handleCancel">✕</button>
+        <button class="btn btn-confirm" type="button" aria-label="Conferma" title="Conferma" @click="handleConfirm">✓</button>
       </div>
     </div>
   </div>
@@ -159,11 +189,38 @@ const handleCancel = () => emit('cancel')
 }
 
 /* ── Slider ──────────────────────────────────────────────── */
+.slider-wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
 .slider {
   width: 100%;
   accent-color: var(--text-blue);
   cursor: pointer;
   height: 0.4rem;
+}
+
+/* ── Tick marks ──────────────────────────────────────────── */
+.ticks {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 0.55rem;
+  margin-top: 0.25rem;
+}
+
+.tick {
+  width: 1px;
+  height: 5px;
+  background: var(--text-secondary);
+  opacity: 0.4;
+  flex-shrink: 0;
+}
+
+.tick.major {
+  height: 9px;
+  opacity: 0.75;
 }
 
 /* ── Stepper buttons ─────────────────────────────────────── */
@@ -212,14 +269,19 @@ const handleCancel = () => emit('cancel')
 }
 
 .btn {
-  padding: 0.45rem 1.1rem;
+  width: 2.4rem;
+  height: 2.4rem;
   border-radius: 0.4rem;
-  font-size: 0.9rem;
-  font-weight: 600;
+  font-size: 1.1rem;
+  font-weight: 700;
   cursor: pointer;
   border: 1px solid var(--border);
   transition: background 0.12s, border-color 0.12s;
   touch-action: manipulation;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
 }
 
 .btn-cancel {
