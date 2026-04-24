@@ -19,6 +19,7 @@ pages:
             type: number
             unit: "°C"
             precision: 1
+            readonly: true
           - id: temp_impostata
             name: Impostata
             type: number
@@ -29,10 +30,12 @@ pages:
             type: number
             unit: "°C"
             precision: 1
+            readonly: true
           - id: umidita
             name: Umidità
             type: percentage
             precision: 0
+            readonly: true
           - id: ventilazione_attiva
             name: Ventilazione
             type: boolean
@@ -88,28 +91,36 @@ pages:
       - id: allarme_batteria
         name: Batteria
         type: boolean
+        readonly: true
       - id: allarme_temp_motore
         name: Temp. motore
         type: boolean
+        readonly: true
       - id: allarme_pressione
         name: Pressione
         type: boolean
+        readonly: true
       - id: allarme_olio
         name: Olio motore
         type: boolean
+        readonly: true
       - id: allarme_abs
         name: ABS
         type: boolean
+        readonly: true
       - id: allarme_airbag
         name: Airbag
         type: boolean
+        readonly: true
       - id: allarme_carburante
         name: Carburante
         type: boolean
+        readonly: true
       - id: livello_carburante
         name: Livello carb.
         type: percentage
         precision: 0
+        readonly: true
   - id: info
     label: Info
     title: Informazioni sistema
@@ -118,32 +129,40 @@ pages:
       - id: versione_hmi
         name: Versione HMI
         type: enum
+        readonly: true
       - id: stato_rete
         name: Stato rete
         type: enum
         options: [ONLINE, OFFLINE]
+        readonly: true
       - id: connessione
         name: Connessione
         type: enum
         options: [CAN-BUS, WIFI, ETH]
+        readonly: true
       - id: uptime
         name: Uptime
         type: number
         unit: min
         precision: 0
+        readonly: true
       - id: tensione_batteria
         name: Tensione batt.
         type: number
         unit: "V"
         precision: 1
+        readonly: true
       - id: temperatura_cpu
         name: Temp. CPU
         type: number
         unit: "°C"
         precision: 0
+        readonly: true
       - id: data_sistema
         name: Data
         type: enum
+        readonly: true
       - id: ora_sistema
         name: Ora
         type: enum
+        readonly: true

@@ -111,6 +111,7 @@ const cancelEdit = () => {
             :precision="param.precision"
             :options="param.options"
             :value="parameterValues[param.id]"
+            :readonly="param.readonly"
             @toggle="toggleParameter(param.id)"
             @edit="startEditParameter(param.id)"
           />
