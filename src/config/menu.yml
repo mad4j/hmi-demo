@@ -169,3 +169,9 @@ pages:
         name: Ora
         type: enum
         readonly: true
+  - id: impostazioni
+    label: Impostazioni
+    icon: "settings"
+    title: Impostazioni
+    content: Personalizzazione dell'interfaccia.
+    parameters: []
