@@ -39,7 +39,7 @@ const displayValue = computed(() => {
     const num = Number(props.value)
     if (Number.isNaN(num)) return '—'
     const formatted = props.precision !== null ? num.toFixed(props.precision) : String(props.value)
-    return `${formatted} %`
+    return `${formatted}%`
   }
   if (props.type === 'number') {
     const num = Number(props.value)

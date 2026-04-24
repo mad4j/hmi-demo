@@ -59,7 +59,7 @@ const handleCancel = () => emit('cancel')
 
       <div class="modal-body">
         <div class="value-display" aria-live="polite" aria-atomic="true">
-          {{ localValue }}&thinsp;%
+          {{ localValue }}%
         </div>
 
         <input
