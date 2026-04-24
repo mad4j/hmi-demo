@@ -17,6 +17,7 @@ const {
   selectLevel1Item,
   selectLevel2Item,
   goBack,
+  goHome,
 } = useMenuNavigation()
 
 const { isDark, toggleTheme } = useTheme()
@@ -54,6 +55,9 @@ const cancelEdit = () => {
   <div class="hmi-shell" :data-theme="isDark ? 'dark' : 'light'">
     <header class="bar top-bar">
       <div class="top-left">
+        <button class="icon-button" type="button" aria-label="Home" @click="goHome">
+          <AppIcon name="home" :size="20" />
+        </button>
         <span>{{ menuConfig.title }}</span>
       </div>
       <div class="top-right">
@@ -90,19 +94,13 @@ const cancelEdit = () => {
         </div>
       </template>
       <template v-else>
-        <div v-if="currentPage.id === SETTINGS_PAGE_ID" class="settings-page">
-          <div class="settings-row">
-            <span class="settings-row-label">Tema interfaccia</span>
-            <button
-              class="settings-theme-btn"
-              type="button"
-              :aria-label="isDark ? 'Passa al tema chiaro' : 'Passa al tema scuro'"
-              @click="toggleTheme"
-            >
-              <span aria-hidden="true">{{ isDark ? '🌙' : '☀️' }}</span>
-              {{ isDark ? 'Scuro' : 'Chiaro' }}
-            </button>
-          </div>
+        <div v-if="currentPage.id === SETTINGS_PAGE_ID" class="widget-grid">
+          <ParameterWidget
+            name="Tema scuro"
+            type="boolean"
+            :value="isDark"
+            @toggle="toggleTheme"
+          />
         </div>
         <div v-else-if="currentPage.parameters.length" class="widget-grid">
           <ParameterWidget
@@ -357,7 +355,7 @@ button:active {
 }
 
 .submenu-tile {
-  aspect-ratio: 1 / 1;
+  height: 5.5rem;
   padding: 0.5rem;
   font-size: 0.9rem;
   font-weight: 600;
@@ -393,36 +391,6 @@ button:active {
 }
 
 /* ── Settings page ──────────────────────────────────────── */
-.settings-page {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin: auto 0;
-}
-
-.settings-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  padding: 0.75rem 1rem;
-  background: var(--bg-btn);
-  border: 1px solid var(--border);
-  border-radius: 0.5rem;
-}
-
-.settings-row-label {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--text-primary);
-}
-
-.settings-theme-btn {
-  padding: 0.35rem 0.85rem;
-  font-size: 0.85rem;
-  border-radius: 0.4rem;
-}
 
 @media (max-width: 599px) {
   .widget-grid {
