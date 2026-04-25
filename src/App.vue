@@ -354,8 +354,9 @@ button:active {
 }
 
 .submenu-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 0.75rem;
   width: 100%;
 }
@@ -363,6 +364,8 @@ button:active {
 .submenu-tile {
   /* fixed height prevents tiles from overflowing the content area on wide screens */
   height: 5.5rem;
+  flex: 0 0 calc((100% - 2 * 0.75rem) / 3);
+  min-width: 0;
   padding: 0.5rem;
   font-size: 0.9rem;
   font-weight: 600;
@@ -390,24 +393,30 @@ button:active {
 
 /* ── Widget grid ────────────────────────────────────────── */
 .widget-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 0.5rem;
   width: 100%;
   margin: auto 0;
 }
 
+.widget-grid > * {
+  flex: 0 0 calc((100% - 3 * 0.5rem) / 4);
+  min-width: 0;
+}
+
 /* ── Settings page ──────────────────────────────────────── */
 
 @media (max-width: 599px) {
-  .widget-grid {
-    grid-template-columns: repeat(3, 1fr);
+  .widget-grid > * {
+    flex-basis: calc((100% - 2 * 0.5rem) / 3);
   }
 }
 
 @media (max-width: 399px) {
-  .widget-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .widget-grid > * {
+    flex-basis: calc((100% - 0.5rem) / 2);
   }
 }
 
