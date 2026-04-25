@@ -3,6 +3,11 @@
  *
  * Simulated remote apparatus. This module acts as the server-side truth:
  * it owns state, applies commands, and emits push notifications.
+ *
+ * Exported API (mirrors the real apparatus transport):
+ *   simulateGetParameters(ids)        – fetch current values for a list of parameter IDs
+ *   simulateSetParameters(params)     – apply a map of { id: value } updates
+ *   subscribeToParameterNotifications – register a push-notification callback
  */
 
 // Simulated apparatus state (server-side truth)
@@ -213,25 +218,40 @@ const startNotifications = () => {
   }, NOTIFICATION_INTERVAL_MS)
 }
 
-export const fetchSimulatedState = async () => {
+/**
+ * Returns current values for the requested parameter IDs.
+ * @param {string[]} ids
+ * @returns {Promise<{ ok: true, values: Record<string, unknown> } | { ok: false, message: string }>}
+ */
+export const simulateGetParameters = async (ids) => {
   await simulateLatency()
   startNotifications()
-  return { ...apparatusState }
+  if (!Array.isArray(ids) || ids.length === 0) {
+    return { ok: true, values: {} }
+  }
+  const values = {}
+  for (const id of ids) {
+    if (id in apparatusState) {
+      values[id] = apparatusState[id]
+    }
+  }
+  return { ok: true, values }
 }
 
-export const sendSimulatedCommand = async (idOrPayload, value) => {
+/**
+ * Applies a map of parameter updates to the apparatus state.
+ * @param {Record<string, unknown>} params  – { [parameterId]: newValue }
+ * @returns {Promise<{ ok: true } | { ok: false, message: string }>}
+ */
+export const simulateSetParameters = async (params) => {
   await simulateLatency()
 
-  const isBatchPayload =
-    idOrPayload !== null && typeof idOrPayload === 'object' && !Array.isArray(idOrPayload)
-  const commandPayload = isBatchPayload ? idOrPayload : { [idOrPayload]: value }
-
-  Object.entries(commandPayload).forEach(([id, nextValue]) => {
+  Object.entries(params).forEach(([id, nextValue]) => {
     apparatusState[id] = nextValue
   })
 
   const derivedUpdates = {}
-  if ('login_name' in commandPayload || 'login_password' in commandPayload) {
+  if ('login_name' in params || 'login_password' in params) {
     const nextStatus = updateLoginStatus()
     if (nextStatus !== null) {
       derivedUpdates.status_login = nextStatus
@@ -240,16 +260,15 @@ export const sendSimulatedCommand = async (idOrPayload, value) => {
 
   emitNotification(derivedUpdates)
 
-  const commandEntries = Object.entries(commandPayload)
-  if (!isBatchPayload && commandEntries.length === 1) {
-    const [id, nextValue] = commandEntries[0]
-    return { ok: true, id, value: nextValue }
-  }
-
-  return { ok: true, values: { ...commandPayload } }
+  return { ok: true }
 }
 
-export const subscribeToSimulatedNotifications = (callback) => {
+/**
+ * Registers a callback for apparatus push notifications.
+ * @param {(updates: Record<string, unknown>) => void} callback
+ * @returns {() => void} Unsubscribe function.
+ */
+export const subscribeToParameterNotifications = (callback) => {
   notificationListeners.add(callback)
   return () => notificationListeners.delete(callback)
 }

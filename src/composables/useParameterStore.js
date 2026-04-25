@@ -37,21 +37,23 @@ const parameterValues = reactive(
 const transactionDrafts = reactive({})
 
 // ── Connect to apparatus via device client ────────────────
-const { fetchState, sendCommand, subscribe } = useDeviceClient()
+const { getParameters, setParameters, notifyParameters } = useDeviceClient()
 
-// Initial state request (GET /api/state)
-fetchState()
-  .then((state) => {
-    Object.entries(state).forEach(([id, value]) => {
-      if (id in parameterValues) parameterValues[id] = value
-    })
-  })
-  .catch(() => {
-    // Connection failed; the UI can reflect the error via the device client state.
-  })
+const allParameterIds = [
+  ...uniqueParameters.map((p) => p.id),
+  ...menuConfig.statusIcons.map((ic) => ic.parameterId),
+]
 
-// Subscribe to apparatus notifications (server-push updates)
-subscribe((updates) => {
+// Initial state request – fetch all managed parameter IDs
+getParameters(allParameterIds).then((result) => {
+  if (!result.ok) return
+  Object.entries(result.values).forEach(([id, value]) => {
+    if (id in parameterValues) parameterValues[id] = value
+  })
+})
+
+// Subscribe to apparatus push notifications
+notifyParameters((updates) => {
   Object.entries(updates).forEach(([id, value]) => {
     if (id in parameterValues) parameterValues[id] = value
   })
@@ -156,8 +158,8 @@ export const useParameterStore = () => {
       parameterValues[id] = nextValue // optimistic update on submit
     })
 
-    try {
-      await sendCommand(payload)
+    const result = await setParameters(payload)
+    if (result.ok) {
       Object.keys(payload).forEach((id) => {
         if (shouldClearValueOnApply(id)) {
           parameterValues[id] = ''
@@ -165,11 +167,15 @@ export const useParameterStore = () => {
       })
       delete transactionDrafts[pageId]
       return { ok: true, failed: [] }
-    } catch {
-      Object.entries(previousValues).forEach(([id, prevValue]) => {
-        parameterValues[id] = prevValue
-      })
-      return { ok: false, failed: Object.keys(payload) }
+    }
+
+    Object.entries(previousValues).forEach(([id, prevValue]) => {
+      parameterValues[id] = prevValue
+    })
+    return {
+      ok: false,
+      failed: Object.keys(payload),
+      message: result.message ?? 'Errore invio parametri: verifica la connessione al dispositivo.',
     }
   }
 
@@ -178,13 +184,10 @@ export const useParameterStore = () => {
       const previous = parameterValues[id]
       const newValue = !previous
       parameterValues[id] = newValue // optimistic update
-      try {
-        await sendCommand(id, newValue)
-        return { ok: true }
-      } catch {
-        parameterValues[id] = previous // revert on failure
-        return { ok: false }
-      }
+      const result = await setParameters({ [id]: newValue })
+      if (result.ok) return { ok: true }
+      parameterValues[id] = previous // revert on failure
+      return { ok: false, message: result.message ?? 'Errore aggiornamento parametro.' }
     }
     const param = uniqueParameters.find((p) => p.id === id)
     if (param?.type === 'enum' && param.options?.length > 0) {
@@ -193,35 +196,44 @@ export const useParameterStore = () => {
       const previous = parameterValues[id]
       const newValue = param.options[nextIndex]
       parameterValues[id] = newValue // optimistic update
-      try {
-        await sendCommand(id, newValue)
-        return { ok: true }
-      } catch {
-        parameterValues[id] = previous // revert on failure
-        return { ok: false }
-      }
+      const result = await setParameters({ [id]: newValue })
+      if (result.ok) return { ok: true }
+      parameterValues[id] = previous // revert on failure
+      return { ok: false, message: result.message ?? 'Errore aggiornamento parametro.' }
     }
 
-    return { ok: false }
+    return { ok: false, message: 'Parametro non modificabile.' }
   }
 
   const setParameterValue = async (id, value) => {
     if (id in parameterValues) {
       const previous = parameterValues[id]
       parameterValues[id] = value // optimistic update
-      try {
-        await sendCommand(id, value)
+      const result = await setParameters({ [id]: value })
+      if (result.ok) {
         if (shouldClearValueOnApply(id)) {
           parameterValues[id] = ''
         }
         return { ok: true }
-      } catch {
-        parameterValues[id] = previous // revert on failure
-        return { ok: false }
       }
+      parameterValues[id] = previous // revert on failure
+      return { ok: false, message: result.message ?? 'Errore aggiornamento parametro.' }
     }
 
-    return { ok: false }
+    return { ok: false, message: 'Parametro non trovato.' }
+  }
+
+  /**
+   * Refreshes the current values of the given parameter IDs from the apparatus.
+   * Typically called when navigating to a new page to get up-to-date readings.
+   * @param {string[]} ids
+   */
+  const refreshParameters = async (ids) => {
+    const result = await getParameters(ids)
+    if (!result.ok) return
+    Object.entries(result.values).forEach(([id, value]) => {
+      if (id in parameterValues) parameterValues[id] = value
+    })
   }
 
   const getManagedParameters = () =>
@@ -243,6 +255,7 @@ export const useParameterStore = () => {
     hasTransactionChanges,
     resetTransactionPage,
     commitTransactionPage,
+    refreshParameters,
     getManagedParameters,
     getManagedParameterIds,
   }

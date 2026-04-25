@@ -66,9 +66,11 @@ export const useTransactionPageActions = ({
 
     const result = await commitTransactionPage(page.id)
     if (!result.ok) {
-      setNotification('ERROR', 'Errore invio comando: verifica la connessione al dispositivo.', {
-        displayMode: 'ACKNOWLEDGED',
-      })
+      setNotification(
+        'ERROR',
+        result.message ?? 'Errore invio comando: verifica la connessione al dispositivo.',
+        { displayMode: 'ACKNOWLEDGED' },
+      )
       return
     }
 
