@@ -3,6 +3,7 @@ import ParameterWidget from './components/ParameterWidget.vue'
 import PercentageEditorModal from './components/PercentageEditorModal.vue'
 import AppIcon from './components/AppIcon.vue'
 import StatusIconBar from './components/StatusIconBar.vue'
+import LoginPage from './components/LoginPage.vue'
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { menuConfig } from './composables/useMenuConfig.js'
 import { useMenuNavigation } from './composables/useMenuNavigation.js'
@@ -67,6 +68,7 @@ const submenuTileStyle = (index) =>
 
 // ── Percentage editor state ───────────────────────────────
 const SETTINGS_PAGE_ID = 'tema'
+const LOGIN_PAGE_ID = 'login'
 
 const editingParamId = ref(null)
 
@@ -143,6 +145,7 @@ const cancelEdit = () => {
             @toggle="toggleTheme"
           />
         </div>
+        <LoginPage v-else-if="currentPage.id === LOGIN_PAGE_ID" />
         <div v-else-if="currentPage.parameters.length" class="widget-grid">
           <ParameterWidget
             v-for="(param, index) in currentPage.parameters"
