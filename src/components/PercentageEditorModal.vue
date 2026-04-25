@@ -24,7 +24,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['confirm', 'cancel'])
+const emit = defineEmits(['confirm', 'cancel', 'confirm-and-next'])
 
 const localValue = ref(Math.round(Number(props.value) || 0))
 
@@ -45,6 +45,18 @@ const increment = () => {
 
 const handleConfirm = () => emit('confirm', localValue.value)
 const handleCancel = () => emit('cancel')
+
+const handleKeydown = (e) => {
+  if (e.key === 'Enter') {
+    e.preventDefault()
+    e.stopPropagation()
+    handleConfirm()
+  } else if (e.key === 'Tab') {
+    e.preventDefault()
+    e.stopPropagation()
+    emit('confirm-and-next', localValue.value)
+  }
+}
 
 // Tick marks at every 5 units (minor) and every 10 units (major)
 const TICK_INTERVAL = 5
@@ -80,6 +92,7 @@ const handleSliderInput = () => {
       role="dialog"
       :aria-label="`Modifica ${name}`"
       aria-modal="true"
+      @keydown="handleKeydown"
     >
       <div class="modal-header">{{ name }}</div>
 
@@ -297,6 +310,7 @@ const handleSliderInput = () => {
   font-weight: 700;
   cursor: pointer;
   border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--btn-active-border) 18%, var(--bg-btn));
   transition: background 0.12s, border-color 0.12s;
   touch-action: manipulation;
   display: inline-flex;

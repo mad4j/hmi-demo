@@ -8,6 +8,7 @@ import { menuConfig } from './composables/useMenuConfig.js'
 import { useMenuNavigation } from './composables/useMenuNavigation.js'
 import { useTheme } from './composables/useTheme.js'
 import { useParameterStore } from './composables/useParameterStore.js'
+import { useNotificationBar } from './composables/useNotificationBar.js'
 
 const {
   currentPage,
@@ -19,12 +20,115 @@ const {
   selectLevel2Item,
   goBack,
   goHome,
+  goToPreviousPage,
   navigateToPage,
 } = useMenuNavigation()
 
 const { isDark, toggleTheme } = useTheme()
 
-const { parameterValues, toggleParameter, setParameterValue } = useParameterStore()
+const {
+  parameterValues,
+  toggleParameter,
+  setParameterValue,
+  toggleTransactionParameter,
+  setTransactionParameterValue,
+  getTransactionDisplayValues,
+  getTransactionModifiedIds,
+  hasTransactionChanges,
+  resetTransactionPage,
+  commitTransactionPage,
+} = useParameterStore()
+
+const isTransactionPage = computed(() => currentPage.value?.mode === 'transaction')
+
+const currentPageValues = computed(() => {
+  if (!isTransactionPage.value) return parameterValues
+  return getTransactionDisplayValues(currentPage.value.id)
+})
+
+const currentPageModifiedIds = computed(() => {
+  if (!isTransactionPage.value) return []
+  return getTransactionModifiedIds(currentPage.value.id)
+})
+
+const canSubmitTransaction = computed(() => {
+  if (!isTransactionPage.value) return false
+  return hasTransactionChanges(currentPage.value.id)
+})
+
+const {
+  notification,
+  notificationHistory,
+  isNotificationExpanded,
+  notificationBarClasses,
+  notificationHistoryTitle,
+  setNotification,
+  toggleNotificationExpanded,
+  disposeNotificationBar,
+} = useNotificationBar()
+
+const handleToggleParameter = (id) => {
+  if (isTransactionPage.value) {
+    toggleTransactionParameter(currentPage.value.id, id)
+    return
+  }
+  toggleParameter(id)
+}
+
+const handleSetParameterValue = (id, value) => {
+  if (isTransactionPage.value) {
+    setTransactionParameterValue(currentPage.value.id, id, value)
+    return
+  }
+  setParameterValue(id, value)
+}
+
+const handleResetTransaction = () => {
+  if (!isTransactionPage.value) return
+  resetTransactionPage(currentPage.value.id)
+}
+
+const handleSubmitTransaction = async () => {
+  const page = currentPage.value
+  if (!page || page.mode !== 'transaction') return
+  const isLoginAttempt = page.id === 'login'
+  let completedSuccessfully = false
+
+  if (isLoginAttempt) {
+    setNotification('NORMAL', 'Tentativo di accesso in corso...')
+  }
+
+  const result = await commitTransactionPage(page.id)
+  if (!result.ok) {
+    setNotification('ERROR', 'Errore invio comando: verifica la connessione al dispositivo.')
+    return
+  }
+
+  if (isLoginAttempt) {
+    if (parameterValues.status_login === 'ok') {
+      setNotification('SUCCESS', 'Accesso eseguito con successo.')
+      completedSuccessfully = true
+    } else {
+      setNotification('ERROR', 'Accesso non riuscito: credenziali non valide.')
+    }
+  } else {
+    setNotification('SUCCESS', 'Comando applicato correttamente.')
+    completedSuccessfully = true
+  }
+
+  if (!completedSuccessfully) {
+    return
+  }
+
+  if (page.goOnApply === 'GO_HOME') {
+    goHome()
+    return
+  }
+
+  if (page.goOnApply === 'GO_BACK') {
+    goToPreviousPage()
+  }
+}
 
 // ── Grid layout helpers ───────────────────────────────────
 const viewportWidth = ref(typeof window !== 'undefined' ? window.innerWidth : 800)
@@ -32,7 +136,10 @@ const viewportWidth = ref(typeof window !== 'undefined' ? window.innerWidth : 80
 const onResize = () => { viewportWidth.value = window.innerWidth }
 
 onMounted(() => window.addEventListener('resize', onResize))
-onUnmounted(() => window.removeEventListener('resize', onResize))
+onUnmounted(() => {
+  window.removeEventListener('resize', onResize)
+  disposeNotificationBar()
+})
 
 const widgetCols = computed(() => {
   if (viewportWidth.value <= 399) return 2
@@ -72,13 +179,21 @@ watch(
   async (pageId) => {
     if (pageId !== LOGOUT_PAGE_ID || logoutInProgress.value) return
 
+    const wasLoggedIn = parameterValues.status_login === 'ok'
     logoutInProgress.value = true
+    setNotification('WARNING', 'Logout in corso...')
     try {
-      if (parameterValues.login_name !== '') {
-        await setParameterValue('login_name', '')
-      }
-      if (parameterValues.login_password !== '') {
-        await setParameterValue('login_password', '')
+      // Always send both credentials reset commands: local values can already
+      // be empty due to clearOnApply, while remote state may still be logged in.
+      const nameResult = await setParameterValue('login_name', '')
+      const passwordResult = await setParameterValue('login_password', '')
+
+      if (!nameResult.ok || !passwordResult.ok) {
+        setNotification('ERROR', 'Errore durante il logout: comando non applicato.')
+      } else if (wasLoggedIn) {
+        setNotification('SUCCESS', 'Logout completato con successo.')
+      } else {
+        setNotification('WARNING', 'Nessuna sessione attiva: utente gia disconnesso.')
       }
       navigateToPage('login')
     } finally {
@@ -98,6 +213,26 @@ watch(
         <StatusIconBar />
       </div>
     </header>
+
+    <div
+      class="notification-bar"
+      :class="notificationBarClasses"
+      role="status"
+      aria-live="polite"
+      :aria-expanded="isNotificationExpanded"
+      :title="notificationHistoryTitle"
+      @click="toggleNotificationExpanded"
+    >
+      <span class="notification-state">{{ notification.status }}</span>
+      <span class="notification-message">{{ notification.message }}</span>
+      <span
+        v-if="notificationHistory.length > 1"
+        class="notification-count"
+        aria-label="Numero notifiche recenti"
+      >
+        +{{ notificationHistory.length - 1 }}
+      </span>
+    </div>
 
     <main class="content">
       <template v-if="showingSecondLevel">
@@ -143,10 +278,15 @@ watch(
         <PageParametersView
           v-else
           :parameters="currentPage.parameters"
-          :parameter-values="parameterValues"
+          :parameter-values="currentPageValues"
+          :transaction-mode="isTransactionPage"
+          :modified-parameter-ids="currentPageModifiedIds"
+          :can-submit-transaction="canSubmitTransaction"
           :viewport-width="viewportWidth"
-          @toggle-parameter="toggleParameter"
-          @set-parameter-value="setParameterValue"
+          @toggle-parameter="handleToggleParameter"
+          @set-parameter-value="handleSetParameterValue"
+          @reset-transaction="handleResetTransaction"
+          @submit-transaction="handleSubmitTransaction"
         />
       </template>
     </main>
@@ -196,6 +336,21 @@ watch(
   --active-name-bg: rgba(35, 134, 54, 0.2);
   --active-name-border: rgba(63, 185, 80, 0.4);
   --active-text: #3fb950;
+  --transaction-modified-border: #c99500;
+  --transaction-modified-bg: #fff3bf;
+  --transaction-modified-text: #5f4300;
+  --notification-normal-bg: var(--bg-bar);
+  --notification-normal-border: var(--border);
+  --notification-normal-text: var(--text-primary);
+  --notification-warning-bg: #4a3900;
+  --notification-warning-border: #c99500;
+  --notification-warning-text: #ffe08a;
+  --notification-success-bg: #123a22;
+  --notification-success-border: #2ea043;
+  --notification-success-text: #b7f5c8;
+  --notification-error-bg: #4b141b;
+  --notification-error-border: #f85149;
+  --notification-error-text: #ffd6d6;
 }
 
 /* ── Theme: light ───────────────────────────────────────── */
@@ -217,12 +372,27 @@ watch(
   --active-name-bg: rgba(31, 136, 61, 0.1);
   --active-name-border: rgba(31, 136, 61, 0.35);
   --active-text: #1a7f37;
+  --transaction-modified-border: #c99500;
+  --transaction-modified-bg: #fff3bf;
+  --transaction-modified-text: #5f4300;
+  --notification-normal-bg: var(--bg-bar);
+  --notification-normal-border: var(--border);
+  --notification-normal-text: var(--text-primary);
+  --notification-warning-bg: #fff3bf;
+  --notification-warning-border: #c99500;
+  --notification-warning-text: #5f4300;
+  --notification-success-bg: #dcffe4;
+  --notification-success-border: #2da44e;
+  --notification-success-text: #0f5132;
+  --notification-error-bg: #ffe3e3;
+  --notification-error-border: #d1242f;
+  --notification-error-text: #7f1d1d;
 }
 
 /* ── Shell ──────────────────────────────────────────────── */
 .hmi-shell {
   display: grid;
-  grid-template-rows: 3.5rem 1fr 4.5rem;
+  grid-template-rows: 3.5rem auto 1fr 4.5rem;
   width: 100%;
   height: 100%;
   background: var(--bg-main);
@@ -257,6 +427,78 @@ watch(
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
+}
+
+.notification-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 2rem;
+  padding: 0.25rem 0.85rem;
+  border-bottom: 1px solid var(--notification-normal-border);
+  background: var(--notification-normal-bg);
+  color: var(--notification-normal-text);
+  font-size: 0.9rem;
+  line-height: 1.15;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+
+.notification-state {
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.notification-message {
+  min-width: 0;
+  flex: 1 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.notification-count {
+  flex-shrink: 0;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  padding: 0.12rem 0.35rem;
+  border-radius: 999px;
+  border: 1px solid currentColor;
+  opacity: 0.85;
+}
+
+.notification-bar--expanded .notification-message {
+  overflow: visible;
+  text-overflow: clip;
+  white-space: normal;
+}
+
+.notification-bar--normal {
+  background: var(--notification-normal-bg);
+  border-bottom-color: var(--notification-normal-border);
+  color: var(--notification-normal-text);
+}
+
+.notification-bar--warning {
+  background: var(--notification-warning-bg);
+  border-bottom-color: var(--notification-warning-border);
+  color: var(--notification-warning-text);
+}
+
+.notification-bar--success {
+  background: var(--notification-success-bg);
+  border-bottom-color: var(--notification-success-border);
+  color: var(--notification-success-text);
+}
+
+.notification-bar--error {
+  background: var(--notification-error-bg);
+  border-bottom-color: var(--notification-error-border);
+  color: var(--notification-error-text);
 }
 
 /* ── Bottom tab bar ─────────────────────────────────────── */
@@ -434,6 +676,21 @@ button:active {
 }
 
 @media (max-width: 399px) {
+  .notification-bar {
+    font-size: 0.86rem;
+    line-height: 1.12;
+    padding-top: 0.2rem;
+    padding-bottom: 0.2rem;
+  }
+
+  .notification-state {
+    font-size: 0.7rem;
+  }
+
+  .notification-count {
+    font-size: 0.64rem;
+  }
+
   .widget-grid {
     grid-template-columns: repeat(2, 1fr);
   }

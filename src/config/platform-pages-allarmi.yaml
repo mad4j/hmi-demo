@@ -1,0 +1,38 @@
+pages:
+  - id: allarmi
+    label: Allarmi
+    icon: "alarm"
+    parameters:
+      - id: allarme_batteria
+        name: Batteria
+        type: boolean
+        readonly: true
+      - id: allarme_temp_motore
+        name: Temp. motore
+        type: boolean
+        readonly: true
+      - id: allarme_pressione
+        name: Pressione
+        type: boolean
+        readonly: true
+      - id: allarme_olio
+        name: Olio motore
+        type: boolean
+        readonly: true
+      - id: allarme_abs
+        name: ABS
+        type: boolean
+        readonly: true
+      - id: allarme_airbag
+        name: Airbag
+        type: boolean
+        readonly: true
+      - id: allarme_carburante
+        name: Carburante
+        type: boolean
+        readonly: true
+      - id: livello_carburante
+        name: Livello carb.
+        type: percentage
+        precision: 0
+        readonly: true

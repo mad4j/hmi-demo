@@ -11,6 +11,8 @@ import IconGps from './icons/IconGps.vue'
 import IconLogin from './icons/IconLogin.vue'
 import IconTheme from './icons/IconTheme.vue'
 import IconCircle from './icons/IconCircle.vue'
+import IconReset from './icons/IconReset.vue'
+import IconSend from './icons/IconSend.vue'
 
 const iconMap = {
   home: IconHome,
@@ -24,6 +26,8 @@ const iconMap = {
   gps: IconGps,
   login: IconLogin,
   theme: IconTheme,
+  reset: IconReset,
+  send: IconSend,
 }
 
 const props = defineProps({

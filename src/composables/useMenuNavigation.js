@@ -11,14 +11,22 @@ const selectablePages = flattenSelectablePages(menuConfig.pages)
 const currentPageId = ref(selectablePages[0]?.id ?? menuConfig.pages[0].id)
 const showingSecondLevel = ref(false)
 const secondLevelParentId = ref(null)
+const pageHistory = ref([])
 
 export const useMenuNavigation = () => {
-  // ── Actions ───────────────────────────────────────────────
-  const navigateToPage = (pageId) => {
-    if (!pageId) return
+  const setCurrentPage = (pageId, { trackHistory = true } = {}) => {
+    if (!pageId || pageId === currentPageId.value) return
+    if (trackHistory && currentPageId.value) {
+      pageHistory.value.push(currentPageId.value)
+    }
     currentPageId.value = pageId
     showingSecondLevel.value = false
     secondLevelParentId.value = null
+  }
+
+  // ── Actions ───────────────────────────────────────────────
+  const navigateToPage = (pageId) => {
+    setCurrentPage(pageId)
   }
 
   const selectLevel1Item = (item) => {
@@ -26,16 +34,12 @@ export const useMenuNavigation = () => {
       secondLevelParentId.value = item.id
       showingSecondLevel.value = true
     } else {
-      currentPageId.value = item.id
-      showingSecondLevel.value = false
-      secondLevelParentId.value = null
+      setCurrentPage(item.id)
     }
   }
 
   const selectLevel2Item = (item) => {
-    currentPageId.value = item.id
-    showingSecondLevel.value = false
-    secondLevelParentId.value = null
+    setCurrentPage(item.id)
   }
 
   const goBack = () => {
@@ -43,9 +47,16 @@ export const useMenuNavigation = () => {
   }
 
   const goHome = () => {
-    currentPageId.value = selectablePages[0]?.id ?? menuConfig.pages[0].id
-    showingSecondLevel.value = false
-    secondLevelParentId.value = null
+    setCurrentPage(selectablePages[0]?.id ?? menuConfig.pages[0].id)
+  }
+
+  const goToPreviousPage = () => {
+    while (pageHistory.value.length) {
+      const previousPageId = pageHistory.value.pop()
+      if (!previousPageId || previousPageId === currentPageId.value) continue
+      setCurrentPage(previousPageId, { trackHistory: false })
+      return
+    }
   }
 
   // ── Computed ──────────────────────────────────────────────
@@ -90,6 +101,7 @@ export const useMenuNavigation = () => {
     selectLevel2Item,
     goBack,
     goHome,
+    goToPreviousPage,
     navigateToPage,
   }
 }

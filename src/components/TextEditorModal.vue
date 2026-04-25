@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watch, onMounted, nextTick } from 'vue'
 
 const props = defineProps({
   name: {
@@ -17,7 +17,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['confirm', 'cancel'])
+const emit = defineEmits(['confirm', 'cancel', 'confirm-and-next'])
 
 const localValue = ref(String(props.value ?? ''))
 
@@ -28,8 +28,17 @@ watch(
   },
 )
 
+const inputRef = ref(null)
+
+onMounted(async () => {
+  await nextTick()
+  inputRef.value?.focus()
+  inputRef.value?.select()
+})
+
 const handleConfirm = () => emit('confirm', localValue.value)
 const handleCancel = () => emit('cancel')
+const handleConfirmAndNext = () => emit('confirm-and-next', localValue.value)
 </script>
 
 <template>
@@ -39,12 +48,15 @@ const handleCancel = () => emit('cancel')
 
       <div class="modal-body">
         <input
+          ref="inputRef"
           v-model="localValue"
           class="text-input"
           :type="inputType"
-          :autocomplete="inputType === 'password' ? 'current-password' : 'username'"
+          :autocomplete="inputType === 'password' ? 'new-password' : 'off'"
           :aria-label="name"
           spellcheck="false"
+          @keydown.enter.prevent.stop="handleConfirm"
+          @keydown.tab.prevent.stop="handleConfirmAndNext"
         />
       </div>
 
@@ -109,6 +121,8 @@ const handleCancel = () => emit('cancel')
   outline: none;
   transition: border-color 0.12s, background 0.12s;
   box-sizing: border-box;
+  user-select: text;
+  -webkit-user-select: text;
 }
 
 .text-input:focus {
@@ -130,6 +144,7 @@ const handleCancel = () => emit('cancel')
   height: 2.6rem;
   border: 1px solid var(--border);
   border-radius: 0.45rem;
+  background: color-mix(in srgb, var(--btn-active-border) 18%, var(--bg-btn));
   font-size: 1.2rem;
   font-weight: 700;
   line-height: 1;

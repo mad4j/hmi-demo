@@ -1,0 +1,75 @@
+pages:
+  - id: menu
+    label: Menu
+    icon: "menu"
+    submenus:
+      - id: climatizzazione
+        label: Climatizzazione
+        parameters:
+          - id: temp_abitacolo
+            name: Temperatura
+            type: number
+            unit: "°C"
+            precision: 1
+            readonly: true
+          - id: temp_impostata
+            name: Impostata
+            type: number
+            unit: "°C"
+            precision: 1
+          - id: temp_esterna
+            name: Temp. esterna
+            type: number
+            unit: "°C"
+            precision: 1
+            readonly: true
+          - id: umidita
+            name: Umidità
+            type: percentage
+            precision: 0
+            readonly: true
+          - id: ventilazione_attiva
+            name: Ventilazione
+            type: boolean
+          - id: aria_ricircolo
+            name: Ricircolo
+            type: boolean
+          - id: velocita_ventola
+            name: Velocità ventola
+            type: number
+            unit: "lv"
+            precision: 0
+          - id: modalita_clima
+            name: Modalità
+            type: enum
+            options: [AUTO, MANUAL, ECO, SPORT]
+      - id: porte
+        label: Porte
+        parameters:
+          - id: porta_ant_sx
+            name: Ant. SX
+            type: boolean
+          - id: porta_ant_dx
+            name: Ant. DX
+            type: boolean
+          - id: porta_post_sx
+            name: Post. SX
+            type: boolean
+          - id: porta_post_dx
+            name: Post. DX
+            type: boolean
+          - id: blocco_centrale
+            name: Blocco centr.
+            type: boolean
+          - id: cofano
+            name: Cofano
+            type: boolean
+          - id: portabagagli
+            name: Bagagliaio
+            type: boolean
+          - id: finestre_chiuse
+            name: Finestre
+            type: boolean
+          - id: portellone
+            name: Portellone
+            type: boolean

@@ -12,7 +12,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['confirm', 'cancel'])
+const emit = defineEmits(['confirm', 'cancel', 'confirm-and-next'])
 
 const toInputDate = (value) => {
   const raw = String(value ?? '').trim()
@@ -39,6 +39,7 @@ watch(
 
 const handleConfirm = () => emit('confirm', localValue.value)
 const handleCancel = () => emit('cancel')
+const handleConfirmAndNext = () => emit('confirm-and-next', localValue.value)
 </script>
 
 <template>
@@ -47,7 +48,14 @@ const handleCancel = () => emit('cancel')
       <div class="modal-header">{{ name }}</div>
 
       <div class="modal-body">
-        <input v-model="localValue" class="date-input" type="date" :aria-label="name" />
+        <input
+          v-model="localValue"
+          class="date-input"
+          type="date"
+          :aria-label="name"
+          @keydown.enter.prevent.stop="handleConfirm"
+          @keydown.tab.prevent.stop="handleConfirmAndNext"
+        />
       </div>
 
       <div class="modal-footer">
@@ -132,6 +140,7 @@ const handleCancel = () => emit('cancel')
   height: 2.6rem;
   border: 1px solid var(--border);
   border-radius: 0.45rem;
+  background: color-mix(in srgb, var(--btn-active-border) 18%, var(--bg-btn));
   font-size: 1.2rem;
   font-weight: 700;
   line-height: 1;

@@ -50,11 +50,15 @@ export const useDeviceClient = () => {
   /**
    * POST /api/parameter
    * Sends a configuration command to the apparatus.
-   * The apparatus applies the change and confirms with { ok, id, value }.
+   * Accepts either a single command (id, value) or a batch payload object.
    */
-  const sendCommand = async (id, value) => {
-    logDeviceTraffic('->', 'sendCommand', { id, value })
-    const response = await sendSimulatedCommand(id, value)
+  const sendCommand = async (idOrPayload, value) => {
+    const isBatchPayload =
+      idOrPayload !== null && typeof idOrPayload === 'object' && !Array.isArray(idOrPayload)
+    const payload = isBatchPayload ? idOrPayload : { [idOrPayload]: value }
+
+    logDeviceTraffic('->', 'sendCommand', payload)
+    const response = await sendSimulatedCommand(payload)
     logDeviceTraffic('<-', 'sendCommand', response)
     return response
   }

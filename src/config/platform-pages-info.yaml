@@ -1,0 +1,45 @@
+pages:
+  - id: info
+    label: Info
+    icon: "info"
+    parameters:
+      - id: versione_hmi
+        name: Versione HMI
+        type: enum
+        readonly: true
+      - id: stato_rete
+        name: Stato rete
+        type: enum
+        options: [ONLINE, OFFLINE]
+        readonly: true
+      - id: connessione
+        name: Connessione
+        type: enum
+        options: [CAN-BUS, WIFI, ETH]
+        readonly: true
+      - id: uptime
+        name: Uptime
+        type: number
+        unit: min
+        precision: 0
+        readonly: true
+      - id: tensione_batteria
+        name: Tensione batt.
+        type: number
+        unit: "V"
+        precision: 1
+        readonly: true
+      - id: temperatura_cpu
+        name: Temp. CPU
+        type: number
+        unit: "°C"
+        precision: 0
+        readonly: true
+      - id: data_sistema
+        name: Data
+        type: date
+        readonly: false
+      - id: ora_sistema
+        name: Ora
+        type: enum
+        readonly: true

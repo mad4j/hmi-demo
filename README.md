@@ -32,13 +32,28 @@ npm run build
 
 ## Configurazione menu
 
-La struttura del menu applicativo e i parametri visualizzati sono definiti in `src/config/menu.yml`.
+La struttura del menu applicativo e i parametri visualizzati sono definiti in `src/config/platform.yaml`.
+
+`platform.yaml` e il file padre e include i file figli con prefisso `platform-` nella stessa cartella, ad esempio:
+
+- `platform-status-icons.yaml`
+- `platform-pages-menu.yaml`
+- `platform-pages-allarmi.yaml`
+- `platform-pages-info.yaml`
+- `platform-pages-impostazioni.yaml`
 
 Ogni pagina puo contenere:
 
 - `id`, `label`, `icon`
 - `parameters`
 - `submenus`
+
+Per le pagine transaction (`mode: transaction`) e possibile aggiungere:
+
+- `goOnApply`: comportamento dopo submit andato a buon fine
+	- `STAY_HERE`: resta sulla pagina corrente (default)
+	- `GO_HOME`: torna alla home
+	- `GO_BACK`: torna alla pagina visitata in precedenza
 
 Le pagine foglia visualizzano i parametri. Le pagine con `submenus` aprono invece il secondo livello di navigazione.
 

@@ -1,0 +1,7 @@
+title: HMI Demo
+includes:
+  - platform-status-icons.yaml
+  - platform-pages-menu.yaml
+  - platform-pages-allarmi.yaml
+  - platform-pages-info.yaml
+  - platform-pages-impostazioni.yaml

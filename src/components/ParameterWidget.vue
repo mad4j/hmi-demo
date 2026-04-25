@@ -32,6 +32,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  modified: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const emit = defineEmits(['toggle', 'edit'])
@@ -57,8 +61,7 @@ const displayValue = computed(() => {
     return props.unit ? `${formatted} ${props.unit}` : formatted
   }
   if (props.type === 'password') {
-    const raw = String(props.value ?? '')
-    return raw ? '•'.repeat(raw.length) : '—'
+    return '•••'
   }
   if (props.type === 'date') {
     const raw = String(props.value ?? '').trim()
@@ -101,7 +104,7 @@ const handleClick = () => {
 <template>
   <div
     class="param-widget"
-    :class="{ 'param-widget--active': isActive, [`param-widget--${type}`]: true, 'param-widget--clickable': isClickable, 'param-widget--readonly': readonly }"
+    :class="{ 'param-widget--active': isActive, [`param-widget--${type}`]: true, 'param-widget--clickable': isClickable, 'param-widget--readonly': readonly, 'param-widget--modified': modified }"
     :role="isClickable ? 'button' : undefined"
     :tabindex="isClickable ? 0 : undefined"
     :aria-pressed="type === 'boolean' ? isActive : undefined"
@@ -221,6 +224,20 @@ const handleClick = () => {
 /* ── Read-only widget ────────────────────────────────────── */
 .param-widget--readonly {
   opacity: 0.75;
+}
+
+.param-widget--modified {
+  border-color: var(--transaction-modified-border);
+}
+
+.param-widget--modified .param-name {
+  background: var(--transaction-modified-bg);
+  border-bottom-color: var(--transaction-modified-border);
+  color: var(--transaction-modified-text);
+}
+
+.param-widget--modified .param-value {
+  color: var(--transaction-modified-text);
 }
 
 .readonly-icon {

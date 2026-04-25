@@ -59,8 +59,8 @@ const apparatusState = {
   status_gps: 'ok',
   status_login: 'off',
   // Login
-  login_name: 'admin',
-  login_password: 'admin',
+  login_name: '',
+  login_password: '',
 }
 
 const VALID_LOGIN_NAME = 'admin'
@@ -219,12 +219,19 @@ export const fetchSimulatedState = async () => {
   return { ...apparatusState }
 }
 
-export const sendSimulatedCommand = async (id, value) => {
+export const sendSimulatedCommand = async (idOrPayload, value) => {
   await simulateLatency()
-  apparatusState[id] = value
+
+  const isBatchPayload =
+    idOrPayload !== null && typeof idOrPayload === 'object' && !Array.isArray(idOrPayload)
+  const commandPayload = isBatchPayload ? idOrPayload : { [idOrPayload]: value }
+
+  Object.entries(commandPayload).forEach(([id, nextValue]) => {
+    apparatusState[id] = nextValue
+  })
 
   const derivedUpdates = {}
-  if (id === 'login_name' || id === 'login_password') {
+  if ('login_name' in commandPayload || 'login_password' in commandPayload) {
     const nextStatus = updateLoginStatus()
     if (nextStatus !== null) {
       derivedUpdates.status_login = nextStatus
@@ -232,7 +239,14 @@ export const sendSimulatedCommand = async (id, value) => {
   }
 
   emitNotification(derivedUpdates)
-  return { ok: true, id, value }
+
+  const commandEntries = Object.entries(commandPayload)
+  if (!isBatchPayload && commandEntries.length === 1) {
+    const [id, nextValue] = commandEntries[0]
+    return { ok: true, id, value: nextValue }
+  }
+
+  return { ok: true, values: { ...commandPayload } }
 }
 
 export const subscribeToSimulatedNotifications = (callback) => {

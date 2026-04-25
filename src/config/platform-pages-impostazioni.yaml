@@ -1,0 +1,82 @@
+pages:
+  - id: impostazioni
+    label: Impostazioni
+    icon: "settings"
+    parameters: []
+    submenus:
+      - id: tema
+        label: Tema
+        icon: "theme"
+        parameters: []
+      - id: gps
+        label: GPS
+        icon: "gps"
+        parameters:
+          - id: gps_stato
+            name: Stato
+            type: enum
+            options: [AGGANCIATO, IN RICERCA, ERRORE, DISATTIVO]
+            readonly: true
+          - id: gps_satelliti
+            name: Satelliti
+            type: number
+            unit: "sat"
+            precision: 0
+            readonly: true
+          - id: gps_latitudine
+            name: Latitudine
+            type: number
+            unit: "°"
+            precision: 5
+            readonly: true
+          - id: gps_longitudine
+            name: Longitudine
+            type: number
+            unit: "°"
+            precision: 5
+            readonly: true
+          - id: gps_altitudine
+            name: Altitudine
+            type: number
+            unit: "m"
+            precision: 0
+            readonly: true
+          - id: gps_notes
+            name: Notes
+            type: text
+            readonly: false
+          - id: gps_velocita
+            name: Velocità
+            type: number
+            unit: "km/h"
+            precision: 1
+            readonly: true
+          - id: gps_accuratezza
+            name: Accuratezza
+            type: number
+            unit: "m"
+            precision: 1
+            readonly: true
+          - id: gps_modalita
+            name: Modalità
+            type: enum
+            options: [AUTO, MANUALE, DISATTIVO]
+      - id: login
+        label: Accesso
+        icon: "login"
+        mode: transaction
+        goOnApply: GO_BACK
+        parameters:
+          - id: login_name
+            name: Name
+            type: text
+            clearOnApply: true
+          - id: login_password
+            name: Password
+            type: password
+            clearOnApply: true
+      - id: logout
+        label: Logout
+        icon: "lock"
+        goOnApply: STAY_HERE
+        parameters: []
