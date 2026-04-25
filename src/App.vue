@@ -1,8 +1,6 @@
 <script setup>
 import ParameterWidget from './components/ParameterWidget.vue'
 import PercentageEditorModal from './components/PercentageEditorModal.vue'
-import ModalPageForm from './components/ModalPageForm.vue'
-import LoginPage from './components/LoginPage.vue'
 import AppIcon from './components/AppIcon.vue'
 import StatusIconBar from './components/StatusIconBar.vue'
 import { ref, computed, onMounted, onUnmounted } from 'vue'
@@ -10,7 +8,6 @@ import { menuConfig } from './composables/useMenuConfig.js'
 import { useMenuNavigation } from './composables/useMenuNavigation.js'
 import { useTheme } from './composables/useTheme.js'
 import { useParameterStore } from './composables/useParameterStore.js'
-import { useAuth } from './composables/useAuth.js'
 
 const {
   currentPage,
@@ -27,8 +24,6 @@ const {
 const { isDark, toggleTheme } = useTheme()
 
 const { parameterValues, toggleParameter, setParameterValue } = useParameterStore()
-
-const { isAuthenticated } = useAuth()
 
 // ── Grid layout helpers ───────────────────────────────────
 const viewportWidth = ref(typeof window !== 'undefined' ? window.innerWidth : 800)
@@ -99,120 +94,104 @@ const cancelEdit = () => {
 
 <template>
   <div class="hmi-shell" :data-theme="isDark ? 'dark' : 'light'">
-    <!-- ── Login screen (shown until authenticated) ─────── -->
-    <LoginPage v-if="!isAuthenticated" />
+    <header class="bar top-bar">
+      <div class="top-left">
+        <span>{{ menuConfig.title }}</span>
+      </div>
+      <div class="top-right">
+        <StatusIconBar />
+      </div>
+    </header>
 
-    <!-- ── Main HMI (shown once authenticated) ─────────── -->
-    <template v-else>
-      <header class="bar top-bar">
-        <div class="top-left">
-          <span>{{ menuConfig.title }}</span>
-        </div>
-        <div class="top-right">
-          <StatusIconBar />
-        </div>
-      </header>
-
-      <main class="content">
-        <!-- Second-level submenu navigation -->
-        <template v-if="showingSecondLevel">
-          <div class="submenu-page">
-            <div class="submenu-grid">
-              <!-- back tile (always first, index 0) -->
-              <button
-                class="submenu-tile submenu-tile--back"
-                :style="submenuTileStyle(0)"
-                type="button"
-                aria-label="Indietro"
-                @click="goBack"
-              >
-                <AppIcon name="back" :size="28" />
-                <span class="tile-label">Indietro</span>
-              </button>
-              <!-- second-level items (index starts at 1) -->
-              <button
-                v-for="(item, idx) in secondLevelItems"
-                :key="item.id"
-                class="submenu-tile"
-                :style="submenuTileStyle(idx + 1)"
-                type="button"
-                @click="selectLevel2Item(item)"
-              >
-                <AppIcon v-if="item.icon" :name="item.icon" :size="28" />
-                <span class="tile-label">{{ item.label }}</span>
-              </button>
-            </div>
+    <main class="content">
+      <template v-if="showingSecondLevel">
+        <div class="submenu-page">
+          <div class="submenu-grid">
+            <!-- back tile (always first, index 0) -->
+            <button
+              class="submenu-tile submenu-tile--back"
+              :style="submenuTileStyle(0)"
+              type="button"
+              aria-label="Indietro"
+              @click="goBack"
+            >
+              <AppIcon name="back" :size="28" />
+              <span class="tile-label">Indietro</span>
+            </button>
+            <!-- second-level items (index starts at 1) -->
+            <button
+              v-for="(item, idx) in secondLevelItems"
+              :key="item.id"
+              class="submenu-tile"
+              :style="submenuTileStyle(idx + 1)"
+              type="button"
+              @click="selectLevel2Item(item)"
+            >
+              <AppIcon v-if="item.icon" :name="item.icon" :size="28" />
+              <span class="tile-label">{{ item.label }}</span>
+            </button>
           </div>
-        </template>
-        <template v-else>
-          <!-- Modal page: form with Submit / Reset buttons -->
-          <ModalPageForm
-            v-if="currentPage.modal && currentPage.parameters.length"
-            :page="currentPage"
+        </div>
+      </template>
+      <template v-else>
+        <div v-if="currentPage.id === SETTINGS_PAGE_ID" class="widget-grid">
+          <ParameterWidget
+            :style="settingsParamStyle()"
+            name="Tema scuro"
+            type="boolean"
+            :value="isDark"
+            @toggle="toggleTheme"
           />
+        </div>
+        <div v-else-if="currentPage.parameters.length" class="widget-grid">
+          <ParameterWidget
+            v-for="(param, index) in currentPage.parameters"
+            :key="param.id"
+            :style="paramStyle(index)"
+            :name="param.name"
+            :type="param.type"
+            :unit="param.unit"
+            :precision="param.precision"
+            :options="param.options"
+            :value="parameterValues[param.id]"
+            :readonly="param.readonly"
+            @toggle="toggleParameter(param.id)"
+            @edit="startEditParameter(param.id)"
+          />
+        </div>
+      </template>
+    </main>
 
-          <!-- Settings page: theme toggle widget -->
-          <div v-else-if="currentPage.id === SETTINGS_PAGE_ID" class="widget-grid">
-            <ParameterWidget
-              :style="settingsParamStyle()"
-              name="Tema scuro"
-              type="boolean"
-              :value="isDark"
-              @toggle="toggleTheme"
-            />
-          </div>
+    <footer class="bar bottom-bar">
+      <button
+        class="tab-button tab-button--home"
+        type="button"
+        aria-label="Home"
+        @click="goHome"
+      >
+        <AppIcon name="home" :size="22" class="tab-icon" />
+        <span class="tab-label">Home</span>
+      </button>
+      <button
+        v-for="item in level1Items"
+        :key="item.id"
+        class="tab-button"
+        :class="{ 'tab-button--active': item.id === activeLevel1Id }"
+        type="button"
+        @click="selectLevel1Item(item)"
+      >
+        <AppIcon v-if="item.icon" :name="item.icon" :size="22" class="tab-icon" />
+        <span class="tab-label">{{ item.label }}</span>
+      </button>
+    </footer>
 
-          <!-- Regular page: parameter widget grid -->
-          <div v-else-if="currentPage.parameters.length" class="widget-grid">
-            <ParameterWidget
-              v-for="(param, index) in currentPage.parameters"
-              :key="param.id"
-              :style="paramStyle(index)"
-              :name="param.name"
-              :type="param.type"
-              :unit="param.unit"
-              :precision="param.precision"
-              :options="param.options"
-              :value="parameterValues[param.id]"
-              :readonly="param.readonly"
-              @toggle="toggleParameter(param.id)"
-              @edit="startEditParameter(param.id)"
-            />
-          </div>
-        </template>
-      </main>
-
-      <footer class="bar bottom-bar">
-        <button
-          class="tab-button tab-button--home"
-          type="button"
-          aria-label="Home"
-          @click="goHome"
-        >
-          <AppIcon name="home" :size="22" class="tab-icon" />
-          <span class="tab-label">Home</span>
-        </button>
-        <button
-          v-for="item in level1Items"
-          :key="item.id"
-          class="tab-button"
-          :class="{ 'tab-button--active': item.id === activeLevel1Id }"
-          type="button"
-          @click="selectLevel1Item(item)"
-        >
-          <AppIcon v-if="item.icon" :name="item.icon" :size="22" class="tab-icon" />
-          <span class="tab-label">{{ item.label }}</span>
-        </button>
-      </footer>
-
-      <PercentageEditorModal
-        v-if="editingParam"
-        :name="editingParam.name"
-        :value="parameterValues[editingParam.id] ?? 0"
-        @confirm="confirmEdit"
-        @cancel="cancelEdit"
-      />
-    </template>
+    <PercentageEditorModal
+      v-if="editingParam"
+      :name="editingParam.name"
+      :value="parameterValues[editingParam.id] ?? 0"
+      @confirm="confirmEdit"
+      @cancel="cancelEdit"
+    />
   </div>
 </template>
 
