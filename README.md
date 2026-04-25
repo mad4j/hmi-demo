@@ -51,5 +51,6 @@ I parametri dichiarati nel file YAML supportano questi tipi:
 - `enum`
 - `text`
 - `password`
+- `date`
 
 I valori sono inizializzati dal client simulato e poi aggiornati tramite notifiche periodiche o comandi inviati dall'interfaccia.

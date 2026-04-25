@@ -13,7 +13,8 @@ const props = defineProps({
   type: {
     type: String,
     default: 'number',
-    validator: (v) => ['number', 'percentage', 'enum', 'boolean', 'text', 'password'].includes(v),
+    validator: (v) =>
+      ['number', 'percentage', 'enum', 'boolean', 'text', 'password', 'date'].includes(v),
   },
   unit: {
     type: String,
@@ -59,6 +60,13 @@ const displayValue = computed(() => {
     const raw = String(props.value ?? '')
     return raw ? '•'.repeat(raw.length) : '—'
   }
+  if (props.type === 'date') {
+    const raw = String(props.value ?? '').trim()
+    if (!raw) return '—'
+    const parsed = /^\d{4}-\d{2}-\d{2}$/.test(raw) ? new Date(`${raw}T00:00:00`) : new Date(raw)
+    if (Number.isNaN(parsed.getTime())) return '—'
+    return new Intl.DateTimeFormat('it-IT').format(parsed)
+  }
   return String(props.value ?? '—')
 })
 
@@ -70,13 +78,19 @@ const isClickable = computed(
     (props.type === 'boolean' ||
       props.type === 'percentage' ||
       props.type === 'text' ||
+      props.type === 'date' ||
       props.type === 'password' ||
       (props.type === 'enum' && props.options.length > 0)),
 )
 
 const handleClick = () => {
   if (!isClickable.value) return
-  if (props.type === 'percentage' || props.type === 'text' || props.type === 'password') {
+  if (
+    props.type === 'percentage' ||
+    props.type === 'text' ||
+    props.type === 'password' ||
+    props.type === 'date'
+  ) {
     emit('edit')
   } else {
     emit('toggle')
@@ -194,7 +208,8 @@ const handleClick = () => {
 }
 
 .param-widget--text .param-value,
-.param-widget--password .param-value {
+.param-widget--password .param-value,
+.param-widget--date .param-value {
   font-size: 1rem;
   color: var(--text-blue);
 }

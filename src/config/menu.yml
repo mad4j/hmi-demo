@@ -170,8 +170,8 @@ pages:
         readonly: true
       - id: data_sistema
         name: Data
-        type: enum
-        readonly: true
+        type: date
+        readonly: false
       - id: ora_sistema
         name: Ora
         type: enum

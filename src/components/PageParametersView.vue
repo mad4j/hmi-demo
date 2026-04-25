@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 import ParameterWidget from './ParameterWidget.vue'
 import PercentageEditorModal from './PercentageEditorModal.vue'
 import TextEditorModal from './TextEditorModal.vue'
+import DateEditorModal from './DateEditorModal.vue'
 
 const props = defineProps({
   parameters: {
@@ -49,6 +50,7 @@ const isEditingPercentage = computed(() => editingParam.value?.type === 'percent
 const isEditingText = computed(
   () => editingParam.value?.type === 'text' || editingParam.value?.type === 'password',
 )
+const isEditingDate = computed(() => editingParam.value?.type === 'date')
 
 const handleToggle = (paramId) => {
   emit('toggle-parameter', paramId)
@@ -85,6 +87,14 @@ const handleToggle = (paramId) => {
     :name="editingParam.name"
     :value="parameterValues[editingParam.id] ?? ''"
     :input-type="editingParam.type === 'password' ? 'password' : 'text'"
+    @confirm="confirmEdit"
+    @cancel="cancelEdit"
+  />
+
+  <DateEditorModal
+    v-if="editingParam && isEditingDate"
+    :name="editingParam.name"
+    :value="parameterValues[editingParam.id] ?? ''"
     @confirm="confirmEdit"
     @cancel="cancelEdit"
   />
