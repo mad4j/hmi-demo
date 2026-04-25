@@ -2,6 +2,7 @@
 import ParameterWidget from './components/ParameterWidget.vue'
 import PercentageEditorModal from './components/PercentageEditorModal.vue'
 import AppIcon from './components/AppIcon.vue'
+import StatusIconBar from './components/StatusIconBar.vue'
 import { ref, computed } from 'vue'
 import { menuConfig } from './composables/useMenuConfig.js'
 import { useMenuNavigation } from './composables/useMenuNavigation.js'
@@ -58,7 +59,7 @@ const cancelEdit = () => {
         <span>{{ menuConfig.title }}</span>
       </div>
       <div class="top-right">
-        <span class="status">{{ menuConfig.status }}</span>
+        <StatusIconBar />
       </div>
     </header>
 
@@ -231,20 +232,6 @@ const cancelEdit = () => {
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
-}
-
-/* Status badge */
-.status {
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  padding: 0.2rem 0.6rem;
-  border-radius: 999px;
-  background: var(--status-bg);
-  color: var(--status-color);
-  border: 1px solid var(--status-border);
-  transition: background 0.25s, color 0.25s, border-color 0.25s;
 }
 
 /* ── Bottom tab bar ─────────────────────────────────────── */

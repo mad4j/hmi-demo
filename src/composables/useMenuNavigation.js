@@ -17,6 +17,13 @@ const secondLevelParentId = ref(null)
 
 export const useMenuNavigation = () => {
   // ── Actions ───────────────────────────────────────────────
+  const navigateToPage = (pageId) => {
+    if (!pageId) return
+    currentPageId.value = pageId
+    showingSecondLevel.value = false
+    secondLevelParentId.value = null
+  }
+
   const selectLevel1Item = (item) => {
     if (item.submenus?.length) {
       secondLevelParentId.value = item.id
@@ -93,5 +100,6 @@ export const useMenuNavigation = () => {
     selectLevel2Item,
     goBack,
     goHome,
+    navigateToPage,
   }
 }
