@@ -1,18 +1,22 @@
 title: HMI Demo
 statusIcons:
   - id: fault
+    label: Stato guasto
     icon: fault
     pageId: allarmi
     parameterId: status_fault
   - id: channel
+    label: Stato canale
     icon: channel
     pageId: info
     parameterId: status_channel
   - id: gps
+    label: Stato GPS
     icon: gps
     pageId: info
     parameterId: status_gps
   - id: login
+    label: Stato accesso
     icon: login
     pageId: impostazioni
     parameterId: status_login

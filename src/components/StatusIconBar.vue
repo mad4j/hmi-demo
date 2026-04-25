@@ -24,8 +24,8 @@ const stateClass = (parameterId) => {
       class="si-btn"
       :class="stateClass(icon.parameterId)"
       type="button"
-      :aria-label="icon.id"
-      :title="icon.id"
+      :aria-label="icon.label"
+      :title="icon.label"
       @click="navigateToPage(icon.pageId)"
     >
       <AppIcon :name="icon.icon" :size="18" />
