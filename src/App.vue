@@ -36,6 +36,7 @@ const {
   hasTransactionChanges,
   resetTransactionPage,
   commitTransactionPage,
+  refreshParameters,
 } = useParameterStore()
 
 const {
@@ -92,6 +93,18 @@ const widgetCols = computed(() => {
   return 4
 })
 
+// ── Refresh parameters on page navigation ────────────────
+watch(
+  () => currentPage.value,
+  (page) => {
+    if (!page) return
+    const ids = page.parameters?.map((p) => p.id) ?? []
+    if (ids.length > 0) {
+      refreshParameters(ids)
+    }
+  },
+)
+
 // ── Settings page ───────────────────────────────────────
 const SETTINGS_PAGE_ID = 'tema'
 const LOGOUT_PAGE_ID = 'logout'
@@ -113,9 +126,9 @@ watch(
       const passwordResult = await setParameterValue('login_password', '')
 
       if (!nameResult.ok || !passwordResult.ok) {
-        setNotification('ERROR', 'Errore durante il logout: comando non applicato.', {
-          displayMode: 'ACKNOWLEDGED',
-        })
+        const msg = (!nameResult.ok ? nameResult.message : passwordResult.message)
+          ?? 'Errore durante il logout: comando non applicato.'
+        setNotification('ERROR', msg, { displayMode: 'ACKNOWLEDGED' })
       } else if (wasLoggedIn) {
         setNotification('SUCCESS', 'Logout completato con successo.')
       } else {
