@@ -63,7 +63,7 @@ const {
   notificationBarClasses,
   notificationHistoryTitle,
   setNotification,
-  toggleNotificationExpanded,
+  handleNotificationTap,
   disposeNotificationBar,
 } = useNotificationBar()
 
@@ -100,7 +100,9 @@ const handleSubmitTransaction = async () => {
 
   const result = await commitTransactionPage(page.id)
   if (!result.ok) {
-    setNotification('ERROR', 'Errore invio comando: verifica la connessione al dispositivo.')
+    setNotification('ERROR', 'Errore invio comando: verifica la connessione al dispositivo.', {
+      displayMode: 'ACKNOWLEDGED',
+    })
     return
   }
 
@@ -109,7 +111,9 @@ const handleSubmitTransaction = async () => {
       setNotification('SUCCESS', 'Accesso eseguito con successo.')
       completedSuccessfully = true
     } else {
-      setNotification('ERROR', 'Accesso non riuscito: credenziali non valide.')
+      setNotification('ERROR', 'Accesso non riuscito: credenziali non valide.', {
+        displayMode: 'ACKNOWLEDGED',
+      })
     }
   } else {
     setNotification('SUCCESS', 'Comando applicato correttamente.')
@@ -189,7 +193,9 @@ watch(
       const passwordResult = await setParameterValue('login_password', '')
 
       if (!nameResult.ok || !passwordResult.ok) {
-        setNotification('ERROR', 'Errore durante il logout: comando non applicato.')
+        setNotification('ERROR', 'Errore durante il logout: comando non applicato.', {
+          displayMode: 'ACKNOWLEDGED',
+        })
       } else if (wasLoggedIn) {
         setNotification('SUCCESS', 'Logout completato con successo.')
       } else {
@@ -221,7 +227,7 @@ watch(
       aria-live="polite"
       :aria-expanded="isNotificationExpanded"
       :title="notificationHistoryTitle"
-      @click="toggleNotificationExpanded"
+      @click="handleNotificationTap"
     >
       <span class="notification-state">{{ notification.status }}</span>
       <span class="notification-message">{{ notification.message }}</span>
