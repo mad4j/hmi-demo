@@ -258,4 +258,10 @@ pages:
         icon: "login"
         title: Accesso
         content: Gestione credenziali di accesso.
-        parameters: []
+        parameters:
+          - id: login_name
+            name: Name
+            type: text
+          - id: login_password
+            name: Password
+            type: password

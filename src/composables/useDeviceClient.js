@@ -70,6 +70,9 @@ const apparatusState = {
   status_channel: 'ok',
   status_gps: 'ok',
   status_login: 'ok',
+  // Login
+  login_name: '',
+  login_password: '',
 }
 
 // ── Network latency simulation ────────────────────────────────────────────

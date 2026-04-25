@@ -13,7 +13,7 @@ const props = defineProps({
   type: {
     type: String,
     default: 'number',
-    validator: (v) => ['number', 'percentage', 'enum', 'boolean'].includes(v),
+    validator: (v) => ['number', 'percentage', 'enum', 'boolean', 'text', 'password'].includes(v),
   },
   unit: {
     type: String,
@@ -55,6 +55,10 @@ const displayValue = computed(() => {
       props.precision !== null ? num.toFixed(props.precision) : String(props.value)
     return props.unit ? `${formatted} ${props.unit}` : formatted
   }
+  if (props.type === 'password') {
+    const raw = String(props.value ?? '')
+    return raw ? '•'.repeat(raw.length) : '—'
+  }
   return String(props.value ?? '—')
 })
 
@@ -65,12 +69,14 @@ const isClickable = computed(
     !props.readonly &&
     (props.type === 'boolean' ||
       props.type === 'percentage' ||
+      props.type === 'text' ||
+      props.type === 'password' ||
       (props.type === 'enum' && props.options.length > 0)),
 )
 
 const handleClick = () => {
   if (!isClickable.value) return
-  if (props.type === 'percentage') {
+  if (props.type === 'percentage' || props.type === 'text' || props.type === 'password') {
     emit('edit')
   } else {
     emit('toggle')
@@ -184,6 +190,12 @@ const handleClick = () => {
 
 /* ── Percentage widget ───────────────────────────────────── */
 .param-widget--percentage .param-value {
+  color: var(--text-blue);
+}
+
+.param-widget--text .param-value,
+.param-widget--password .param-value {
+  font-size: 1rem;
   color: var(--text-blue);
 }
 
