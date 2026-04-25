@@ -1,5 +1,6 @@
 <script setup>
 import { computed } from 'vue'
+import IconLock from './icons/IconLock.vue'
 
 const props = defineProps({
   name: {
@@ -91,10 +92,7 @@ const handleClick = () => {
   >
     <div class="param-name">
       {{ name }}
-      <svg v-if="readonly" class="readonly-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-      </svg>
+      <IconLock v-if="readonly" class="readonly-icon" aria-hidden="true" />
     </div>
     <div class="param-value">{{ displayValue }}</div>
   </div>
