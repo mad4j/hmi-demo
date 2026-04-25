@@ -3,7 +3,7 @@ import rawMenuConfig from '../config/menu.yml?raw'
 
 const fallbackConfig = {
   title: 'HMI Demo',
-  status: 'ONLINE',
+  statusIcons: [],
   navigation: {
     previousLabel: 'Precedente',
     nextLabel: 'Successiva',
@@ -21,6 +21,18 @@ const fallbackConfig = {
 }
 
 const MAX_MENU_DEPTH = 8
+
+export const normalizeStatusIcons = (icons) => {
+  if (!Array.isArray(icons)) return []
+  return icons
+    .filter((ic) => ic && typeof ic === 'object' && typeof ic.id === 'string' && ic.id.trim())
+    .map((ic) => ({
+      id: ic.id.trim(),
+      icon: typeof ic.icon === 'string' ? ic.icon.trim() : ic.id.trim(),
+      pageId: typeof ic.pageId === 'string' ? ic.pageId.trim() : '',
+      parameterId: typeof ic.parameterId === 'string' ? ic.parameterId.trim() : '',
+    }))
+}
 
 export const normalizeParameters = (params) => {
   if (!Array.isArray(params)) return []
@@ -127,10 +139,7 @@ const buildConfig = () => {
         typeof sourceConfig.title === 'string' && sourceConfig.title.trim()
           ? sourceConfig.title
           : fallbackConfig.title,
-      status:
-        typeof sourceConfig.status === 'string' && sourceConfig.status.trim()
-          ? sourceConfig.status
-          : fallbackConfig.status,
+      statusIcons: normalizeStatusIcons(sourceConfig.statusIcons),
       navigation: {
         previousLabel:
           typeof sourceConfig.navigation?.previousLabel === 'string' &&

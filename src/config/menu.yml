@@ -1,5 +1,21 @@
 title: HMI Demo
-status: ONLINE
+statusIcons:
+  - id: fault
+    icon: fault
+    pageId: allarmi
+    parameterId: status_fault
+  - id: channel
+    icon: channel
+    pageId: info
+    parameterId: status_channel
+  - id: gps
+    icon: gps
+    pageId: info
+    parameterId: status_gps
+  - id: login
+    icon: login
+    pageId: impostazioni
+    parameterId: status_login
 navigation:
   previousLabel: Precedente
   nextLabel: Successiva

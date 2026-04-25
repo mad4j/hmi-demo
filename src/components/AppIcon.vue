@@ -124,6 +124,79 @@ defineProps({
     <circle cx="10" cy="18" r="2" fill="currentColor" stroke="none" />
   </svg>
 
+  <!-- Fault (warning triangle with exclamation) -->
+  <svg
+    v-else-if="name === 'fault'"
+    :width="size"
+    :height="size"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="1.8"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+    <line x1="12" y1="9" x2="12" y2="13" />
+    <line x1="12" y1="17" x2="12.01" y2="17" />
+  </svg>
+
+  <!-- Channel state (signal bars) -->
+  <svg
+    v-else-if="name === 'channel'"
+    :width="size"
+    :height="size"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="1.8"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <line x1="1" y1="6" x2="1" y2="18" />
+    <line x1="7" y1="10" x2="7" y2="18" />
+    <line x1="13" y1="13" x2="13" y2="18" />
+    <line x1="19" y1="16" x2="19" y2="18" />
+  </svg>
+
+  <!-- GPS (location pin) -->
+  <svg
+    v-else-if="name === 'gps'"
+    :width="size"
+    :height="size"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="1.8"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <circle cx="12" cy="10" r="3" />
+    <path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 14 8 14s8-8.75 8-14a8 8 0 0 0-8-8z" />
+  </svg>
+
+  <!-- Login (user + lock) -->
+  <svg
+    v-else-if="name === 'login'"
+    :width="size"
+    :height="size"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="1.8"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+    <circle cx="12" cy="7" r="4" />
+    <rect x="15" y="11" width="6" height="5" rx="1" />
+    <line x1="18" y1="11" x2="18" y2="10" />
+  </svg>
+
   <!-- Fallback: generic circle -->
   <svg
     v-else

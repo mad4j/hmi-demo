@@ -36,6 +36,11 @@ const sampleValues = {
   temperatura_cpu: 48,
   data_sistema: '23/04/2026',
   ora_sistema: '17:30',
+  // Status icon parameters (values: 'ok' | 'warning' | 'error' | 'off')
+  status_fault: 'warning',
+  status_channel: 'ok',
+  status_gps: 'ok',
+  status_login: 'ok',
 }
 
 // ── Singleton state ───────────────────────────────────────
@@ -49,7 +54,10 @@ const uniqueParameters = flattenSelectablePages(menuConfig.pages)
   })
 
 const parameterValues = reactive(
-  Object.fromEntries(uniqueParameters.map((p) => [p.id, sampleValues[p.id] ?? null])),
+  Object.fromEntries([
+    ...uniqueParameters.map((p) => [p.id, sampleValues[p.id] ?? null]),
+    ...menuConfig.statusIcons.map((ic) => [ic.parameterId, sampleValues[ic.parameterId] ?? 'off']),
+  ]),
 )
 
 export const useParameterStore = () => {
