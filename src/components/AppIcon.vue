@@ -16,9 +16,27 @@ defineProps({
 </script>
 
 <template>
+  <!-- Home -->
+  <svg
+    v-if="name === 'home'"
+    :width="size"
+    :height="size"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="1.8"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <path d="M3 12L12 3l9 9" />
+    <path d="M9 21V12h6v9" />
+    <path d="M5 10v11h14V10" />
+  </svg>
+
   <!-- Settings / Menu -->
   <svg
-    v-if="name === 'menu'"
+    v-else-if="name === 'menu'"
     :width="size"
     :height="size"
     viewBox="0 0 24 24"

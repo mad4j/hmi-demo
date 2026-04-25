@@ -38,6 +38,12 @@ export const useMenuNavigation = () => {
     showingSecondLevel.value = false
   }
 
+  const goHome = () => {
+    currentPageId.value = selectablePages[0]?.id ?? menuConfig.pages[0].id
+    showingSecondLevel.value = false
+    secondLevelParentId.value = null
+  }
+
   // ── Computed ──────────────────────────────────────────────
   const currentPage = computed(
     () =>
@@ -86,5 +92,6 @@ export const useMenuNavigation = () => {
     selectLevel1Item,
     selectLevel2Item,
     goBack,
+    goHome,
   }
 }
