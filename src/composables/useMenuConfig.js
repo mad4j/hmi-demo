@@ -20,14 +20,27 @@ export const normalizeStatusIcons = (icons) => {
   if (!Array.isArray(icons)) return []
   return icons
     .filter((ic) => ic && typeof ic === 'object' && typeof ic.id === 'string' && ic.id.trim())
-    .map((ic) => ({
-      id: ic.id.trim(),
-      label:
-        typeof ic.label === 'string' && ic.label.trim() ? ic.label.trim() : ic.id.trim(),
-      icon: typeof ic.icon === 'string' ? ic.icon.trim() : ic.id.trim(),
-      pageId: typeof ic.pageId === 'string' ? ic.pageId.trim() : '',
-      parameterId: typeof ic.parameterId === 'string' ? ic.parameterId.trim() : '',
-    }))
+    .map((ic) => {
+      const pageIdByState =
+        ic.pageIdByState && typeof ic.pageIdByState === 'object'
+          ? Object.entries(ic.pageIdByState).reduce((acc, [state, pageId]) => {
+              if (typeof state !== 'string' || !state.trim()) return acc
+              if (typeof pageId !== 'string' || !pageId.trim()) return acc
+              acc[state.trim()] = pageId.trim()
+              return acc
+            }, {})
+          : {}
+
+      return {
+        id: ic.id.trim(),
+        label:
+          typeof ic.label === 'string' && ic.label.trim() ? ic.label.trim() : ic.id.trim(),
+        icon: typeof ic.icon === 'string' ? ic.icon.trim() : ic.id.trim(),
+        pageId: typeof ic.pageId === 'string' ? ic.pageId.trim() : '',
+        pageIdByState,
+        parameterId: typeof ic.parameterId === 'string' ? ic.parameterId.trim() : '',
+      }
+    })
 }
 
 export const normalizeParameters = (params) => {

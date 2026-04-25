@@ -26,7 +26,8 @@ npm run build
 - `src/composables/useMenuConfig.js`: parsing e normalizzazione del menu YAML.
 - `src/composables/useMenuNavigation.js`: stato singleton della navigazione tra primo e secondo livello.
 - `src/composables/useParameterStore.js`: stato reattivo dei parametri e sincronizzazione con il client apparato.
-- `src/composables/useDeviceClient.js`: simulazione del backend remoto con fetch iniziale, comandi e notifiche push.
+- `src/composables/useDeviceClient.js`: client async verso l'apparato remoto (fetch iniziale, comandi e notifiche push).
+- `src/composables/deviceSimulator.js`: simulatore dell'apparato remoto con stato server-side, latenza e notifiche.
 - `src/components/`: widget, modali e icone usati dall'interfaccia.
 
 ## Configurazione menu
@@ -54,3 +55,13 @@ I parametri dichiarati nel file YAML supportano questi tipi:
 - `date`
 
 I valori sono inizializzati dal client simulato e poi aggiornati tramite notifiche periodiche o comandi inviati dall'interfaccia.
+
+## Login simulato
+
+Il simulatore parte in stato `unlogged` (icona login in stato `off`).
+Quando riceve credenziali corrette passa a `logged` (icona login in stato `ok`).
+
+Credenziali del simulatore:
+
+- Name: `admin`
+- Password: `admin`

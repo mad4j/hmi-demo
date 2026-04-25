@@ -7,6 +7,16 @@ import { useMenuNavigation } from '../composables/useMenuNavigation.js'
 const { parameterValues } = useParameterStore()
 const { navigateToPage } = useMenuNavigation()
 
+const getTargetPageId = (icon) => {
+  const currentState = parameterValues[icon.parameterId]
+  const mappedPageId =
+    icon.pageIdByState && typeof icon.pageIdByState === 'object'
+      ? icon.pageIdByState[currentState]
+      : ''
+
+  return mappedPageId || icon.pageId
+}
+
 const stateClass = (parameterId) => {
   const val = parameterValues[parameterId]
   if (val === 'ok') return 'si--ok'
@@ -26,7 +36,7 @@ const stateClass = (parameterId) => {
       type="button"
       :aria-label="icon.label"
       :title="icon.label"
-      @click="navigateToPage(icon.pageId)"
+      @click="navigateToPage(getTargetPageId(icon))"
     >
       <AppIcon :name="icon.icon" :size="18" />
     </button>

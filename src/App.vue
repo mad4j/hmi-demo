@@ -3,7 +3,7 @@ import PageParametersView from './components/PageParametersView.vue'
 import ParameterWidget from './components/ParameterWidget.vue'
 import AppIcon from './components/AppIcon.vue'
 import StatusIconBar from './components/StatusIconBar.vue'
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { menuConfig } from './composables/useMenuConfig.js'
 import { useMenuNavigation } from './composables/useMenuNavigation.js'
 import { useTheme } from './composables/useTheme.js'
@@ -19,6 +19,7 @@ const {
   selectLevel2Item,
   goBack,
   goHome,
+  navigateToPage,
 } = useMenuNavigation()
 
 const { isDark, toggleTheme } = useTheme()
@@ -62,6 +63,29 @@ const submenuTileStyle = (index) =>
 
 // ── Settings page ───────────────────────────────────────
 const SETTINGS_PAGE_ID = 'tema'
+const LOGOUT_PAGE_ID = 'logout'
+
+const logoutInProgress = ref(false)
+
+watch(
+  () => currentPage.value?.id,
+  async (pageId) => {
+    if (pageId !== LOGOUT_PAGE_ID || logoutInProgress.value) return
+
+    logoutInProgress.value = true
+    try {
+      if (parameterValues.login_name !== '') {
+        await setParameterValue('login_name', '')
+      }
+      if (parameterValues.login_password !== '') {
+        await setParameterValue('login_password', '')
+      }
+      navigateToPage('login')
+    } finally {
+      logoutInProgress.value = false
+    }
+  },
+)
 </script>
 
 <template>

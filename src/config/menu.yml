@@ -19,6 +19,9 @@ statusIcons:
     label: Stato accesso
     icon: login
     pageId: login
+    pageIdByState:
+      off: login
+      ok: logout
     parameterId: status_login
 pages:
   - id: menu
@@ -248,3 +251,7 @@ pages:
           - id: login_password
             name: Password
             type: password
+      - id: logout
+        label: Logout
+        icon: "lock"
+        parameters: []
