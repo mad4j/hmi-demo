@@ -56,7 +56,7 @@ const formatReadonlyValue = (param, value) => {
   return String(value)
 }
 
-// Number input step derived from precision (e.g. precision 1 → step 0.1)
+// Number input step derived from precision (e.g. precision 1 → step 0.1, precision 2 → step 0.01)
 const numberStep = (param) =>
   param.precision !== null ? Math.pow(10, -param.precision) : 1
 </script>
