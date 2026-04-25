@@ -7,9 +7,6 @@ import {
 
 // ── Singleton state ───────────────────────────────────────
 const selectablePages = flattenSelectablePages(menuConfig.pages)
-const selectablePageIndexById = new Map(
-  selectablePages.map((page, index) => [page.id, index]),
-)
 
 const currentPageId = ref(selectablePages[0]?.id ?? menuConfig.pages[0].id)
 const showingSecondLevel = ref(false)
@@ -59,12 +56,6 @@ export const useMenuNavigation = () => {
       menuConfig.pages[0],
   )
 
-  const pageCounterLabel = computed(() => {
-    const safeIndex = (selectablePageIndexById.get(currentPage.value.id) ?? 0) + 1
-    const total = selectablePages.length || 1
-    return `${safeIndex}/${total}`
-  })
-
   const level1Items = computed(() => menuConfig.pages)
 
   const secondLevelItems = computed(() => {
@@ -91,7 +82,6 @@ export const useMenuNavigation = () => {
     showingSecondLevel,
     // computed
     currentPage,
-    pageCounterLabel,
     level1Items,
     secondLevelItems,
     activeLevel1Id,

@@ -4,16 +4,10 @@ import rawMenuConfig from '../config/menu.yml?raw'
 const fallbackConfig = {
   title: 'HMI Demo',
   statusIcons: [],
-  navigation: {
-    previousLabel: 'Precedente',
-    nextLabel: 'Successiva',
-  },
   pages: [
     {
       id: 'home',
       label: 'Menu',
-      title: 'Menu principale',
-      content: 'Interfaccia ottimizzata per 800x600 e uso su mezzi mobili.',
       submenus: [],
       parameters: [],
     },
@@ -70,9 +64,6 @@ export const normalizeMenuItems = (items, idPrefix = 'page', depth = 0) =>
         label:
           typeof item.label === 'string' && item.label.trim() ? item.label : `Pagina ${index + 1}`,
         icon: typeof item.icon === 'string' ? item.icon : '',
-        title:
-          typeof item.title === 'string' && item.title.trim() ? item.title : `Pagina ${index + 1}`,
-        content: typeof item.content === 'string' ? item.content : '',
         submenus: normalizedSubmenus,
         parameters: normalizeParameters(item.parameters),
       }
@@ -100,31 +91,6 @@ export const findPageById = (pages, targetId) => {
   return null
 }
 
-export const findPathToPage = (pages, targetId, currentPath = []) => {
-  for (const page of pages) {
-    if (page.id === targetId) return currentPath
-    if (page.submenus?.length) {
-      const result = findPathToPage(page.submenus, targetId, [...currentPath, page.id])
-      if (result !== null) return result
-    }
-  }
-  return null
-}
-
-export const getMenuItemsByPath = (pages, path) => {
-  let currentItems = pages
-
-  for (const id of path) {
-    const currentNode = currentItems.find((item) => item.id === id)
-    if (!currentNode || !currentNode.submenus.length) {
-      return pages
-    }
-    currentItems = currentNode.submenus
-  }
-
-  return currentItems
-}
-
 const buildConfig = () => {
   try {
     const parsedConfig = load(rawMenuConfig)
@@ -144,18 +110,6 @@ const buildConfig = () => {
           ? sourceConfig.title
           : fallbackConfig.title,
       statusIcons: normalizeStatusIcons(sourceConfig.statusIcons),
-      navigation: {
-        previousLabel:
-          typeof sourceConfig.navigation?.previousLabel === 'string' &&
-          sourceConfig.navigation.previousLabel.trim()
-            ? sourceConfig.navigation.previousLabel
-            : fallbackConfig.navigation.previousLabel,
-        nextLabel:
-          typeof sourceConfig.navigation?.nextLabel === 'string' &&
-          sourceConfig.navigation.nextLabel.trim()
-            ? sourceConfig.navigation.nextLabel
-            : fallbackConfig.navigation.nextLabel,
-      },
       pages: normalizedPages,
     }
   } catch {

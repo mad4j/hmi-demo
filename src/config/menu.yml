@@ -20,20 +20,13 @@ statusIcons:
     icon: login
     pageId: login
     parameterId: status_login
-navigation:
-  previousLabel: Precedente
-  nextLabel: Successiva
 pages:
   - id: menu
     label: Menu
     icon: "menu"
-    title: Menu principale
-    content: Accesso rapido alle funzioni principali del veicolo.
     submenus:
       - id: climatizzazione
         label: Climatizzazione
-        title: Controllo clima
-        content: Temperatura abitacolo impostata a 21°C. Ventilazione automatica attiva.
         parameters:
           - id: temp_abitacolo
             name: Temperatura
@@ -74,8 +67,6 @@ pages:
             options: [AUTO, MANUAL, ECO, SPORT]
       - id: porte
         label: Porte
-        title: Stato porte
-        content: Tutte le porte risultano chiuse e bloccate.
         parameters:
           - id: porta_ant_sx
             name: Ant. SX
@@ -107,8 +98,6 @@ pages:
   - id: allarmi
     label: Allarmi
     icon: "alarm"
-    title: Stato allarmi
-    content: Nessun allarme critico attivo. Controllare periodicamente i sensori.
     parameters:
       - id: allarme_batteria
         name: Batteria
@@ -146,8 +135,6 @@ pages:
   - id: info
     label: Info
     icon: "info"
-    title: Informazioni sistema
-    content: Versione HMI demo 1.0 - collegamento rete stabile.
     parameters:
       - id: versione_hmi
         name: Versione HMI
@@ -192,21 +179,15 @@ pages:
   - id: impostazioni
     label: Impostazioni
     icon: "settings"
-    title: Impostazioni
-    content: Personalizzazione dell'interfaccia.
     parameters: []
     submenus:
       - id: tema
         label: Tema
         icon: "theme"
-        title: Gestione tema
-        content: Personalizza l'aspetto dell'interfaccia.
         parameters: []
       - id: gps
         label: GPS
         icon: "gps"
-        title: Gestione GPS
-        content: Stato e configurazione del modulo GPS.
         parameters:
           - id: gps_stato
             name: Stato
@@ -256,8 +237,6 @@ pages:
       - id: login
         label: Accesso
         icon: "login"
-        title: Accesso
-        content: Gestione credenziali di accesso.
         parameters:
           - id: login_name
             name: Name

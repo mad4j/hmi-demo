@@ -1,4 +1,4 @@
-import { reactive, ref } from 'vue'
+import { reactive } from 'vue'
 import { flattenSelectablePages, menuConfig } from './useMenuConfig.js'
 import { useDeviceClient } from './useDeviceClient.js'
 
@@ -20,9 +20,6 @@ const parameterValues = reactive(
   ]),
 )
 
-// Indicates whether the initial state has been received from the apparatus.
-const isReady = ref(false)
-
 // ── Connect to apparatus via device client ────────────────
 const { fetchState, sendCommand, subscribe } = useDeviceClient()
 
@@ -32,11 +29,9 @@ fetchState()
     Object.entries(state).forEach(([id, value]) => {
       if (id in parameterValues) parameterValues[id] = value
     })
-    isReady.value = true
   })
   .catch(() => {
-    // Connection failed; isReady stays false so the UI can reflect the error
-    // via the isConnected flag exposed by useDeviceClient.
+    // Connection failed; the UI can reflect the error via the device client state.
   })
 
 // Subscribe to apparatus notifications (server-push updates)
@@ -87,5 +82,5 @@ export const useParameterStore = () => {
     }
   }
 
-  return { parameterValues, isReady, toggleParameter, setParameterValue }
+  return { parameterValues, toggleParameter, setParameterValue }
 }
