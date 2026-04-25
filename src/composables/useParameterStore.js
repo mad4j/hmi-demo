@@ -87,5 +87,35 @@ export const useParameterStore = () => {
     }
   }
 
-  return { parameterValues, isReady, toggleParameter, setParameterValue }
+  /**
+   * Sends multiple parameter updates atomically.
+   * All values are applied optimistically and reverted together on failure.
+   * @param {Record<string, unknown>} updates  Map of parameterId → newValue
+   */
+  const sendBatchCommands = async (updates) => {
+    const previous = {}
+    for (const [id, value] of Object.entries(updates)) {
+      if (id in parameterValues) {
+        previous[id] = parameterValues[id]
+        parameterValues[id] = value // optimistic update
+      }
+    }
+    try {
+      await Promise.all(
+        Object.entries(updates)
+          .filter(([id]) => id in parameterValues)
+          .map(([id, value]) => sendCommand(id, value)),
+      )
+    } catch (err) {
+      // Revert all optimistic updates on failure (same strategy as toggleParameter /
+      // setParameterValue – errors are handled at the store level so individual
+      // components don't need to deal with network failures).
+      console.error('[useParameterStore] sendBatchCommands failed, reverting:', err)
+      for (const [id, value] of Object.entries(previous)) {
+        parameterValues[id] = value
+      }
+    }
+  }
+
+  return { parameterValues, isReady, toggleParameter, setParameterValue, sendBatchCommands }
 }
