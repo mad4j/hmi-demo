@@ -33,6 +33,7 @@ pages:
       - id: climatizzazione
         label: Climatizzazione
         title: Controllo clima
+        modal: true
         content: Temperatura abitacolo impostata a 21°C. Ventilazione automatica attiva.
         parameters:
           - id: temp_abitacolo
@@ -75,6 +76,7 @@ pages:
       - id: porte
         label: Porte
         title: Stato porte
+        modal: true
         content: Tutte le porte risultano chiuse e bloccate.
         parameters:
           - id: porta_ant_sx

@@ -71,6 +71,7 @@ export const normalizeMenuItems = (items, idPrefix = 'page', depth = 0) =>
         title:
           typeof item.title === 'string' && item.title.trim() ? item.title : `Pagina ${index + 1}`,
         content: typeof item.content === 'string' ? item.content : '',
+        modal: item.modal === true,
         submenus: normalizedSubmenus,
         parameters: normalizeParameters(item.parameters),
       }
