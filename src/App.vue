@@ -1,7 +1,6 @@
 <script setup>
+import PageParametersView from './components/PageParametersView.vue'
 import ParameterWidget from './components/ParameterWidget.vue'
-import PercentageEditorModal from './components/PercentageEditorModal.vue'
-import TextEditorModal from './components/TextEditorModal.vue'
 import AppIcon from './components/AppIcon.vue'
 import StatusIconBar from './components/StatusIconBar.vue'
 import { ref, computed, onMounted, onUnmounted } from 'vue'
@@ -57,45 +56,14 @@ const centredGridStyle = (index, total, cols) => {
   return { gridColumnStart: offset + posInRow + 1 }
 }
 
-const paramStyle = (index) =>
-  centredGridStyle(index, currentPage.value.parameters.length, widgetCols.value)
-
 const settingsParamStyle = () => centredGridStyle(0, 1, widgetCols.value)
 
 // +1 for the back tile prepended in the template
 const submenuTileStyle = (index) =>
   centredGridStyle(index, secondLevelItems.value.length + 1, submenuCols.value)
 
-// ── Percentage editor state ───────────────────────────────
+// ── Settings page ───────────────────────────────────────
 const SETTINGS_PAGE_ID = 'tema'
-
-const editingParamId = ref(null)
-
-const editingParam = computed(() =>
-  editingParamId.value
-    ? currentPage.value.parameters.find((p) => p.id === editingParamId.value) ?? null
-    : null,
-)
-
-const startEditParameter = (id) => {
-  editingParamId.value = id
-}
-
-const confirmEdit = (newValue) => {
-  if (editingParamId.value !== null) {
-    setParameterValue(editingParamId.value, newValue)
-  }
-  editingParamId.value = null
-}
-
-const cancelEdit = () => {
-  editingParamId.value = null
-}
-
-const isEditingPercentage = computed(() => editingParam.value?.type === 'percentage')
-const isEditingText = computed(
-  () => editingParam.value?.type === 'text' || editingParam.value?.type === 'password',
-)
 </script>
 
 <template>
@@ -149,22 +117,14 @@ const isEditingText = computed(
             @toggle="toggleTheme"
           />
         </div>
-        <div v-else-if="currentPage.parameters.length" class="widget-grid">
-          <ParameterWidget
-            v-for="(param, index) in currentPage.parameters"
-            :key="param.id"
-            :style="paramStyle(index)"
-            :name="param.name"
-            :type="param.type"
-            :unit="param.unit"
-            :precision="param.precision"
-            :options="param.options"
-            :value="parameterValues[param.id]"
-            :readonly="param.readonly"
-            @toggle="toggleParameter(param.id)"
-            @edit="startEditParameter(param.id)"
-          />
-        </div>
+        <PageParametersView
+          v-else
+          :parameters="currentPage.parameters"
+          :parameter-values="parameterValues"
+          :viewport-width="viewportWidth"
+          @toggle-parameter="toggleParameter"
+          @set-parameter-value="setParameterValue"
+        />
       </template>
     </main>
 
@@ -190,23 +150,6 @@ const isEditingText = computed(
         <span class="tab-label">{{ item.label }}</span>
       </button>
     </footer>
-
-    <PercentageEditorModal
-      v-if="editingParam && isEditingPercentage"
-      :name="editingParam.name"
-      :value="Number(parameterValues[editingParam.id] ?? 0)"
-      @confirm="confirmEdit"
-      @cancel="cancelEdit"
-    />
-
-    <TextEditorModal
-      v-if="editingParam && isEditingText"
-      :name="editingParam.name"
-      :value="parameterValues[editingParam.id] ?? ''"
-      :input-type="editingParam.type === 'password' ? 'password' : 'text'"
-      @confirm="confirmEdit"
-      @cancel="cancelEdit"
-    />
   </div>
 </template>
 
