@@ -95,6 +95,9 @@ let notificationTimerId = null
 const clamp = (v, min, max) => Math.max(min, Math.min(max, v))
 const drift = (v, delta, min, max) =>
   clamp(v + (Math.random() - 0.5) * 2 * delta, min, max)
+const logDeviceTraffic = (direction, action, payload) => {
+  console.info(`[DeviceClient] ${direction} ${action}`, payload)
+}
 
 /** Mutates apparatusState in-place and returns only the changed fields. */
 const generateNotification = () => {
@@ -206,6 +209,7 @@ const startNotifications = () => {
   notificationTimerId = setInterval(() => {
     const updates = generateNotification()
     if (Object.keys(updates).length > 0) {
+      logDeviceTraffic('<-', 'notification', updates)
       notificationListeners.forEach((cb) => cb(updates))
     }
   }, NOTIFICATION_INTERVAL_MS)
@@ -225,10 +229,13 @@ export const useDeviceClient = () => {
   const fetchState = async () => {
     isLoading.value = true
     try {
+      logDeviceTraffic('->', 'fetchState', null)
       await simulateLatency()
       isConnected.value = true
       startNotifications()
-      return { ...apparatusState }
+      const stateSnapshot = { ...apparatusState }
+      logDeviceTraffic('<-', 'fetchState', stateSnapshot)
+      return stateSnapshot
     } finally {
       isLoading.value = false
     }
@@ -240,9 +247,12 @@ export const useDeviceClient = () => {
    * The apparatus applies the change and confirms with { ok, id, value }.
    */
   const sendCommand = async (id, value) => {
+    logDeviceTraffic('->', 'sendCommand', { id, value })
     await simulateLatency()
     apparatusState[id] = value
-    return { ok: true, id, value }
+    const response = { ok: true, id, value }
+    logDeviceTraffic('<-', 'sendCommand', response)
+    return response
   }
 
   /**

@@ -56,8 +56,6 @@ const centredGridStyle = (index, total, cols) => {
   return { gridColumnStart: offset + posInRow + 1 }
 }
 
-const settingsParamStyle = () => centredGridStyle(0, 1, widgetCols.value)
-
 // +1 for the back tile prepended in the template
 const submenuTileStyle = (index) =>
   centredGridStyle(index, secondLevelItems.value.length + 1, submenuCols.value)
@@ -108,14 +106,15 @@ const SETTINGS_PAGE_ID = 'tema'
         </div>
       </template>
       <template v-else>
-        <div v-if="currentPage.id === SETTINGS_PAGE_ID" class="widget-grid">
-          <ParameterWidget
-            :style="settingsParamStyle()"
-            name="Tema scuro"
-            type="boolean"
-            :value="isDark"
-            @toggle="toggleTheme"
-          />
+        <div v-if="currentPage.id === SETTINGS_PAGE_ID" class="settings-page">
+          <div class="settings-widget">
+            <ParameterWidget
+              name="Tema scuro"
+              type="boolean"
+              :value="isDark"
+              @toggle="toggleTheme"
+            />
+          </div>
         </div>
         <PageParametersView
           v-else
@@ -388,10 +387,25 @@ button:active {
 }
 
 /* ── Settings page ──────────────────────────────────────── */
+.settings-page {
+  display: flex;
+  flex: 1 1 auto;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.settings-widget {
+  width: calc((100% - 1.5rem) / 4);
+}
 
 @media (max-width: 599px) {
   .widget-grid {
     grid-template-columns: repeat(3, 1fr);
+  }
+
+  .settings-widget {
+    width: calc((100% - 1rem) / 3);
   }
 }
 
@@ -399,6 +413,11 @@ button:active {
   .widget-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+
+  .settings-widget {
+    width: calc((100% - 0.5rem) / 2);
+  }
+
   .submenu-grid {
     grid-template-columns: repeat(2, 1fr);
   }
