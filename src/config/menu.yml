@@ -13,7 +13,7 @@ statusIcons:
   - id: gps
     label: Stato GPS
     icon: gps
-    pageId: info
+    pageId: gps
     parameterId: status_gps
   - id: login
     label: Stato accesso
@@ -189,6 +189,57 @@ pages:
         name: Ora
         type: enum
         readonly: true
+  - id: gps
+    label: GPS
+    icon: "gps"
+    title: Gestione GPS
+    content: Stato e configurazione del modulo GPS.
+    parameters:
+      - id: gps_stato
+        name: Stato
+        type: enum
+        options: [AGGANCIATO, IN RICERCA, ERRORE, DISATTIVO]
+        readonly: true
+      - id: gps_satelliti
+        name: Satelliti
+        type: number
+        unit: "sat"
+        precision: 0
+        readonly: true
+      - id: gps_latitudine
+        name: Latitudine
+        type: number
+        unit: "°"
+        precision: 5
+        readonly: true
+      - id: gps_longitudine
+        name: Longitudine
+        type: number
+        unit: "°"
+        precision: 5
+        readonly: true
+      - id: gps_altitudine
+        name: Altitudine
+        type: number
+        unit: "m"
+        precision: 0
+        readonly: true
+      - id: gps_velocita
+        name: Velocità
+        type: number
+        unit: "km/h"
+        precision: 1
+        readonly: true
+      - id: gps_accuratezza
+        name: Accuratezza
+        type: number
+        unit: "m"
+        precision: 1
+        readonly: true
+      - id: gps_modalita
+        name: Modalità
+        type: enum
+        options: [AUTO, MANUALE, DISATTIVO]
   - id: impostazioni
     label: Impostazioni
     icon: "settings"
