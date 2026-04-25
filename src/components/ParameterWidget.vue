@@ -106,7 +106,7 @@ const handleClick = () => {
   display: flex;
   flex-direction: column;
   width: 100%;
-  min-height: 5.5rem;
+  height: 5.5rem;
   border: 1px solid var(--border);
   border-radius: 0.45rem;
   overflow: hidden;
