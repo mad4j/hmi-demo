@@ -10,18 +10,13 @@
  *   setParameters(params)      – apply a map of { id: value } updates to the apparatus
  *   notifyParameters(callback) – subscribe to asynchronous apparatus push notifications
  *
- * In production this would wrap a real REST/WebSocket transport.
- * Here every operation is simulated with artificial latency so that
- * the rest of the application code is structured exactly as it would
- * be against a real server.
+ * Transport: REST (fetch) for reads/writes; SSE (EventSource) for push notifications.
+ * The Vite dev-server proxies /api to the simulator server (see vite.config.js).
  */
 
 import { ref } from 'vue'
-import {
-  simulateGetParameters,
-  simulateSetParameters,
-  subscribeToParameterNotifications,
-} from './deviceSimulator.js'
+
+const BASE_URL = '/api'
 
 const logDeviceTraffic = (direction, action, payload) => {
   console.info(`[DeviceClient] ${direction} ${action}`, payload)
@@ -34,7 +29,7 @@ export const isLoading = ref(false)
 // ── Composable ────────────────────────────────────────────────────────────
 export const useDeviceClient = () => {
   /**
-   * GET /api/parameters
+   * GET /api/parameters?ids=id1,id2,...
    * Requests current values for the provided list of parameter IDs.
    * @param {string[]} ids
    * @returns {Promise<{ ok: true, values: Record<string, unknown> } | { ok: false, message: string }>}
@@ -43,7 +38,9 @@ export const useDeviceClient = () => {
     isLoading.value = true
     try {
       logDeviceTraffic('->', 'getParameters', ids)
-      const result = await simulateGetParameters(ids)
+      const qs = ids.length > 0 ? `?ids=${ids.join(',')}` : ''
+      const response = await fetch(`${BASE_URL}/parameters${qs}`)
+      const result = await response.json()
       if (result.ok) {
         isConnected.value = true
         logDeviceTraffic('<-', 'getParameters', result.values)
@@ -71,7 +68,12 @@ export const useDeviceClient = () => {
   const setParameters = async (params) => {
     try {
       logDeviceTraffic('->', 'setParameters', params)
-      const result = await simulateSetParameters(params)
+      const response = await fetch(`${BASE_URL}/parameters`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ params }),
+      })
+      const result = await response.json()
       if (result.ok) {
         logDeviceTraffic('<-', 'setParameters', result)
       } else {
@@ -86,17 +88,27 @@ export const useDeviceClient = () => {
   }
 
   /**
-   * Subscribe to apparatus notifications (server-push simulation).
+   * Subscribe to apparatus push notifications via SSE (GET /api/notifications).
    * @param {(updates: Record<string, unknown>) => void} callback
    *   Called whenever the apparatus broadcasts a parameter update.
    *   Only the changed fields are included in `updates`.
    * @returns {() => void} Unsubscribe function.
    */
   const notifyParameters = (callback) => {
-    return subscribeToParameterNotifications((updates) => {
-      logDeviceTraffic('<-', 'notification', updates)
-      callback(updates)
-    })
+    const source = new EventSource(`${BASE_URL}/notifications`)
+    source.onmessage = (event) => {
+      try {
+        const updates = JSON.parse(event.data)
+        logDeviceTraffic('<-', 'notification', updates)
+        callback(updates)
+      } catch {
+        // ignore malformed notification frames
+      }
+    }
+    source.onerror = () => {
+      isConnected.value = false
+    }
+    return () => source.close()
   }
 
   return { getParameters, setParameters, notifyParameters, isConnected, isLoading }
