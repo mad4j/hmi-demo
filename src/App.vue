@@ -249,7 +249,7 @@ watch(
         :disabled="!canGoToPreviousPage"
         @click="goToPreviousPage"
       >
-        <span class="tab-icon" aria-hidden="true">&lt;</span>
+        <AppIcon name="back" :size="22" class="tab-icon" />
       </button>
       <button
         class="tab-button tab-button--home"
@@ -498,15 +498,6 @@ watch(
 
 .tab-button--back {
   flex: 0.333333;
-}
-
-.tab-button--back .tab-icon {
-  display: inline-block;
-  font-family: 'Segoe UI Symbol', 'Segoe UI', sans-serif;
-  font-size: 1.18rem;
-  font-weight: 400;
-  line-height: 1;
-  transform: scaleX(1.3);
 }
 
 .tab-button:disabled {
