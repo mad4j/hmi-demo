@@ -189,6 +189,12 @@ pages:
         name: Ora
         type: enum
         readonly: true
+  - id: impostazioni
+    label: Impostazioni
+    icon: "settings"
+    title: Impostazioni
+    content: Personalizzazione dell'interfaccia.
+    parameters: []
   - id: gps
     label: GPS
     icon: "gps"
@@ -240,9 +246,3 @@ pages:
         name: Modalità
         type: enum
         options: [AUTO, MANUALE, DISATTIVO]
-  - id: impostazioni
-    label: Impostazioni
-    icon: "settings"
-    title: Impostazioni
-    content: Personalizzazione dell'interfaccia.
-    parameters: []
