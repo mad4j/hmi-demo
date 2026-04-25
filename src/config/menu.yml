@@ -18,7 +18,7 @@ statusIcons:
   - id: login
     label: Stato accesso
     icon: login
-    pageId: impostazioni
+    pageId: login
     parameterId: status_login
 navigation:
   previousLabel: Precedente
@@ -253,3 +253,9 @@ pages:
             name: Modalità
             type: enum
             options: [AUTO, MANUALE, DISATTIVO]
+      - id: login
+        label: Accesso
+        icon: "login"
+        title: Accesso
+        content: Gestione credenziali di accesso.
+        parameters: []
