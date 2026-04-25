@@ -218,6 +218,10 @@ pages:
             unit: "m"
             precision: 0
             readonly: true
+          - id: gps_notes
+            name: Notes
+            type: text
+            readonly: false  
           - id: gps_velocita
             name: Velocità
             type: number

@@ -21,26 +21,6 @@ const props = defineProps({
 
 const emit = defineEmits(['toggle-parameter', 'set-parameter-value'])
 
-// ── Grid layout helpers ───────────────────────────────────
-const widgetCols = computed(() => {
-  if (props.viewportWidth <= 399) return 2
-  if (props.viewportWidth <= 599) return 3
-  return 4
-})
-
-const centredGridStyle = (index, total, cols) => {
-  const lastRowCount = total % cols || cols
-  if (lastRowCount === cols) return {}
-  const firstInLastRow = total - lastRowCount
-  if (index < firstInLastRow) return {}
-  const offset = Math.floor((cols - lastRowCount) / 2)
-  const posInRow = index - firstInLastRow
-  return { gridColumnStart: offset + posInRow + 1 }
-}
-
-const paramStyle = (index) =>
-  centredGridStyle(index, props.parameters.length, widgetCols.value)
-
 // ── Parameter editing state ───────────────────────────────
 const editingParamId = ref(null)
 
@@ -80,7 +60,6 @@ const handleToggle = (paramId) => {
     <ParameterWidget
       v-for="(param, index) in parameters"
       :key="param.id"
-      :style="paramStyle(index)"
       :name="param.name"
       :type="param.type"
       :unit="param.unit"
@@ -113,22 +92,28 @@ const handleToggle = (paramId) => {
 
 <style scoped>
 .widget-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 0.5rem;
   width: 100%;
   margin: auto 0;
 }
 
+.widget-grid > * {
+  box-sizing: border-box;
+  flex: 0 0 calc(25% - 0.375rem);
+}
+
 @media (max-width: 599px) {
-  .widget-grid {
-    grid-template-columns: repeat(3, 1fr);
+  .widget-grid > * {
+    flex: 0 0 calc(33.333% - 0.3333rem);
   }
 }
 
 @media (max-width: 399px) {
-  .widget-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .widget-grid > * {
+    flex: 0 0 calc(50% - 0.25rem);
   }
 }
 </style>
