@@ -82,5 +82,19 @@ export const useParameterStore = () => {
     }
   }
 
-  return { parameterValues, toggleParameter, setParameterValue }
+  const getManagedParameters = () =>
+    uniqueParameters.map((param) => ({
+      ...param,
+      value: parameterValues[param.id],
+    }))
+
+  const getManagedParameterIds = () => uniqueParameters.map((param) => param.id)
+
+  return {
+    parameterValues,
+    toggleParameter,
+    setParameterValue,
+    getManagedParameters,
+    getManagedParameterIds,
+  }
 }
