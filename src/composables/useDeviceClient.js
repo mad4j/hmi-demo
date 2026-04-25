@@ -65,13 +65,11 @@ const apparatusState = {
   gps_velocita: 0.0,
   gps_accuratezza: 3.2,
   gps_modalita: 'AUTO',
-  // Authentication
-  is_logged_in: false,
   // Status icon parameters
   status_fault: 'warning',
   status_channel: 'ok',
   status_gps: 'ok',
-  status_login: 'error',
+  status_login: 'ok',
 }
 
 // ── Network latency simulation ────────────────────────────────────────────
@@ -213,7 +211,6 @@ const startNotifications = () => {
 // ── Shared connection state (reactive, exported for UI use) ───────────────
 export const isConnected = ref(false)
 export const isLoading = ref(false)
-export const isLoggedIn = ref(false)
 
 // ── Composable ────────────────────────────────────────────────────────────
 export const useDeviceClient = () => {
@@ -257,36 +254,5 @@ export const useDeviceClient = () => {
     return () => notificationListeners.delete(callback)
   }
 
-  /**
-   * POST /api/login
-   * Authenticates the user against the apparatus.
-   * Demo credentials: username "admin", password "1234".
-   * Returns { ok: true } on success or { ok: false, message } on failure.
-   */
-  const login = async (username, password) => {
-    await simulateLatency()
-    if (username === 'admin' && password === '1234') {
-      apparatusState.is_logged_in = true
-      apparatusState.status_login = 'ok'
-      isLoggedIn.value = true
-      notificationListeners.forEach((cb) => cb({ status_login: 'ok' }))
-      return { ok: true }
-    }
-    return { ok: false, message: 'Credenziali non valide' }
-  }
-
-  /**
-   * POST /api/logout
-   * Ends the current session on the apparatus.
-   */
-  const logout = async () => {
-    await simulateLatency()
-    apparatusState.is_logged_in = false
-    apparatusState.status_login = 'error'
-    isLoggedIn.value = false
-    notificationListeners.forEach((cb) => cb({ status_login: 'error' }))
-    return { ok: true }
-  }
-
-  return { fetchState, sendCommand, subscribe, login, logout, isConnected, isLoading, isLoggedIn }
+  return { fetchState, sendCommand, subscribe, isConnected, isLoading }
 }

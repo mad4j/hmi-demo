@@ -3,13 +3,11 @@ import ParameterWidget from './components/ParameterWidget.vue'
 import PercentageEditorModal from './components/PercentageEditorModal.vue'
 import AppIcon from './components/AppIcon.vue'
 import StatusIconBar from './components/StatusIconBar.vue'
-import LoginPage from './components/LoginPage.vue'
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { menuConfig } from './composables/useMenuConfig.js'
 import { useMenuNavigation } from './composables/useMenuNavigation.js'
 import { useTheme } from './composables/useTheme.js'
 import { useParameterStore } from './composables/useParameterStore.js'
-import { useLoginStore } from './composables/useLoginStore.js'
 
 const {
   currentPage,
@@ -26,8 +24,6 @@ const {
 const { isDark, toggleTheme } = useTheme()
 
 const { parameterValues, toggleParameter, setParameterValue } = useParameterStore()
-
-const { isLoggedIn, logout } = useLoginStore()
 
 // ── Grid layout helpers ───────────────────────────────────
 const viewportWidth = ref(typeof window !== 'undefined' ? window.innerWidth : 800)
@@ -63,7 +59,7 @@ const centredGridStyle = (index, total, cols) => {
 const paramStyle = (index) =>
   centredGridStyle(index, currentPage.value.parameters.length, widgetCols.value)
 
-const settingsParamStyle = (index) => centredGridStyle(index, 2, widgetCols.value)
+const settingsParamStyle = () => centredGridStyle(0, 1, widgetCols.value)
 
 // +1 for the back tile prepended in the template
 const submenuTileStyle = (index) =>
@@ -98,118 +94,104 @@ const cancelEdit = () => {
 
 <template>
   <div class="hmi-shell" :data-theme="isDark ? 'dark' : 'light'">
-    <template v-if="!isLoggedIn">
-      <LoginPage />
-    </template>
-    <template v-else>
-      <header class="bar top-bar">
-        <div class="top-left">
-          <span>{{ menuConfig.title }}</span>
-        </div>
-        <div class="top-right">
-          <StatusIconBar />
-        </div>
-      </header>
+    <header class="bar top-bar">
+      <div class="top-left">
+        <span>{{ menuConfig.title }}</span>
+      </div>
+      <div class="top-right">
+        <StatusIconBar />
+      </div>
+    </header>
 
-      <main class="content">
-        <template v-if="showingSecondLevel">
-          <div class="submenu-page">
-            <div class="submenu-grid">
-              <!-- back tile (always first, index 0) -->
-              <button
-                class="submenu-tile submenu-tile--back"
-                :style="submenuTileStyle(0)"
-                type="button"
-                aria-label="Indietro"
-                @click="goBack"
-              >
-                <AppIcon name="back" :size="28" />
-                <span class="tile-label">Indietro</span>
-              </button>
-              <!-- second-level items (index starts at 1) -->
-              <button
-                v-for="(item, idx) in secondLevelItems"
-                :key="item.id"
-                class="submenu-tile"
-                :style="submenuTileStyle(idx + 1)"
-                type="button"
-                @click="selectLevel2Item(item)"
-              >
-                <AppIcon v-if="item.icon" :name="item.icon" :size="28" />
-                <span class="tile-label">{{ item.label }}</span>
-              </button>
-            </div>
-          </div>
-        </template>
-        <template v-else>
-          <div v-if="currentPage.id === SETTINGS_PAGE_ID" class="widget-grid">
-            <ParameterWidget
-              :style="settingsParamStyle(0)"
-              name="Tema scuro"
-              type="boolean"
-              :value="isDark"
-              @toggle="toggleTheme"
-            />
+    <main class="content">
+      <template v-if="showingSecondLevel">
+        <div class="submenu-page">
+          <div class="submenu-grid">
+            <!-- back tile (always first, index 0) -->
             <button
-              class="logout-tile"
-              :style="settingsParamStyle(1)"
+              class="submenu-tile submenu-tile--back"
+              :style="submenuTileStyle(0)"
               type="button"
-              @click="logout"
+              aria-label="Indietro"
+              @click="goBack"
             >
-              <AppIcon name="login" :size="22" />
-              <span class="tile-label">Esci</span>
+              <AppIcon name="back" :size="28" />
+              <span class="tile-label">Indietro</span>
+            </button>
+            <!-- second-level items (index starts at 1) -->
+            <button
+              v-for="(item, idx) in secondLevelItems"
+              :key="item.id"
+              class="submenu-tile"
+              :style="submenuTileStyle(idx + 1)"
+              type="button"
+              @click="selectLevel2Item(item)"
+            >
+              <AppIcon v-if="item.icon" :name="item.icon" :size="28" />
+              <span class="tile-label">{{ item.label }}</span>
             </button>
           </div>
-          <div v-else-if="currentPage.parameters.length" class="widget-grid">
-            <ParameterWidget
-              v-for="(param, index) in currentPage.parameters"
-              :key="param.id"
-              :style="paramStyle(index)"
-              :name="param.name"
-              :type="param.type"
-              :unit="param.unit"
-              :precision="param.precision"
-              :options="param.options"
-              :value="parameterValues[param.id]"
-              :readonly="param.readonly"
-              @toggle="toggleParameter(param.id)"
-              @edit="startEditParameter(param.id)"
-            />
-          </div>
-        </template>
-      </main>
+        </div>
+      </template>
+      <template v-else>
+        <div v-if="currentPage.id === SETTINGS_PAGE_ID" class="widget-grid">
+          <ParameterWidget
+            :style="settingsParamStyle()"
+            name="Tema scuro"
+            type="boolean"
+            :value="isDark"
+            @toggle="toggleTheme"
+          />
+        </div>
+        <div v-else-if="currentPage.parameters.length" class="widget-grid">
+          <ParameterWidget
+            v-for="(param, index) in currentPage.parameters"
+            :key="param.id"
+            :style="paramStyle(index)"
+            :name="param.name"
+            :type="param.type"
+            :unit="param.unit"
+            :precision="param.precision"
+            :options="param.options"
+            :value="parameterValues[param.id]"
+            :readonly="param.readonly"
+            @toggle="toggleParameter(param.id)"
+            @edit="startEditParameter(param.id)"
+          />
+        </div>
+      </template>
+    </main>
 
-      <footer class="bar bottom-bar">
-        <button
-          class="tab-button tab-button--home"
-          type="button"
-          aria-label="Home"
-          @click="goHome"
-        >
-          <AppIcon name="home" :size="22" class="tab-icon" />
-          <span class="tab-label">Home</span>
-        </button>
-        <button
-          v-for="item in level1Items"
-          :key="item.id"
-          class="tab-button"
-          :class="{ 'tab-button--active': item.id === activeLevel1Id }"
-          type="button"
-          @click="selectLevel1Item(item)"
-        >
-          <AppIcon v-if="item.icon" :name="item.icon" :size="22" class="tab-icon" />
-          <span class="tab-label">{{ item.label }}</span>
-        </button>
-      </footer>
+    <footer class="bar bottom-bar">
+      <button
+        class="tab-button tab-button--home"
+        type="button"
+        aria-label="Home"
+        @click="goHome"
+      >
+        <AppIcon name="home" :size="22" class="tab-icon" />
+        <span class="tab-label">Home</span>
+      </button>
+      <button
+        v-for="item in level1Items"
+        :key="item.id"
+        class="tab-button"
+        :class="{ 'tab-button--active': item.id === activeLevel1Id }"
+        type="button"
+        @click="selectLevel1Item(item)"
+      >
+        <AppIcon v-if="item.icon" :name="item.icon" :size="22" class="tab-icon" />
+        <span class="tab-label">{{ item.label }}</span>
+      </button>
+    </footer>
 
-      <PercentageEditorModal
-        v-if="editingParam"
-        :name="editingParam.name"
-        :value="parameterValues[editingParam.id] ?? 0"
-        @confirm="confirmEdit"
-        @cancel="cancelEdit"
-      />
-    </template>
+    <PercentageEditorModal
+      v-if="editingParam"
+      :name="editingParam.name"
+      :value="parameterValues[editingParam.id] ?? 0"
+      @confirm="confirmEdit"
+      @cancel="cancelEdit"
+    />
   </div>
 </template>
 
@@ -447,31 +429,7 @@ button:active {
   margin: auto 0;
 }
 
-/* ── Logout action tile (settings page) ─────────────────── */
-.logout-tile {
-  height: 5.5rem;
-  min-width: 0;
-  padding: 0.5rem;
-  font-size: 0.9rem;
-  font-weight: 600;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.4rem;
-  text-align: center;
-  border-radius: 0.6rem;
-  color: #f85149;
-  border-color: rgba(248, 81, 73, 0.4);
-  background: rgba(248, 81, 73, 0.08);
-  transition: background 0.12s, border-color 0.12s, color 0.12s;
-}
-
-.logout-tile:active,
-.logout-tile:hover {
-  background: rgba(248, 81, 73, 0.18);
-  border-color: rgba(248, 81, 73, 0.6);
-}
+/* ── Settings page ──────────────────────────────────────── */
 
 @media (max-width: 599px) {
   .widget-grid {
