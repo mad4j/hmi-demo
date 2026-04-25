@@ -29,9 +29,8 @@ defineProps({
     stroke-linejoin="round"
     aria-hidden="true"
   >
-    <path d="M3 12L12 3l9 9" />
-    <path d="M9 21V12h6v9" />
-    <path d="M5 10v11h14V10" />
+    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+    <polyline points="9 22 9 12 15 12 15 22" />
   </svg>
 
   <!-- Settings / Menu -->

@@ -55,9 +55,6 @@ const cancelEdit = () => {
   <div class="hmi-shell" :data-theme="isDark ? 'dark' : 'light'">
     <header class="bar top-bar">
       <div class="top-left">
-        <button class="icon-button" type="button" aria-label="Home" @click="goHome">
-          <AppIcon name="home" :size="20" />
-        </button>
         <span>{{ menuConfig.title }}</span>
       </div>
       <div class="top-right">
@@ -121,6 +118,15 @@ const cancelEdit = () => {
     </main>
 
     <footer class="bar bottom-bar">
+      <button
+        class="tab-button tab-button--home"
+        type="button"
+        aria-label="Home"
+        @click="goHome"
+      >
+        <AppIcon name="home" :size="22" class="tab-icon" />
+        <span class="tab-label">Home</span>
+      </button>
       <button
         v-for="item in level1Items"
         :key="item.id"
