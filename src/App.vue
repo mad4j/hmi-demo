@@ -71,7 +71,7 @@ const submenuTileStyle = (index) =>
   centredGridStyle(index, secondLevelItems.value.length + 1, submenuCols.value)
 
 // ── Percentage editor state ───────────────────────────────
-const SETTINGS_PAGE_ID = 'impostazioni'
+const SETTINGS_PAGE_ID = 'tema'
 
 const editingParamId = ref(null)
 

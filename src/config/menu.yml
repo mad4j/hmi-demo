@@ -198,6 +198,12 @@ pages:
     content: Personalizzazione dell'interfaccia.
     parameters: []
     submenus:
+      - id: tema
+        label: Tema
+        icon: "theme"
+        title: Gestione tema
+        content: Personalizza l'aspetto dell'interfaccia.
+        parameters: []
       - id: gps
         label: GPS
         icon: "gps"
