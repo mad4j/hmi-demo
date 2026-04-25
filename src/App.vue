@@ -1,6 +1,7 @@
 <script setup>
 import PageParametersView from './components/PageParametersView.vue'
 import ParameterWidget from './components/ParameterWidget.vue'
+import LinkWidget from './components/LinkWidget.vue'
 import AppIcon from './components/AppIcon.vue'
 import StatusIconBar from './components/StatusIconBar.vue'
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
@@ -13,13 +14,9 @@ import { useTransactionPageActions } from './composables/useTransactionPageActio
 
 const {
   currentPage,
-  showingSecondLevel,
   level1Items,
-  secondLevelItems,
   activeLevel1Id,
   selectLevel1Item,
-  selectLevel2Item,
-  goBack,
   goHome,
   goToPreviousPage,
   canGoToPreviousPage,
@@ -95,27 +92,6 @@ const widgetCols = computed(() => {
   return 4
 })
 
-const submenuCols = computed(() => {
-  if (viewportWidth.value <= 399) return 2
-  return 3
-})
-
-// Returns a style object with gridColumnStart for each item in the last
-// incomplete row so that the row is centred horizontally inside the grid.
-const centredGridStyle = (index, total, cols) => {
-  const lastRowCount = total % cols || cols
-  if (lastRowCount === cols) return {}
-  const firstInLastRow = total - lastRowCount
-  if (index < firstInLastRow) return {}
-  const offset = Math.floor((cols - lastRowCount) / 2)
-  const posInRow = index - firstInLastRow
-  return { gridColumnStart: offset + posInRow + 1 }
-}
-
-// +1 for the back tile prepended in the template
-const submenuTileStyle = (index) =>
-  centredGridStyle(index, secondLevelItems.value.length + 1, submenuCols.value)
-
 // ── Settings page ───────────────────────────────────────
 const SETTINGS_PAGE_ID = 'tema'
 const LOGOUT_PAGE_ID = 'logout'
@@ -185,37 +161,19 @@ watch(
     </div>
 
     <main class="content">
-      <template v-if="showingSecondLevel">
-        <div class="submenu-page">
-          <div class="submenu-grid">
-            <!-- back tile (always first, index 0) -->
-            <button
-              class="submenu-tile submenu-tile--back"
-              :style="submenuTileStyle(0)"
-              type="button"
-              aria-label="Indietro"
-              @click="goBack"
-            >
-              <AppIcon name="back" :size="28" />
-              <span class="tile-label">Indietro</span>
-            </button>
-            <!-- second-level items (index starts at 1) -->
-            <button
-              v-for="(item, idx) in secondLevelItems"
-              :key="item.id"
-              class="submenu-tile"
-              :style="submenuTileStyle(idx + 1)"
-              type="button"
-              @click="selectLevel2Item(item)"
-            >
-              <AppIcon v-if="item.icon" :name="item.icon" :size="28" />
-              <span class="tile-label">{{ item.label }}</span>
-            </button>
-          </div>
+      <template v-if="currentPage.submenus.length">
+        <div class="widget-grid">
+          <LinkWidget
+            v-for="item in currentPage.submenus"
+            :key="item.id"
+            :label="item.label"
+            :icon="item.icon"
+            @navigate="navigateToPage(item.id)"
+          />
         </div>
       </template>
-      <template v-else>
-        <div v-if="currentPage.id === SETTINGS_PAGE_ID" class="settings-page">
+      <template v-else-if="currentPage.id === SETTINGS_PAGE_ID">
+        <div class="settings-page">
           <div class="settings-widget">
             <ParameterWidget
               name="Tema scuro"
@@ -225,8 +183,9 @@ watch(
             />
           </div>
         </div>
+      </template>
+      <template v-else>
         <PageParametersView
-          v-else
           :parameters="currentPage.parameters"
           :parameter-values="currentPageValues"
           :transaction-mode="isTransactionPage"
@@ -572,57 +531,19 @@ button:active {
   border-radius: 0.4rem;
 }
 
-/* ── Second-level submenu page ──────────────────────────── */
-.submenu-page {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.submenu-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.75rem;
-  width: 100%;
-}
-
-.submenu-tile {
-  /* fixed height prevents tiles from overflowing the content area on wide screens */
-  height: 5.5rem;
-  min-width: 0;
-  padding: 0.5rem;
-  font-size: 0.9rem;
-  font-weight: 600;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.4rem;
-  text-align: center;
-  border-radius: 0.6rem;
-}
-
-.submenu-tile--back {
-  color: var(--text-secondary);
-  border-color: var(--border);
-}
-
-.tile-label {
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  line-height: 1.2;
-}
-
 /* ── Widget grid ────────────────────────────────────────── */
 .widget-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 0.5rem;
   width: 100%;
   margin: auto 0;
+}
+
+.widget-grid > * {
+  box-sizing: border-box;
+  flex: 0 0 calc(25% - 0.375rem);
 }
 
 /* ── Settings page ──────────────────────────────────────── */
@@ -639,8 +560,8 @@ button:active {
 }
 
 @media (max-width: 599px) {
-  .widget-grid {
-    grid-template-columns: repeat(3, 1fr);
+  .widget-grid > * {
+    flex: 0 0 calc(33.333% - 0.334rem);
   }
 
   .settings-widget {
@@ -664,16 +585,12 @@ button:active {
     font-size: 0.64rem;
   }
 
-  .widget-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .widget-grid > * {
+    flex: 0 0 calc(50% - 0.25rem);
   }
 
   .settings-widget {
     width: calc((100% - 0.5rem) / 2);
-  }
-
-  .submenu-grid {
-    grid-template-columns: repeat(2, 1fr);
   }
 }
 

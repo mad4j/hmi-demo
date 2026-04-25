@@ -9,8 +9,6 @@ import {
 const selectablePages = flattenSelectablePages(menuConfig.pages)
 
 const currentPageId = ref(selectablePages[0]?.id ?? menuConfig.pages[0].id)
-const showingSecondLevel = ref(false)
-const secondLevelParentId = ref(null)
 const pageHistory = ref([])
 
 export const useMenuNavigation = () => {
@@ -20,8 +18,6 @@ export const useMenuNavigation = () => {
       pageHistory.value.push(currentPageId.value)
     }
     currentPageId.value = pageId
-    showingSecondLevel.value = false
-    secondLevelParentId.value = null
   }
 
   // ── Actions ───────────────────────────────────────────────
@@ -30,20 +26,7 @@ export const useMenuNavigation = () => {
   }
 
   const selectLevel1Item = (item) => {
-    if (item.submenus?.length) {
-      secondLevelParentId.value = item.id
-      showingSecondLevel.value = true
-    } else {
-      setCurrentPage(item.id)
-    }
-  }
-
-  const selectLevel2Item = (item) => {
     setCurrentPage(item.id)
-  }
-
-  const goBack = () => {
-    showingSecondLevel.value = false
   }
 
   const goHome = () => {
@@ -73,14 +56,7 @@ export const useMenuNavigation = () => {
 
   const level1Items = computed(() => menuConfig.pages)
 
-  const secondLevelItems = computed(() => {
-    if (!secondLevelParentId.value) return []
-    const parent = menuConfig.pages.find((p) => p.id === secondLevelParentId.value)
-    return parent?.submenus ?? []
-  })
-
   const activeLevel1Id = computed(() => {
-    if (showingSecondLevel.value) return secondLevelParentId.value
     const direct = menuConfig.pages.find((p) => p.id === currentPageId.value)
     if (direct) return direct.id
     for (const page of menuConfig.pages) {
@@ -94,17 +70,13 @@ export const useMenuNavigation = () => {
   return {
     // state
     currentPageId,
-    showingSecondLevel,
     // computed
     currentPage,
     level1Items,
-    secondLevelItems,
     activeLevel1Id,
     canGoToPreviousPage,
     // actions
     selectLevel1Item,
-    selectLevel2Item,
-    goBack,
     goHome,
     goToPreviousPage,
     navigateToPage,
