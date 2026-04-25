@@ -3,7 +3,7 @@ import ParameterWidget from './components/ParameterWidget.vue'
 import PercentageEditorModal from './components/PercentageEditorModal.vue'
 import AppIcon from './components/AppIcon.vue'
 import StatusIconBar from './components/StatusIconBar.vue'
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { menuConfig } from './composables/useMenuConfig.js'
 import { useMenuNavigation } from './composables/useMenuNavigation.js'
 import { useTheme } from './composables/useTheme.js'
@@ -24,6 +24,46 @@ const {
 const { isDark, toggleTheme } = useTheme()
 
 const { parameterValues, toggleParameter, setParameterValue } = useParameterStore()
+
+// ── Grid layout helpers ───────────────────────────────────
+const viewportWidth = ref(typeof window !== 'undefined' ? window.innerWidth : 800)
+
+const onResize = () => { viewportWidth.value = window.innerWidth }
+
+onMounted(() => window.addEventListener('resize', onResize))
+onUnmounted(() => window.removeEventListener('resize', onResize))
+
+const widgetCols = computed(() => {
+  if (viewportWidth.value <= 399) return 2
+  if (viewportWidth.value <= 599) return 3
+  return 4
+})
+
+const submenuCols = computed(() => {
+  if (viewportWidth.value <= 399) return 2
+  return 3
+})
+
+// Returns a style object with gridColumnStart for each item in the last
+// incomplete row so that the row is centred horizontally inside the grid.
+const centredGridStyle = (index, total, cols) => {
+  const lastRowCount = total % cols || cols
+  if (lastRowCount === cols) return {}
+  const firstInLastRow = total - lastRowCount
+  if (index < firstInLastRow) return {}
+  const offset = Math.floor((cols - lastRowCount) / 2)
+  const posInRow = index - firstInLastRow
+  return { gridColumnStart: offset + posInRow + 1 }
+}
+
+const paramStyle = (index) =>
+  centredGridStyle(index, currentPage.value.parameters.length, widgetCols.value)
+
+const settingsParamStyle = () => centredGridStyle(0, 1, widgetCols.value)
+
+// +1 for the back tile prepended in the template
+const submenuTileStyle = (index) =>
+  centredGridStyle(index, secondLevelItems.value.length + 1, submenuCols.value)
 
 // ── Percentage editor state ───────────────────────────────
 const SETTINGS_PAGE_ID = 'impostazioni'
@@ -67,9 +107,10 @@ const cancelEdit = () => {
       <template v-if="showingSecondLevel">
         <div class="submenu-page">
           <div class="submenu-grid">
-            <!-- back tile (always first) -->
+            <!-- back tile (always first, index 0) -->
             <button
               class="submenu-tile submenu-tile--back"
+              :style="submenuTileStyle(0)"
               type="button"
               aria-label="Indietro"
               @click="goBack"
@@ -77,11 +118,12 @@ const cancelEdit = () => {
               <AppIcon name="back" :size="28" />
               <span class="tile-label">Indietro</span>
             </button>
-            <!-- second-level items -->
+            <!-- second-level items (index starts at 1) -->
             <button
-              v-for="item in secondLevelItems"
+              v-for="(item, idx) in secondLevelItems"
               :key="item.id"
               class="submenu-tile"
+              :style="submenuTileStyle(idx + 1)"
               type="button"
               @click="selectLevel2Item(item)"
             >
@@ -94,6 +136,7 @@ const cancelEdit = () => {
       <template v-else>
         <div v-if="currentPage.id === SETTINGS_PAGE_ID" class="widget-grid">
           <ParameterWidget
+            :style="settingsParamStyle()"
             name="Tema scuro"
             type="boolean"
             :value="isDark"
@@ -102,8 +145,9 @@ const cancelEdit = () => {
         </div>
         <div v-else-if="currentPage.parameters.length" class="widget-grid">
           <ParameterWidget
-            v-for="param in currentPage.parameters"
+            v-for="(param, index) in currentPage.parameters"
             :key="param.id"
+            :style="paramStyle(index)"
             :name="param.name"
             :type="param.type"
             :unit="param.unit"
@@ -341,9 +385,8 @@ button:active {
 }
 
 .submenu-grid {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 0.75rem;
   width: 100%;
 }
@@ -351,7 +394,6 @@ button:active {
 .submenu-tile {
   /* fixed height prevents tiles from overflowing the content area on wide screens */
   height: 5.5rem;
-  flex: 0 0 calc((100% - 2 * 0.75rem) / 3);
   min-width: 0;
   padding: 0.5rem;
   font-size: 0.9rem;
@@ -380,30 +422,27 @@ button:active {
 
 /* ── Widget grid ────────────────────────────────────────── */
 .widget-grid {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
   gap: 0.5rem;
   width: 100%;
   margin: auto 0;
 }
 
-.widget-grid > * {
-  flex: 0 0 calc((100% - 3 * 0.5rem) / 4);
-  min-width: 0;
-}
-
 /* ── Settings page ──────────────────────────────────────── */
 
 @media (max-width: 599px) {
-  .widget-grid > * {
-    flex-basis: calc((100% - 2 * 0.5rem) / 3);
+  .widget-grid {
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
 @media (max-width: 399px) {
-  .widget-grid > * {
-    flex-basis: calc((100% - 0.5rem) / 2);
+  .widget-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .submenu-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
