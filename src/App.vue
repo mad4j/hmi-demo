@@ -9,6 +9,7 @@ import { useMenuNavigation } from './composables/useMenuNavigation.js'
 import { useTheme } from './composables/useTheme.js'
 import { useParameterStore } from './composables/useParameterStore.js'
 import { useNotificationBar } from './composables/useNotificationBar.js'
+import { useTransactionPageActions } from './composables/useTransactionPageActions.js'
 
 const {
   currentPage,
@@ -21,6 +22,7 @@ const {
   goBack,
   goHome,
   goToPreviousPage,
+  canGoToPreviousPage,
   navigateToPage,
 } = useMenuNavigation()
 
@@ -39,23 +41,6 @@ const {
   commitTransactionPage,
 } = useParameterStore()
 
-const isTransactionPage = computed(() => currentPage.value?.mode === 'transaction')
-
-const currentPageValues = computed(() => {
-  if (!isTransactionPage.value) return parameterValues
-  return getTransactionDisplayValues(currentPage.value.id)
-})
-
-const currentPageModifiedIds = computed(() => {
-  if (!isTransactionPage.value) return []
-  return getTransactionModifiedIds(currentPage.value.id)
-})
-
-const canSubmitTransaction = computed(() => {
-  if (!isTransactionPage.value) return false
-  return hasTransactionChanges(currentPage.value.id)
-})
-
 const {
   notification,
   notificationHistory,
@@ -67,72 +52,31 @@ const {
   disposeNotificationBar,
 } = useNotificationBar()
 
-const handleToggleParameter = (id) => {
-  if (isTransactionPage.value) {
-    toggleTransactionParameter(currentPage.value.id, id)
-    return
-  }
-  toggleParameter(id)
-}
-
-const handleSetParameterValue = (id, value) => {
-  if (isTransactionPage.value) {
-    setTransactionParameterValue(currentPage.value.id, id, value)
-    return
-  }
-  setParameterValue(id, value)
-}
-
-const handleResetTransaction = () => {
-  if (!isTransactionPage.value) return
-  resetTransactionPage(currentPage.value.id)
-}
-
-const handleSubmitTransaction = async () => {
-  const page = currentPage.value
-  if (!page || page.mode !== 'transaction') return
-  const isLoginAttempt = page.id === 'login'
-  let completedSuccessfully = false
-
-  if (isLoginAttempt) {
-    setNotification('NORMAL', 'Tentativo di accesso in corso...')
-  }
-
-  const result = await commitTransactionPage(page.id)
-  if (!result.ok) {
-    setNotification('ERROR', 'Errore invio comando: verifica la connessione al dispositivo.', {
-      displayMode: 'ACKNOWLEDGED',
-    })
-    return
-  }
-
-  if (isLoginAttempt) {
-    if (parameterValues.status_login === 'ok') {
-      setNotification('SUCCESS', 'Accesso eseguito con successo.')
-      completedSuccessfully = true
-    } else {
-      setNotification('ERROR', 'Accesso non riuscito: credenziali non valide.', {
-        displayMode: 'ACKNOWLEDGED',
-      })
-    }
-  } else {
-    setNotification('SUCCESS', 'Comando applicato correttamente.')
-    completedSuccessfully = true
-  }
-
-  if (!completedSuccessfully) {
-    return
-  }
-
-  if (page.goOnApply === 'GO_HOME') {
-    goHome()
-    return
-  }
-
-  if (page.goOnApply === 'GO_BACK') {
-    goToPreviousPage()
-  }
-}
+const {
+  isTransactionPage,
+  currentPageValues,
+  currentPageModifiedIds,
+  canSubmitTransaction,
+  handleToggleParameter,
+  handleSetParameterValue,
+  handleResetTransaction,
+  handleSubmitTransaction,
+} = useTransactionPageActions({
+  currentPage,
+  parameterValues,
+  setNotification,
+  goHome,
+  goToPreviousPage,
+  toggleParameter,
+  setParameterValue,
+  toggleTransactionParameter,
+  setTransactionParameterValue,
+  getTransactionDisplayValues,
+  getTransactionModifiedIds,
+  hasTransactionChanges,
+  resetTransactionPage,
+  commitTransactionPage,
+})
 
 // ── Grid layout helpers ───────────────────────────────────
 const viewportWidth = ref(typeof window !== 'undefined' ? window.innerWidth : 800)
@@ -298,6 +242,15 @@ watch(
     </main>
 
     <footer class="bar bottom-bar">
+      <button
+        class="tab-button tab-button--back"
+        type="button"
+        aria-label="Back"
+        :disabled="!canGoToPreviousPage"
+        @click="goToPreviousPage"
+      >
+        <span class="tab-icon" aria-hidden="true">&lt;</span>
+      </button>
       <button
         class="tab-button tab-button--home"
         type="button"
@@ -541,6 +494,29 @@ watch(
 
 .tab-button:first-child {
   border-left: none;
+}
+
+.tab-button--back {
+  flex: 0.333333;
+}
+
+.tab-button--back .tab-icon {
+  display: inline-block;
+  font-family: 'Segoe UI Symbol', 'Segoe UI', sans-serif;
+  font-size: 1.18rem;
+  font-weight: 400;
+  line-height: 1;
+  transform: scaleX(1.3);
+}
+
+.tab-button:disabled {
+  color: var(--text-secondary);
+  opacity: 0.45;
+  cursor: pointer;
+}
+
+.tab-button:disabled:active {
+  background: transparent;
 }
 
 .tab-button:active {

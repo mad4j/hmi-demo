@@ -59,6 +59,10 @@ export const useMenuNavigation = () => {
     }
   }
 
+  const canGoToPreviousPage = computed(() =>
+    pageHistory.value.some((pageId) => pageId && pageId !== currentPageId.value),
+  )
+
   // ── Computed ──────────────────────────────────────────────
   const currentPage = computed(
     () =>
@@ -96,6 +100,7 @@ export const useMenuNavigation = () => {
     level1Items,
     secondLevelItems,
     activeLevel1Id,
+    canGoToPreviousPage,
     // actions
     selectLevel1Item,
     selectLevel2Item,
