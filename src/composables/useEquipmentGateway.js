@@ -1,5 +1,5 @@
 /**
- * useDeviceClient.js
+ * useEquipmentGateway.js
  *
  * Central async communication module for apparatus remote control.
  * All interactions with the apparatus – parameter reads, parameter writes,
@@ -60,18 +60,18 @@ const NOTIFICATION_TEXT_URL = String(
  */
 const createAdapter = () => {
   if (ADAPTER_MODE === 'simulator-direct') {
-    console.info('[DeviceClient] Using SimulatorAdapter (forced by VITE_DEVICE_ADAPTER_MODE).')
+    console.info('[EquipmentGateway] Using SimulatorAdapter (forced by VITE_DEVICE_ADAPTER_MODE).')
     return new SimulatorAdapter()
   }
 
   if (ADAPTER_MODE !== 'network-auto') {
     console.warn(
-      `[DeviceClient] Unknown VITE_DEVICE_ADAPTER_MODE="${ADAPTER_MODE}", falling back to network-auto.`,
+      `[EquipmentGateway] Unknown VITE_DEVICE_ADAPTER_MODE="${ADAPTER_MODE}", falling back to network-auto.`,
     )
   }
 
   console.info(
-    `[DeviceClient] Using NetworkAdapter (base URL: ${API_BASE_URL || 'same-origin'}).`,
+    `[EquipmentGateway] Using NetworkAdapter (base URL: ${API_BASE_URL || 'same-origin'}).`,
   )
   return new NetworkAdapter(API_BASE_URL, {
     notificationTransport: NOTIFICATION_TRANSPORT,
@@ -84,7 +84,7 @@ const adapter = createAdapter()
 // ── Logging helper ────────────────────────────────────────────────────────
 
 const logDeviceTraffic = (direction, action, payload) => {
-  console.info(`[DeviceClient] ${direction} ${action}`, payload)
+  console.info(`[EquipmentGateway] ${direction} ${action}`, payload)
 }
 
 // ── Shared connection state (reactive, exported for UI use) ───────────────

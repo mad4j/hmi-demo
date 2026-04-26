@@ -54,7 +54,9 @@ export const useMenuNavigation = () => {
       menuConfig.pages[0],
   )
 
-  const level1Items = computed(() => menuConfig.pages)
+  const level1Items = computed(() =>
+    menuConfig.pages.filter((page) => page.visibility !== 'hidden'),
+  )
 
   const activeLevel1Id = computed(() => {
     const direct = menuConfig.pages.find((p) => p.id === currentPageId.value)

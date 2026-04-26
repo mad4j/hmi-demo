@@ -1,6 +1,6 @@
 import { reactive } from 'vue'
 import { flattenSelectablePages, menuConfig } from './useMenuConfig.js'
-import { useDeviceClient } from './useDeviceClient.js'
+import { useEquipmentGateway } from './useEquipmentGateway.js'
 
 // ── Singleton state ───────────────────────────────────────
 const seenParameterIds = new Set()
@@ -37,7 +37,7 @@ const parameterValues = reactive(
 const transactionDrafts = reactive({})
 
 // ── Connect to apparatus via device client ────────────────
-const { getParameters, setParameters, sendCommand, notifyParameters } = useDeviceClient()
+const { getParameters, setParameters, sendCommand, notifyParameters } = useEquipmentGateway()
 
 const allParameterIds = [
   ...uniqueParameters.map((p) => p.id),

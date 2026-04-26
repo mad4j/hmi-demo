@@ -35,6 +35,11 @@ const fallbackConfig = {
 const MAX_MENU_DEPTH = 8
 const TRANSACTION_GO_ON_APPLY_VALUES = ['STAY_HERE', 'GO_HOME', 'GO_BACK']
 
+const normalizeVisibility = (value) =>
+  typeof value === 'string' && value.trim().toLowerCase() === 'hidden'
+    ? 'hidden'
+    : 'visible'
+
 const isPlainObject = (value) =>
   value && typeof value === 'object' && !Array.isArray(value)
 
@@ -139,6 +144,7 @@ export const normalizeMenuItems = (items, idPrefix = 'page', depth = 0) =>
         label:
           typeof item.label === 'string' && item.label.trim() ? item.label : `Pagina ${index + 1}`,
         icon: typeof item.icon === 'string' ? item.icon : '',
+        visibility: normalizeVisibility(item.visibility),
         mode,
         goOnApply,
         submenus: normalizedSubmenus,

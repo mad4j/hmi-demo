@@ -5,7 +5,7 @@ import LinkWidget from './components/LinkWidget.vue'
 import AppIcon from './components/AppIcon.vue'
 import StatusIconBar from './components/StatusIconBar.vue'
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
-import { menuConfig } from './composables/useMenuConfig.js'
+import { menuConfig, findPageById } from './composables/useMenuConfig.js'
 import { useMenuNavigation } from './composables/useMenuNavigation.js'
 import { useTheme } from './composables/useTheme.js'
 import { useParameterStore } from './composables/useParameterStore.js'
@@ -72,6 +72,7 @@ const {
 } = useTransactionPageActions({
   currentPage,
   parameterValues,
+  refreshParameters,
   setNotification,
   goHome,
   goToPreviousPage,
@@ -103,6 +104,10 @@ const widgetCols = computed(() => {
   return 4
 })
 
+const visibleCurrentSubmenus = computed(() =>
+  (currentPage.value?.submenus ?? []).filter((item) => item.visibility !== 'hidden'),
+)
+
 // ── Refresh parameters on page navigation ────────────────
 watch(
   () => currentPage.value,
@@ -118,6 +123,7 @@ watch(
 // ── Settings page ───────────────────────────────────────
 const SETTINGS_PAGE_ID = 'tema'
 const LOGOUT_PAGE_ID = 'logout'
+const logoutPageConfig = findPageById(menuConfig.pages, LOGOUT_PAGE_ID)
 
 const logoutInProgress = ref(false)
 
@@ -144,7 +150,13 @@ watch(
       } else {
         setNotification('WARNING', 'Nessuna sessione attiva: utente gia disconnesso.')
       }
-      navigateToPage('login')
+
+      const goOnApply = logoutPageConfig?.goOnApply ?? 'STAY_HERE'
+      if (goOnApply === 'GO_HOME') {
+        goHome()
+      } else if (goOnApply === 'GO_BACK' || goOnApply === 'STAY_HERE') {
+        goToPreviousPage()
+      }
     } finally {
       logoutInProgress.value = false
     }
@@ -182,10 +194,10 @@ watch(
     </div>
 
     <main class="content">
-      <template v-if="currentPage.submenus.length">
+      <template v-if="visibleCurrentSubmenus.length">
         <div class="widget-grid">
           <LinkWidget
-            v-for="item in currentPage.submenus"
+            v-for="item in visibleCurrentSubmenus"
             :key="item.id"
             :label="item.label"
             :icon="item.icon"

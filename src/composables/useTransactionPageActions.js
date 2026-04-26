@@ -3,6 +3,7 @@ import { computed } from 'vue'
 export const useTransactionPageActions = ({
   currentPage,
   parameterValues,
+  refreshParameters,
   setNotification,
   goHome,
   goToPreviousPage,
@@ -75,6 +76,8 @@ export const useTransactionPageActions = ({
     }
 
     if (isLoginAttempt) {
+      // Ensure login status is current before deciding success/failure flow.
+      await refreshParameters(['status_login'])
       if (parameterValues.status_login === 'ok') {
         setNotification('SUCCESS', 'Accesso eseguito con successo.')
         completedSuccessfully = true
