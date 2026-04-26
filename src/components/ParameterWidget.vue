@@ -48,8 +48,7 @@ const displayValue = computed(() => {
   if (props.type === 'percentage') {
     const num = Number(props.value)
     if (Number.isNaN(num)) return '—'
-    const formatted = props.precision !== null ? num.toFixed(props.precision) : String(props.value)
-    return `${formatted}%`
+    return props.precision !== null ? num.toFixed(props.precision) : String(props.value)
   }
   if (props.type === 'number') {
     const num = Number(props.value)
@@ -75,7 +74,11 @@ const displayValue = computed(() => {
   return String(props.value ?? '—')
 })
 
-const displayUnit = computed(() => (props.type === 'number' && props.unit ? props.unit : ''))
+const displayUnit = computed(() => {
+  if (props.type === 'percentage') return '%'
+  if (props.type === 'number' && props.unit) return props.unit
+  return ''
+})
 
 const isActive = computed(() => props.type === 'boolean' && Boolean(props.value))
 
