@@ -1,21 +1,21 @@
 statusIcons:
   - id: fault
-    label: Stato guasto
+    label: Fault Status
     icon: fault
     pageId: allarmi
     parameterId: status_fault
   - id: channel
-    label: Stato canale
+    label: Channel Status
     icon: channel
     pageId: info
     parameterId: status_channel
   - id: gps
-    label: Stato GPS
+    label: GPS Status
     icon: gps
     pageId: gps
     parameterId: status_gps
   - id: login
-    label: Stato accesso
+    label: Login Status
     icon: login
     pageId: login
     pageIdByState:

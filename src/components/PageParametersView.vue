@@ -202,7 +202,7 @@ onUnmounted(() => document.removeEventListener('keydown', handleGlobalKeydown))
       </div>
 
       <!-- Panel dot indicators -->
-      <div v-if="hasPanels && totalPanels > 1" class="panel-indicators" role="tablist" aria-label="Pannelli">
+      <div v-if="hasPanels && totalPanels > 1" class="panel-indicators" role="tablist" aria-label="Panels">
         <button
           v-for="i in totalPanels"
           :key="i"
@@ -210,13 +210,13 @@ onUnmounted(() => document.removeEventListener('keydown', handleGlobalKeydown))
           :class="{ 'panel-dot--active': i - 1 === currentPanel }"
           role="tab"
           :aria-selected="i - 1 === currentPanel"
-          :aria-label="`Pannello ${i}`"
+          :aria-label="`Panel ${i}`"
           @click.stop="goToPanel(i - 1)"
         />
       </div>
     </div>
 
-    <div v-if="transactionMode" class="transaction-actions" role="group" aria-label="Azioni transazione">
+    <div v-if="transactionMode" class="transaction-actions" role="group" aria-label="Transaction actions">
       <button
         class="transaction-button transaction-button--reset"
         type="button"

@@ -50,7 +50,7 @@ const apparatusState = {
   data_sistema: '23/04/2026',
   ora_sistema: '17:30',
   // GPS
-  gps_stato: 'AGGANCIATO',
+  gps_stato: 'LOCKED',
   gps_satelliti: 9,
   gps_latitudine: 45.46427,
   gps_longitudine: 9.18951,
@@ -152,7 +152,7 @@ const generateNotification = () => {
   }
 
   // GPS position drift (only when locked)
-  if (apparatusState.gps_stato === 'AGGANCIATO') {
+  if (apparatusState.gps_stato === 'LOCKED') {
     const newLat =
       Math.round(drift(apparatusState.gps_latitudine, 0.00005, 44.0, 47.0) * 100000) / 100000
     const newLon =

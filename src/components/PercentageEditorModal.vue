@@ -90,7 +90,7 @@ const handleSliderInput = () => {
     <div
       class="modal"
       role="dialog"
-      :aria-label="`Modifica ${name}`"
+      :aria-label="`Edit ${name}`"
       aria-modal="true"
       @keydown="handleKeydown"
     >
@@ -109,7 +109,7 @@ const handleSliderInput = () => {
             :max="max"
             :step="step"
             v-model.number="localValue"
-            aria-label="Valore percentuale"
+            aria-label="Percentage value"
             @input="handleSliderInput"
             @change="snapToMark"
             @mouseup="snapToMark"
@@ -130,7 +130,7 @@ const handleSliderInput = () => {
             class="step-btn"
             type="button"
             :disabled="localValue <= min"
-            aria-label="Diminuisci"
+            aria-label="Decrease"
             @click="decrement"
           >
             −
@@ -139,7 +139,7 @@ const handleSliderInput = () => {
             class="step-btn"
             type="button"
             :disabled="localValue >= max"
-            aria-label="Aumenta"
+            aria-label="Increase"
             @click="increment"
           >
             +
@@ -148,8 +148,8 @@ const handleSliderInput = () => {
       </div>
 
       <div class="modal-footer">
-        <button class="btn btn-cancel" type="button" aria-label="Annulla" title="Annulla" @click="handleCancel">✕</button>
-        <button class="btn btn-confirm" type="button" aria-label="Conferma" title="Conferma" @click="handleConfirm">✓</button>
+        <button class="btn btn-cancel" type="button" aria-label="Cancel" title="Cancel" @click="handleCancel">✕</button>
+        <button class="btn btn-confirm" type="button" aria-label="Confirm" title="Confirm" @click="handleConfirm">✓</button>
       </div>
     </div>
   </div>

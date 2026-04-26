@@ -62,14 +62,14 @@ export const useTransactionPageActions = ({
     let completedSuccessfully = false
 
     if (isLoginAttempt) {
-      setNotification('NORMAL', 'Tentativo di accesso in corso...')
+      setNotification('NORMAL', 'Login attempt in progress...')
     }
 
     const result = await commitTransactionPage(page.id)
     if (!result.ok) {
       setNotification(
         'ERROR',
-        result.message ?? 'Errore invio comando: verifica la connessione al dispositivo.',
+        result.message ?? 'Command error: check device connection.',
         { displayMode: 'ACKNOWLEDGED' },
       )
       return
@@ -79,15 +79,15 @@ export const useTransactionPageActions = ({
       // Ensure login status is current before deciding success/failure flow.
       await refreshParameters(['status_login'])
       if (parameterValues.status_login === 'ok') {
-        setNotification('SUCCESS', 'Accesso eseguito con successo.')
+        setNotification('SUCCESS', 'Login successful.')
         completedSuccessfully = true
       } else {
-        setNotification('ERROR', 'Accesso non riuscito: credenziali non valide.', {
+        setNotification('ERROR', 'Login failed: invalid credentials.', {
           displayMode: 'ACKNOWLEDGED',
         })
       }
     } else {
-      setNotification('SUCCESS', 'Comando applicato correttamente.')
+      setNotification('SUCCESS', 'Command applied successfully.')
       completedSuccessfully = true
     }
 

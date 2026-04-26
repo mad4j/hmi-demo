@@ -179,7 +179,7 @@ export const useParameterStore = () => {
     return {
       ok: false,
       failed: Object.keys(payload),
-      message: result.message ?? 'Errore invio parametri: verifica la connessione al dispositivo.',
+      message: result.message ?? 'Send error: check device connection.',
     }
   }
 
@@ -191,7 +191,7 @@ export const useParameterStore = () => {
       const result = await setParameters({ [id]: newValue })
       if (result.ok) return { ok: true }
       parameterValues[id] = previous // revert on failure
-      return { ok: false, message: result.message ?? 'Errore aggiornamento parametro.' }
+      return { ok: false, message: result.message ?? 'Parameter update error.' }
     }
     const param = uniqueParameters.find((p) => p.id === id)
     if (param?.type === 'enum' && param.options?.length > 0) {
@@ -203,10 +203,10 @@ export const useParameterStore = () => {
       const result = await setParameters({ [id]: newValue })
       if (result.ok) return { ok: true }
       parameterValues[id] = previous // revert on failure
-      return { ok: false, message: result.message ?? 'Errore aggiornamento parametro.' }
+      return { ok: false, message: result.message ?? 'Parameter update error.' }
     }
 
-    return { ok: false, message: 'Parametro non modificabile.' }
+    return { ok: false, message: 'Parameter is read-only.' }
   }
 
   const setParameterValue = async (id, value) => {
@@ -221,10 +221,10 @@ export const useParameterStore = () => {
         return { ok: true }
       }
       parameterValues[id] = previous // revert on failure
-      return { ok: false, message: result.message ?? 'Errore aggiornamento parametro.' }
+      return { ok: false, message: result.message ?? 'Parameter update error.' }
     }
 
-    return { ok: false, message: 'Parametro non trovato.' }
+    return { ok: false, message: 'Parameter not found.' }
   }
 
   /**

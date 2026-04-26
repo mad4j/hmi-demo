@@ -4,16 +4,16 @@ pages:
     icon: "info"
     parameters:
       - id: versione_hmi
-        name: Versione HMI
+        name: HMI Version
         type: enum
         readonly: true
       - id: stato_rete
-        name: Stato rete
+        name: Network Status
         type: enum
         options: [ONLINE, OFFLINE]
         readonly: true
       - id: connessione
-        name: Connessione
+        name: Connection
         type: enum
         options: [CAN-BUS, WIFI, ETH]
         readonly: true
@@ -24,22 +24,22 @@ pages:
         precision: 0
         readonly: true
       - id: tensione_batteria
-        name: Tensione batt.
+        name: Battery Volt.
         type: number
         unit: "V"
         precision: 1
         readonly: true
       - id: temperatura_cpu
-        name: Temp. CPU
+        name: CPU Temp.
         type: number
         unit: "°C"
         precision: 0
         readonly: true
       - id: data_sistema
-        name: Data
+        name: Date
         type: date
         readonly: false
       - id: ora_sistema
-        name: Ora
+        name: Time
         type: enum
         readonly: true

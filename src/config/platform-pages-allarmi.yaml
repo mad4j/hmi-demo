@@ -1,22 +1,22 @@
 pages:
   - id: allarmi
-    label: Allarmi
+    label: Alarms
     icon: "alarm"
     parameters:
       - id: allarme_batteria
-        name: Batteria
+        name: Battery
         type: boolean
         readonly: true
       - id: allarme_temp_motore
-        name: Temp. motore
+        name: Engine Temp.
         type: boolean
         readonly: true
       - id: allarme_pressione
-        name: Pressione
+        name: Pressure
         type: boolean
         readonly: true
       - id: allarme_olio
-        name: Olio motore
+        name: Engine Oil
         type: boolean
         readonly: true
       - id: allarme_abs
@@ -28,11 +28,11 @@ pages:
         type: boolean
         readonly: true
       - id: allarme_carburante
-        name: Carburante
+        name: Fuel
         type: boolean
         readonly: true
       - id: livello_carburante
-        name: Livello carb.
+        name: Fuel Level
         type: percentage
         precision: 0
         readonly: true

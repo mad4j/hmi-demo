@@ -1,11 +1,11 @@
 pages:
   - id: impostazioni
-    label: Impostazioni
+    label: Settings
     icon: "settings"
     parameters: []
     submenus:
       - id: tema
-        label: Tema
+        label: Theme
         icon: "theme"
         parameters: []
       - id: gps
@@ -13,30 +13,30 @@ pages:
         icon: "gps"
         parameters:
           - id: gps_stato
-            name: Stato
+            name: Status
             type: enum
-            options: [AGGANCIATO, IN RICERCA, ERRORE, DISATTIVO]
+            options: [LOCKED, SEARCHING, ERROR, INACTIVE]
             readonly: true
           - id: gps_satelliti
-            name: Satelliti
+            name: Satellites
             type: number
             unit: "sat"
             precision: 0
             readonly: true
           - id: gps_latitudine
-            name: Latitudine
+            name: Latitude
             type: number
             unit: "°"
             precision: 5
             readonly: true
           - id: gps_longitudine
-            name: Longitudine
+            name: Longitude
             type: number
             unit: "°"
             precision: 5
             readonly: true
           - id: gps_altitudine
-            name: Altitudine
+            name: Altitude
             type: number
             unit: "m"
             precision: 0
@@ -46,23 +46,23 @@ pages:
             type: text
             readonly: false
           - id: gps_velocita
-            name: Velocità
+            name: Speed
             type: number
             unit: "km/h"
             precision: 1
             readonly: true
           - id: gps_accuratezza
-            name: Accuratezza
+            name: Accuracy
             type: number
             unit: "m"
             precision: 1
             readonly: true
           - id: gps_modalita
-            name: Modalità
+            name: Mode
             type: enum
-            options: [AUTO, MANUALE, DISATTIVO]
+            options: [AUTO, MANUAL, INACTIVE]
       - id: login
-        label: Accesso
+        label: Login
         icon: "login"
         mode: transaction
         goOnApply: GO_BACK

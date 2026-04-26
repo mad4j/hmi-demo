@@ -170,7 +170,7 @@ watch(
 
     const wasLoggedIn = parameterValues.status_login === 'ok'
     logoutInProgress.value = true
-    setNotification('WARNING', 'Logout in corso...')
+    setNotification('WARNING', 'Logging out...')
     try {
       // Always send both credentials reset commands: local values can already
       // be empty due to clearOnApply, while remote state may still be logged in.
@@ -179,12 +179,12 @@ watch(
 
       if (!nameResult.ok || !passwordResult.ok) {
         const msg = (!nameResult.ok ? nameResult.message : passwordResult.message)
-          ?? 'Errore durante il logout: comando non applicato.'
+          ?? 'Logout error: command not applied.'
         setNotification('ERROR', msg, { displayMode: 'ACKNOWLEDGED' })
       } else if (wasLoggedIn) {
-        setNotification('SUCCESS', 'Logout completato con successo.')
+        setNotification('SUCCESS', 'Logout completed successfully.')
       } else {
-        setNotification('WARNING', 'Nessuna sessione attiva: utente gia disconnesso.')
+        setNotification('WARNING', 'No active session: user already logged out.')
       }
 
       const goOnApply = logoutPageConfig?.goOnApply ?? 'STAY_HERE'
@@ -223,7 +223,7 @@ watch(
       <span
         v-if="pendingCount > 0"
         class="notification-count"
-        aria-label="Messaggi in coda"
+        aria-label="Queued messages"
       >
         {{ pendingCount }}
       </span>
@@ -245,7 +245,7 @@ watch(
         <div class="settings-page">
           <div class="settings-widget">
             <ParameterWidget
-              name="Tema scuro"
+              name="Dark Theme"
               type="boolean"
               :value="isDark"
               @toggle="toggleTheme"

@@ -30,7 +30,7 @@ export const ErrorCode = Object.freeze({
 export class DeviceError extends Error {
   /**
    * @param {string} code      – one of ErrorCode
-   * @param {string} message   – human-readable description (in Italian, for display)
+  * @param {string} message   – human-readable description (for display)
    * @param {unknown} [details] – optional raw cause (response body, original Error, …)
    */
   constructor(code, message, details) {

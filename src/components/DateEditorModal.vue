@@ -44,7 +44,7 @@ const handleConfirmAndNext = () => emit('confirm-and-next', localValue.value)
 
 <template>
   <div class="modal-backdrop" @click.self="handleCancel">
-    <div class="modal" role="dialog" :aria-label="`Modifica ${name}`" aria-modal="true">
+    <div class="modal" role="dialog" :aria-label="`Edit ${name}`" aria-modal="true">
       <div class="modal-header">{{ name }}</div>
 
       <div class="modal-body">
@@ -59,8 +59,8 @@ const handleConfirmAndNext = () => emit('confirm-and-next', localValue.value)
       </div>
 
       <div class="modal-footer">
-        <button class="btn btn-cancel" type="button" aria-label="Annulla" title="Annulla" @click="handleCancel">✕</button>
-        <button class="btn btn-confirm" type="button" aria-label="Conferma" title="Conferma" @click="handleConfirm">✓</button>
+        <button class="btn btn-cancel" type="button" aria-label="Cancel" title="Cancel" @click="handleCancel">✕</button>
+        <button class="btn btn-confirm" type="button" aria-label="Confirm" title="Confirm" @click="handleConfirm">✓</button>
       </div>
     </div>
   </div>
