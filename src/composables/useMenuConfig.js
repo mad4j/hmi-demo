@@ -1,18 +1,22 @@
 import { load } from 'js-yaml'
 import rawPlatformConfig from '../config/platform.yaml?raw'
-import rawPlatformStatusIcons from '../config/platform-status-icons.yaml?raw'
-import rawPlatformPagesMenu from '../config/platform-pages-menu.yaml?raw'
-import rawPlatformPagesAllarmi from '../config/platform-pages-allarmi.yaml?raw'
-import rawPlatformPagesInfo from '../config/platform-pages-info.yaml?raw'
-import rawPlatformPagesImpostazioni from '../config/platform-pages-impostazioni.yaml?raw'
 
-const includeRawByFile = {
-  'platform-status-icons.yaml': rawPlatformStatusIcons,
-  'platform-pages-menu.yaml': rawPlatformPagesMenu,
-  'platform-pages-allarmi.yaml': rawPlatformPagesAllarmi,
-  'platform-pages-info.yaml': rawPlatformPagesInfo,
-  'platform-pages-impostazioni.yaml': rawPlatformPagesImpostazioni,
-}
+const rawConfigFiles = import.meta.glob('../config/*.yaml', {
+  eager: true,
+  query: '?raw',
+  import: 'default',
+})
+
+const includeRawByFile = Object.entries(rawConfigFiles).reduce((acc, [path, content]) => {
+  const parts = path.split('/')
+  const fileName = parts[parts.length - 1]
+
+  if (fileName && fileName !== 'platform.yaml') {
+    acc[fileName] = content
+  }
+
+  return acc
+}, {})
 
 const fallbackConfig = {
   title: 'HMI Demo',

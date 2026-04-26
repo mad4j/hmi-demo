@@ -22,6 +22,8 @@ export class TextTailNotificationTransport {
 
   start() {
     if (this._timerId !== null) return
+    // Prime the cursor immediately so the first interval tick reads only new lines.
+    void this._poll()
     this._timerId = setInterval(() => {
       this._poll()
     }, this._intervalMs)

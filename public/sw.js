@@ -207,6 +207,9 @@ let pendingUpdates = {}
 // Each line is a JSON object containing one updates payload.
 let notificationLogText = ''
 
+// Whether the simulation tick loop is currently running.
+let tickLoopStarted = false
+
 // Active SSE clients kept as stream controllers.
 const sseClients = new Set()
 const textEncoder = new TextEncoder()
@@ -520,10 +523,7 @@ self.addEventListener('install', (event) => {
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     self.clients.claim().then(() => {
-      // Start the simulation tick loop once the SW controls all clients
-      setInterval(() => {
-        publishUpdates(generateTick())
-      }, TICK_INTERVAL_MS)
+      ensureTickLoop()
       console.info('[SW] HMI Demo Service Worker active — simulator running.')
     }),
   )
@@ -534,5 +534,20 @@ self.addEventListener('fetch', (event) => {
   if (response !== null) {
     event.respondWith(Promise.resolve(response))
   }
-  // All other requests: fall through to the network (no event.respondWith call)
+  // Ensure the tick loop is running even after an SW process restart.
+  ensureTickLoop()
 })
+
+/**
+ * Start the simulation tick loop if it is not already running.
+ * Called from both the activate handler and every fetch event so that the
+ * loop restarts automatically after the Service Worker process is terminated
+ * and revived by an incoming request.
+ */
+const ensureTickLoop = () => {
+  if (tickLoopStarted) return
+  tickLoopStarted = true
+  setInterval(() => {
+    publishUpdates(generateTick())
+  }, TICK_INTERVAL_MS)
+}
