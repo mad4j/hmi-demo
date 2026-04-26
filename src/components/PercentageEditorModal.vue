@@ -289,7 +289,7 @@ const handleSliderInput = () => {
 
 .step-btn:disabled {
   opacity: 0.35;
-  cursor: not-allowed;
+  filter: saturate(0.45);
 }
 
 /* ── Footer ──────────────────────────────────────────────── */

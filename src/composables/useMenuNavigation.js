@@ -30,7 +30,10 @@ export const useMenuNavigation = () => {
   }
 
   const goHome = () => {
-    setCurrentPage(selectablePages[0]?.id ?? menuConfig.pages[0].id)
+    const homePageId = selectablePages[0]?.id ?? menuConfig.pages[0].id
+    if (!homePageId || homePageId === currentPageId.value) return
+    pageHistory.value = currentPageId.value ? [currentPageId.value] : []
+    setCurrentPage(homePageId, { trackHistory: false })
   }
 
   const goToPreviousPage = () => {

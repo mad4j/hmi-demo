@@ -389,7 +389,7 @@ onUnmounted(() => document.removeEventListener('keydown', handleGlobalKeydown))
 
 .transaction-button:disabled {
   opacity: 0.55;
-  cursor: not-allowed;
+  filter: saturate(0.45);
 }
 
 .transaction-button--submit {
