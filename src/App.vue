@@ -340,6 +340,9 @@ watch(
   --notification-error-bg: #4b141b;
   --notification-error-border: #f85149;
   --notification-error-text: #ffd6d6;
+  --scrollbar-track: color-mix(in srgb, var(--bg-main) 72%, black);
+  --scrollbar-thumb: color-mix(in srgb, var(--text-secondary) 55%, var(--bg-main));
+  --scrollbar-thumb-hover: color-mix(in srgb, var(--text-blue) 55%, var(--text-secondary));
 }
 
 /* ── Theme: light ───────────────────────────────────────── */
@@ -376,6 +379,9 @@ watch(
   --notification-error-bg: #ffe3e3;
   --notification-error-border: #d1242f;
   --notification-error-text: #7f1d1d;
+  --scrollbar-track: color-mix(in srgb, var(--bg-main) 92%, black);
+  --scrollbar-thumb: color-mix(in srgb, var(--text-secondary) 45%, var(--bg-main));
+  --scrollbar-thumb-hover: color-mix(in srgb, var(--text-blue) 45%, var(--text-secondary));
 }
 
 /* ── Shell ──────────────────────────────────────────────── */
@@ -569,6 +575,27 @@ watch(
   min-height: 0;
   overflow-x: hidden;
   overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
+.content::-webkit-scrollbar {
+  width: 0.6rem;
+}
+
+.content::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+  border-radius: 999px;
+}
+
+.content::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 999px;
+  border: 2px solid var(--scrollbar-track);
+}
+
+.content::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
 }
 
 /* ── Buttons ────────────────────────────────────────────── */
