@@ -49,6 +49,7 @@ const {
 } = useNotificationBar()
 
 const NOTIFICATION_ICON = {
+  MENU: 'menu',
   NORMAL: 'info',
   SUCCESS: 'check-circle',
   WARNING: 'fault',
@@ -405,6 +406,12 @@ watch(
   border-radius: 999px;
   border: 1px solid currentColor;
   opacity: 0.85;
+}
+
+.notification-bar--menu {
+  background: var(--notification-normal-bg);
+  border-bottom-color: var(--notification-normal-border);
+  color: var(--text-secondary);
 }
 
 .notification-bar--normal {
