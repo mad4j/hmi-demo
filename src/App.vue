@@ -41,14 +41,23 @@ const {
 
 const {
   notification,
-  notificationHistory,
-  isNotificationExpanded,
+  pendingCount,
   notificationBarClasses,
-  notificationHistoryTitle,
   setNotification,
   handleNotificationTap,
   disposeNotificationBar,
 } = useNotificationBar()
+
+const NOTIFICATION_ICON = {
+  NORMAL: 'info',
+  SUCCESS: 'check-circle',
+  WARNING: 'fault',
+  ERROR: 'x-circle',
+}
+
+const notificationIcon = computed(
+  () => NOTIFICATION_ICON[notification.value.status] ?? 'info',
+)
 
 const {
   isTransactionPage,
@@ -158,18 +167,16 @@ watch(
       :class="notificationBarClasses"
       role="status"
       aria-live="polite"
-      :aria-expanded="isNotificationExpanded"
-      :title="notificationHistoryTitle"
       @click="handleNotificationTap"
     >
-      <span class="notification-state">{{ notification.status }}</span>
+      <AppIcon :name="notificationIcon" :size="16" class="notification-icon" aria-hidden="true" />
       <span class="notification-message">{{ notification.message }}</span>
       <span
-        v-if="notificationHistory.length > 1"
+        v-if="pendingCount > 0"
         class="notification-count"
-        aria-label="Numero notifiche recenti"
+        aria-label="Messaggi in coda"
       >
-        +{{ notificationHistory.length - 1 }}
+        {{ pendingCount }}
       </span>
     </div>
 
@@ -375,12 +382,10 @@ watch(
   transition: background 0.2s, border-color 0.2s, color 0.2s;
 }
 
-.notification-state {
-  font-weight: 800;
-  letter-spacing: 0.04em;
-  font-size: 0.72rem;
-  text-transform: uppercase;
+.notification-icon {
   flex-shrink: 0;
+  width: 1rem;
+  height: 1rem;
 }
 
 .notification-message {
@@ -400,12 +405,6 @@ watch(
   border-radius: 999px;
   border: 1px solid currentColor;
   opacity: 0.85;
-}
-
-.notification-bar--expanded .notification-message {
-  overflow: visible;
-  text-overflow: clip;
-  white-space: normal;
 }
 
 .notification-bar--normal {
@@ -588,10 +587,6 @@ button:active {
     line-height: 1.12;
     padding-top: 0.2rem;
     padding-bottom: 0.2rem;
-  }
-
-  .notification-state {
-    font-size: 0.7rem;
   }
 
   .notification-count {

@@ -13,6 +13,8 @@ import IconTheme from './icons/IconTheme.vue'
 import IconCircle from './icons/IconCircle.vue'
 import IconReset from './icons/IconReset.vue'
 import IconSend from './icons/IconSend.vue'
+import IconCheckCircle from './icons/IconCheckCircle.vue'
+import IconXCircle from './icons/IconXCircle.vue'
 
 const iconMap = {
   home: IconHome,
@@ -28,6 +30,8 @@ const iconMap = {
   theme: IconTheme,
   reset: IconReset,
   send: IconSend,
+  'check-circle': IconCheckCircle,
+  'x-circle': IconXCircle,
 }
 
 const props = defineProps({
