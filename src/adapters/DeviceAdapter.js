@@ -5,8 +5,7 @@
  * All adapters must implement the five methods defined here.
  *
  * Concrete implementations:
- *   NetworkAdapter   – communicates via HTTP fetch (intercept-able by a Service Worker)
- *   SimulatorAdapter – wraps deviceSimulator.js directly (fallback when SW is unavailable)
+ *   NetworkAdapter – communicates via HTTP fetch (intercept-able by a Service Worker)
  */
 
 // ── Error codes ───────────────────────────────────────────────────────────

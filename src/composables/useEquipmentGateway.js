@@ -11,14 +11,6 @@
  * The default path is always NetworkAdapter so that a real backend exposing
  * the same `/api/*` contract works without app code customizations.
  *
- * Optional adapter modes via env vars:
- *
- *   VITE_DEVICE_ADAPTER_MODE=network-auto      (default)
- *     -> use NetworkAdapter with optional base URL
- *
- *   VITE_DEVICE_ADAPTER_MODE=simulator-direct
- *     -> force direct in-process simulator (SimulatorAdapter)
- *
  * Optional API base URL:
  *
  *   VITE_DEVICE_API_BASE_URL=http://host:port
@@ -42,11 +34,9 @@
 
 import { ref } from 'vue'
 import { NetworkAdapter } from '../adapters/NetworkAdapter.js'
-import { SimulatorAdapter } from '../adapters/SimulatorAdapter.js'
 
 // ── Adapter selection ─────────────────────────────────────────────────────
 
-const ADAPTER_MODE = String(import.meta.env.VITE_DEVICE_ADAPTER_MODE ?? 'network-auto').toLowerCase()
 const API_BASE_URL = String(import.meta.env.VITE_DEVICE_API_BASE_URL ?? '').trim()
 const NOTIFICATION_TRANSPORT = String(
   import.meta.env.VITE_DEVICE_NOTIFICATION_TRANSPORT ?? 'text-tail',
@@ -59,17 +49,6 @@ const NOTIFICATION_TEXT_URL = String(
  * Pick and instantiate the appropriate adapter.
  */
 const createAdapter = () => {
-  if (ADAPTER_MODE === 'simulator-direct') {
-    console.info('[EquipmentGateway] Using SimulatorAdapter (forced by VITE_DEVICE_ADAPTER_MODE).')
-    return new SimulatorAdapter()
-  }
-
-  if (ADAPTER_MODE !== 'network-auto') {
-    console.warn(
-      `[EquipmentGateway] Unknown VITE_DEVICE_ADAPTER_MODE="${ADAPTER_MODE}", falling back to network-auto.`,
-    )
-  }
-
   console.info(
     `[EquipmentGateway] Using NetworkAdapter (base URL: ${API_BASE_URL || 'same-origin'}).`,
   )

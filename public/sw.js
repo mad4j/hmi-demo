@@ -3,9 +3,8 @@
  *
  * This script intercepts all fetch requests matching /api/* and routes them to a
  * fully self-contained apparatus simulator that runs inside the Service Worker
- * thread.  The simulator is a faithful copy of the logic in deviceSimulator.js,
- * adapted to run as a classic (non-module) Service Worker so that it works on
- * every browser and on GitHub Pages without any build step.
+ * thread. The simulator is implemented here directly so that it works on every
+ * browser and on GitHub Pages without any build step.
  *
  * Handled routes
  * ──────────────
@@ -70,7 +69,7 @@ const apparatusState = {
   data_sistema:   '23/04/2026',
   ora_sistema:    '17:30',
   // GPS
-  gps_stato:        'AGGANCIATO',
+  gps_stato:        'LOCKED',
   gps_satelliti:    9,
   gps_latitudine:   45.46427,
   gps_longitudine:  9.18951,
@@ -155,7 +154,7 @@ const generateTick = () => {
   )
 
   // GPS position drift (only when locked)
-  if (apparatusState.gps_stato === 'AGGANCIATO') {
+  if (apparatusState.gps_stato === 'LOCKED') {
     setIfChanged(
       'gps_latitudine',
       Math.round(drift(apparatusState.gps_latitudine, 0.00005, 44.0, 47.0) * 100000) / 100000,
