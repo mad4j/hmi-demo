@@ -37,7 +37,7 @@ const parameterValues = reactive(
 const transactionDrafts = reactive({})
 
 // ── Connect to apparatus via device client ────────────────
-const { getParameters, setParameters, notifyParameters } = useDeviceClient()
+const { getParameters, setParameters, sendCommand, notifyParameters } = useDeviceClient()
 
 const allParameterIds = [
   ...uniqueParameters.map((p) => p.id),
@@ -248,6 +248,7 @@ export const useParameterStore = () => {
     parameterValues,
     toggleParameter,
     setParameterValue,
+    sendCommand,
     toggleTransactionParameter,
     setTransactionParameterValue,
     getTransactionDisplayValues,
