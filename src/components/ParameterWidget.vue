@@ -56,9 +56,11 @@ const displayValue = computed(() => {
     if (Number.isNaN(num)) {
       return '—'
     }
-    const formatted =
-      props.precision !== null ? num.toFixed(props.precision) : String(props.value)
-    return props.unit ? `${formatted} ${props.unit}` : formatted
+    return props.precision !== null ? num.toFixed(props.precision) : String(props.value)
+  }
+  if (props.type === 'text') {
+    const str = String(props.value ?? '').trim()
+    return str === '' ? '---' : str
   }
   if (props.type === 'password') {
     return '•••'
@@ -72,6 +74,8 @@ const displayValue = computed(() => {
   }
   return String(props.value ?? '—')
 })
+
+const displayUnit = computed(() => (props.type === 'number' && props.unit ? props.unit : ''))
 
 const isActive = computed(() => props.type === 'boolean' && Boolean(props.value))
 
@@ -117,7 +121,7 @@ const handleClick = () => {
       {{ name }}
       <IconLock v-if="readonly" class="readonly-icon" aria-hidden="true" />
     </div>
-    <div class="param-value">{{ displayValue }}</div>
+    <div class="param-value">{{ displayValue }}<span v-if="displayUnit" class="param-unit">{{ displayUnit }}</span></div>
   </div>
 </template>
 
@@ -238,6 +242,14 @@ const handleClick = () => {
 
 .param-widget--modified .param-value {
   color: var(--transaction-modified-text);
+}
+
+.param-unit {
+  font-size: 0.55em;
+  font-weight: 600;
+  margin-left: 0.2em;
+  opacity: 0.75;
+  vertical-align: baseline;
 }
 
 .readonly-icon {
