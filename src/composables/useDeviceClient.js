@@ -10,18 +10,13 @@
  *   setParameters(params)      – apply a map of { id: value } updates to the apparatus
  *   notifyParameters(callback) – subscribe to asynchronous apparatus push notifications
  *
- * In production this would wrap a real REST/WebSocket transport.
- * Here every operation is simulated with artificial latency so that
- * the rest of the application code is structured exactly as it would
- * be against a real server.
+ * The simulator runs in a dedicated Web Worker (simulatorWorker.js).
+ * Communication uses a simple request/response message protocol that mirrors
+ * the semantics of a REST + server-push transport, so the rest of the
+ * application code is structured exactly as it would be against a real server.
  */
 
 import { ref } from 'vue'
-import {
-  simulateGetParameters,
-  simulateSetParameters,
-  subscribeToParameterNotifications,
-} from './deviceSimulator.js'
 
 const logDeviceTraffic = (direction, action, payload) => {
   console.info(`[DeviceClient] ${direction} ${action}`, payload)
@@ -30,6 +25,41 @@ const logDeviceTraffic = (direction, action, payload) => {
 // ── Shared connection state (reactive, exported for UI use) ───────────────
 export const isConnected = ref(false)
 export const isLoading = ref(false)
+
+// ── Worker singleton ──────────────────────────────────────────────────────
+let _worker = null
+let _nextRequestId = 0
+const _pendingRequests = new Map() // requestId → resolve function
+const _notificationCallbacks = new Set()
+
+const getWorker = () => {
+  if (_worker) return _worker
+  _worker = new Worker(new URL('../workers/simulatorWorker.js', import.meta.url), {
+    type: 'module',
+  })
+  _worker.onmessage = (event) => {
+    const { type, id, result, updates } = event.data
+    if (type === 'RESPONSE') {
+      const resolve = _pendingRequests.get(id)
+      if (resolve) {
+        _pendingRequests.delete(id)
+        resolve(result)
+      }
+    } else if (type === 'NOTIFICATION') {
+      _notificationCallbacks.forEach((cb) => cb(updates))
+    }
+  }
+  return _worker
+}
+
+/** Send a typed request to the worker and await the correlated RESPONSE. */
+const workerRequest = (type, payload) => {
+  const id = _nextRequestId++
+  return new Promise((resolve) => {
+    _pendingRequests.set(id, resolve)
+    getWorker().postMessage({ type, id, payload })
+  })
+}
 
 // ── Composable ────────────────────────────────────────────────────────────
 export const useDeviceClient = () => {
@@ -43,7 +73,7 @@ export const useDeviceClient = () => {
     isLoading.value = true
     try {
       logDeviceTraffic('->', 'getParameters', ids)
-      const result = await simulateGetParameters(ids)
+      const result = await workerRequest('GET_PARAMETERS', { ids })
       if (result.ok) {
         isConnected.value = true
         logDeviceTraffic('<-', 'getParameters', result.values)
@@ -71,7 +101,7 @@ export const useDeviceClient = () => {
   const setParameters = async (params) => {
     try {
       logDeviceTraffic('->', 'setParameters', params)
-      const result = await simulateSetParameters(params)
+      const result = await workerRequest('SET_PARAMETERS', { params })
       if (result.ok) {
         logDeviceTraffic('<-', 'setParameters', result)
       } else {
@@ -86,17 +116,19 @@ export const useDeviceClient = () => {
   }
 
   /**
-   * Subscribe to apparatus notifications (server-push simulation).
+   * Subscribe to apparatus notifications (server-push via Worker messages).
    * @param {(updates: Record<string, unknown>) => void} callback
    *   Called whenever the apparatus broadcasts a parameter update.
    *   Only the changed fields are included in `updates`.
    * @returns {() => void} Unsubscribe function.
    */
   const notifyParameters = (callback) => {
-    return subscribeToParameterNotifications((updates) => {
+    const wrapped = (updates) => {
       logDeviceTraffic('<-', 'notification', updates)
       callback(updates)
-    })
+    }
+    _notificationCallbacks.add(wrapped)
+    return () => _notificationCallbacks.delete(wrapped)
   }
 
   return { getParameters, setParameters, notifyParameters, isConnected, isLoading }

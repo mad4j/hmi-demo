@@ -26,8 +26,9 @@ npm run build
 - `src/composables/useMenuConfig.js`: parsing e normalizzazione del menu YAML.
 - `src/composables/useMenuNavigation.js`: stato singleton della navigazione tra primo e secondo livello.
 - `src/composables/useParameterStore.js`: stato reattivo dei parametri e sincronizzazione con il client apparato.
-- `src/composables/useDeviceClient.js`: client async verso l'apparato remoto (fetch iniziale, comandi e notifiche push).
-- `src/composables/deviceSimulator.js`: simulatore dell'apparato remoto con stato server-side, latenza e notifiche.
+- `src/composables/useDeviceClient.js`: client async verso l'apparato remoto; comunica con il simulatore tramite postMessage (stesso protocollo di una REST + push).
+- `src/composables/deviceSimulator.js`: logica del simulatore dell'apparato (stato, latenza, notifiche); eseguita all'interno del worker.
+- `src/workers/simulatorWorker.js`: Web Worker che ospita il simulatore in un thread separato, evitando la necessità di un processo server esterno. Riceve messaggi `GET_PARAMETERS` / `SET_PARAMETERS` e rilancia le notifiche push al thread principale.
 - `src/components/`: widget, modali e icone usati dall'interfaccia.
 
 ## Configurazione menu
