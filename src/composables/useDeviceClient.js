@@ -29,8 +29,17 @@ export const isLoading = ref(false)
 // ── Worker singleton ──────────────────────────────────────────────────────
 let _worker = null
 let _nextRequestId = 0
-const _pendingRequests = new Map() // requestId → resolve function
+const _pendingRequests = new Map() // requestId → { resolve, reject }
 const _notificationCallbacks = new Set()
+
+/** Reject all pending requests with the given error and reset the worker. */
+const _rejectAllPending = (err) => {
+  for (const { reject } of _pendingRequests.values()) {
+    reject(err)
+  }
+  _pendingRequests.clear()
+  _worker = null
+}
 
 const getWorker = () => {
   if (_worker) return _worker
@@ -40,23 +49,32 @@ const getWorker = () => {
   _worker.onmessage = (event) => {
     const { type, id, result, updates } = event.data
     if (type === 'RESPONSE') {
-      const resolve = _pendingRequests.get(id)
-      if (resolve) {
+      const pending = _pendingRequests.get(id)
+      if (pending) {
         _pendingRequests.delete(id)
-        resolve(result)
+        pending.resolve(result)
       }
     } else if (type === 'NOTIFICATION') {
       _notificationCallbacks.forEach((cb) => cb(updates))
     }
+  }
+  _worker.onerror = (event) => {
+    console.error('[DeviceClient] Worker error', event)
+    _rejectAllPending(new Error(event.message ?? 'Worker error'))
+  }
+  _worker.onmessageerror = (event) => {
+    console.error('[DeviceClient] Worker message error', event)
+    _rejectAllPending(new Error('Worker message deserialisation error'))
   }
   return _worker
 }
 
 /** Send a typed request to the worker and await the correlated RESPONSE. */
 const workerRequest = (type, payload) => {
-  const id = _nextRequestId++
-  return new Promise((resolve) => {
-    _pendingRequests.set(id, resolve)
+  // Wrap the counter to stay well within Number.MAX_SAFE_INTEGER
+  const id = _nextRequestId++ % 2 ** 31
+  return new Promise((resolve, reject) => {
+    _pendingRequests.set(id, { resolve, reject })
     getWorker().postMessage({ type, id, payload })
   })
 }
