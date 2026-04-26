@@ -77,3 +77,325 @@ pages:
               - id: portellone
                 name: Portellone
                 type: boolean
+      - id: visualizzazione_estesa
+        label: Visualizzazione estesa
+        parameters:
+          - id: test_viz_temp_motore
+            name: Temp. motore
+            type: number
+            unit: "°C"
+            precision: 1
+            readonly: true
+          - id: test_viz_press_turbo
+            name: Press. turbo
+            type: number
+            unit: "bar"
+            precision: 2
+            readonly: true
+          - id: test_viz_corrente
+            name: Corrente
+            type: number
+            unit: "A"
+            precision: 1
+            readonly: true
+          - id: test_viz_tensione_aux
+            name: Tensione aux
+            type: number
+            unit: "V"
+            precision: 1
+            readonly: true
+          - id: test_viz_memoria_libera
+            name: Memoria libera
+            type: percentage
+            precision: 0
+            readonly: true
+          - id: test_viz_cpu_load
+            name: CPU load
+            type: percentage
+            precision: 0
+            readonly: true
+          - id: test_viz_ventola_motore
+            name: Ventola motore
+            type: number
+            unit: "rpm"
+            precision: 0
+            readonly: true
+          - id: test_viz_ventola_hmi
+            name: Ventola HMI
+            type: number
+            unit: "rpm"
+            precision: 0
+            readonly: true
+          - id: test_viz_freno_usura
+            name: Usura freni
+            type: percentage
+            precision: 0
+            readonly: true
+          - id: test_viz_stato_bus
+            name: Stato bus
+            type: enum
+            options: [OK, DEGRADED, OFFLINE]
+            readonly: true
+          - id: test_viz_profilo_guida
+            name: Profilo guida
+            type: enum
+            options: [CITY, TOURING, TRACK, ECO]
+          - id: test_viz_manutenzione
+            name: Manutenzione
+            type: enum
+            options: [NONE, SOON, DUE, OVERDUE]
+            readonly: true
+          - id: test_viz_last_service
+            name: Ultimo service
+            type: date
+            readonly: true
+          - id: test_viz_next_service
+            name: Prossimo service
+            type: date
+          - id: test_viz_note_officina
+            name: Note officina
+            type: text
+          - id: test_viz_codice_intervento
+            name: Codice intervento
+            type: text
+          - id: test_viz_revisione_cfg
+            name: Revisione cfg
+            type: text
+            readonly: true
+          - id: test_viz_build_number
+            name: Build number
+            type: text
+            readonly: true
+      - id: pannelli_transazione
+        label: Pannelli transazione
+        mode: transaction
+        goOnApply: STAY_HERE
+        panels:
+          - label: Credenziali
+            parameters:
+              - id: test_trx_username
+                name: Username
+                type: text
+                clearOnApply: true
+              - id: test_trx_password
+                name: Password
+                type: password
+                clearOnApply: true
+              - id: test_trx_ruolo
+                name: Ruolo
+                type: enum
+                options: [OPERATORE, SUPERVISORE, MANUTENTORE]
+          - label: Limiti
+            parameters:
+              - id: test_trx_soglia_warn
+                name: Soglia warning
+                type: percentage
+                precision: 0
+              - id: test_trx_soglia_alarm
+                name: Soglia allarme
+                type: percentage
+                precision: 0
+              - id: test_trx_data_validita
+                name: Data validita
+                type: date
+          - label: Workflow
+            parameters:
+              - id: test_trx_modalita
+                name: Modalita salvataggio
+                type: enum
+                options: [DRAFT, VALIDATA, PUBBLICATA]
+              - id: test_trx_ticket
+                name: Ticket
+                type: text
+              - id: test_trx_note
+                name: Note rilascio
+                type: text
+      - id: pannelli_multipli
+        label: Pannelli multipli
+        panels:
+          - label: Pannello 1
+            parameters:
+              - id: test_panel_1_a
+                name: Nodo 1A
+                type: number
+                unit: "ms"
+                precision: 0
+                readonly: true
+              - id: test_panel_1_b
+                name: Nodo 1B
+                type: number
+                unit: "ms"
+                precision: 0
+                readonly: true
+              - id: test_panel_1_c
+                name: Nodo 1C
+                type: number
+                unit: "ms"
+                precision: 0
+                readonly: true
+              - id: test_panel_1_d
+                name: Nodo 1D
+                type: number
+                unit: "ms"
+                precision: 0
+                readonly: true
+          - label: Pannello 2
+            parameters:
+              - id: test_panel_2_a
+                name: Nodo 2A
+                type: number
+                unit: "ms"
+                precision: 0
+                readonly: true
+              - id: test_panel_2_b
+                name: Nodo 2B
+                type: number
+                unit: "ms"
+                precision: 0
+                readonly: true
+              - id: test_panel_2_c
+                name: Nodo 2C
+                type: number
+                unit: "ms"
+                precision: 0
+                readonly: true
+              - id: test_panel_2_d
+                name: Nodo 2D
+                type: number
+                unit: "ms"
+                precision: 0
+                readonly: true
+          - label: Pannello 3
+            parameters:
+              - id: test_panel_3_a
+                name: Nodo 3A
+                type: number
+                unit: "ms"
+                precision: 0
+                readonly: true
+              - id: test_panel_3_b
+                name: Nodo 3B
+                type: number
+                unit: "ms"
+                precision: 0
+                readonly: true
+              - id: test_panel_3_c
+                name: Nodo 3C
+                type: number
+                unit: "ms"
+                precision: 0
+                readonly: true
+              - id: test_panel_3_d
+                name: Nodo 3D
+                type: number
+                unit: "ms"
+                precision: 0
+                readonly: true
+          - label: Pannello 4
+            parameters:
+              - id: test_panel_4_a
+                name: Nodo 4A
+                type: number
+                unit: "ms"
+                precision: 0
+                readonly: true
+              - id: test_panel_4_b
+                name: Nodo 4B
+                type: number
+                unit: "ms"
+                precision: 0
+                readonly: true
+              - id: test_panel_4_c
+                name: Nodo 4C
+                type: number
+                unit: "ms"
+                precision: 0
+                readonly: true
+              - id: test_panel_4_d
+                name: Nodo 4D
+                type: number
+                unit: "ms"
+                precision: 0
+                readonly: true
+          - label: Pannello 5
+            parameters:
+              - id: test_panel_5_a
+                name: Nodo 5A
+                type: number
+                unit: "ms"
+                precision: 0
+                readonly: true
+              - id: test_panel_5_b
+                name: Nodo 5B
+                type: number
+                unit: "ms"
+                precision: 0
+                readonly: true
+              - id: test_panel_5_c
+                name: Nodo 5C
+                type: number
+                unit: "ms"
+                precision: 0
+                readonly: true
+              - id: test_panel_5_d
+                name: Nodo 5D
+                type: number
+                unit: "ms"
+                precision: 0
+                readonly: true
+      - id: navigazione_profonda
+        label: Navigazione 2 livelli
+        submenus:
+          - id: livello_2_diagnostica
+            label: Diagnostica rapida
+            parameters:
+              - id: test_l2_diag_stato
+                name: Stato test
+                type: enum
+                options: [IDLE, RUNNING, DONE]
+              - id: test_l2_diag_note
+                name: Note test
+                type: text
+          - id: livello_2_commissioning
+            label: Commissioning
+            mode: transaction
+            goOnApply: STAY_HERE
+            parameters:
+              - id: test_l2_comm_id
+                name: ID sessione
+                type: text
+                clearOnApply: true
+              - id: test_l2_comm_token
+                name: Token
+                type: password
+                clearOnApply: true
+              - id: test_l2_comm_validita
+                name: Validita
+                type: date
+          - id: livello_2_readonly
+            label: Snapshot readonly
+            parameters:
+              - id: test_l2_ro_temp
+                name: Temp linea
+                type: number
+                unit: "°C"
+                precision: 1
+                readonly: true
+              - id: test_l2_ro_pressione
+                name: Pressione linea
+                type: number
+                unit: "bar"
+                precision: 1
+                readonly: true
+              - id: test_l2_ro_carico
+                name: Carico
+                type: percentage
+                precision: 0
+                readonly: true
+      - id: pagina_nascosta_test
+        label: Pagina nascosta test
+        visibility: hidden
+        parameters:
+          - id: test_hidden_flag
+            name: Hidden flag
+            type: boolean
