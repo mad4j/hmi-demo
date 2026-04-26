@@ -13,6 +13,8 @@
  *   POST /api/parameters                  write parameter values  (body: JSON object)
  *   POST /api/commands/:commandId         execute a named command (body: { params: {} })
  *   GET  /api/notifications/poll          return accumulated updates since last poll
+ *   GET  /api/notifications/sse           server-sent events channel for updates
+ *   GET  /api/notifications/log.txt       append-only NDJSON log of notifications
  *
  * All other requests are passed through to the network as normal.
  *
@@ -201,6 +203,37 @@ const generateTick = () => {
 // Fields are merged so only the most recent value per key is stored.
 let pendingUpdates = {}
 
+// Append-only NDJSON notification log.
+// Each line is a JSON object containing one updates payload.
+let notificationLogText = ''
+
+// Active SSE clients kept as stream controllers.
+const sseClients = new Set()
+const textEncoder = new TextEncoder()
+
+const appendNotificationLog = (updates) => {
+  notificationLogText += `${JSON.stringify(updates)}\n`
+}
+
+const broadcastSse = (updates) => {
+  if (sseClients.size === 0) return
+  const payload = textEncoder.encode(`data: ${JSON.stringify(updates)}\n\n`)
+  for (const client of Array.from(sseClients)) {
+    try {
+      client.enqueue(payload)
+    } catch {
+      sseClients.delete(client)
+    }
+  }
+}
+
+const publishUpdates = (updates) => {
+  if (!updates || typeof updates !== 'object' || Object.keys(updates).length === 0) return
+  accumulateUpdates(updates)
+  appendNotificationLog(updates)
+  broadcastSse(updates)
+}
+
 const accumulateUpdates = (updates) => {
   Object.assign(pendingUpdates, updates)
 }
@@ -234,7 +267,7 @@ const COMMANDS = {
         changed[k] = false
       }
     })
-    accumulateUpdates(changed)
+    publishUpdates(changed)
     return { ok: true }
   },
 
@@ -242,7 +275,7 @@ const COMMANDS = {
   GPS_RESET: (_params) => {
     if (apparatusState.gps_modalita !== 'AUTO') {
       apparatusState.gps_modalita = 'AUTO'
-      accumulateUpdates({ gps_modalita: 'AUTO' })
+      publishUpdates({ gps_modalita: 'AUTO' })
     }
     return { ok: true }
   },
@@ -250,7 +283,7 @@ const COMMANDS = {
   /** Simulate a soft reboot by resetting uptime to 0. */
   REBOOT: (_params) => {
     apparatusState.uptime = 0
-    accumulateUpdates({ uptime: 0 })
+    publishUpdates({ uptime: 0 })
     return { ok: true }
   },
 }
@@ -317,7 +350,7 @@ const handleSetParameters = async (request) => {
     }
   }
 
-  accumulateUpdates(changed)
+  publishUpdates(changed)
 
   return jsonOk({})
 }
@@ -364,6 +397,45 @@ const handleSendCommand = async (commandId, request) => {
  */
 const handlePoll = () => {
   return jsonOk({ updates: flushUpdates() })
+}
+
+/**
+ * GET /api/notifications/log.txt
+ * Returns the full append-only NDJSON notification log.
+ */
+const handleTextLog = () => {
+  return new Response(notificationLogText, {
+    status: 200,
+    headers: {
+      'Content-Type': 'text/plain; charset=utf-8',
+      'Cache-Control': 'no-store',
+    },
+  })
+}
+
+/**
+ * GET /api/notifications/sse
+ * Opens a text/event-stream and pushes updates as they happen.
+ */
+const handleSse = () => {
+  const stream = new ReadableStream({
+    start(controller) {
+      sseClients.add(controller)
+      controller.enqueue(textEncoder.encode('retry: 2000\n\n'))
+    },
+    cancel(controller) {
+      sseClients.delete(controller)
+    },
+  })
+
+  return new Response(stream, {
+    status: 200,
+    headers: {
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-store',
+      Connection: 'keep-alive',
+    },
+  })
 }
 
 /* =========================================================================
@@ -423,6 +495,16 @@ const routeApiRequest = (event) => {
     return handlePoll()
   }
 
+  // GET /api/notifications/sse
+  if (request.method === 'GET' && apiPath === '/api/notifications/sse') {
+    return handleSse()
+  }
+
+  // GET /api/notifications/log.txt
+  if (request.method === 'GET' && apiPath === '/api/notifications/log.txt') {
+    return handleTextLog()
+  }
+
   return null // unknown API route — let it fall through to the network
 }
 
@@ -440,7 +522,7 @@ self.addEventListener('activate', (event) => {
     self.clients.claim().then(() => {
       // Start the simulation tick loop once the SW controls all clients
       setInterval(() => {
-        accumulateUpdates(generateTick())
+        publishUpdates(generateTick())
       }, TICK_INTERVAL_MS)
       console.info('[SW] HMI Demo Service Worker active — simulator running.')
     }),

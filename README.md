@@ -39,7 +39,7 @@ npm run build
 - `src/composables/useMenuNavigation.js`: stato singleton della navigazione tra primo e secondo livello.
 - `src/composables/useParameterStore.js`: stato reattivo dei parametri e sincronizzazione con il client apparato.
 - `src/composables/useDeviceClient.js`: client async verso apparato con adapter selezionabile via env (default rete).
-- `src/adapters/NetworkAdapter.js`: adapter HTTP `/api/*`, con polling notifiche (`/api/notifications/poll`).
+- `src/adapters/NetworkAdapter.js`: adapter HTTP `/api/*`, con trasporto notifiche configurabile (`poll`, `sse`, `text-tail`).
 - `src/adapters/SimulatorAdapter.js`: fallback diretto al simulatore locale (senza rete).
 - `src/composables/deviceSimulator.js`: simulatore apparato in main thread (stato, latenza, notifiche periodiche).
 - `public/sw.js`: simulatore apparato in Service Worker, con routing API e coda aggiornamenti pending.
@@ -76,7 +76,10 @@ flowchart TD
 - Le chiamate `getParameters`, `setParameters`, `sendCommand` passano da fetch su `/api/*`.
 - Con backend reale: le stesse chiamate raggiungono direttamente il server apparato.
 - Con simulatore SW attivo: `public/sw.js` intercetta le richieste, aggiorna lo stato apparato e accumula delta.
-- Le notifiche arrivano via polling ogni 3s su `/api/notifications/poll`.
+- Il trasporto notifiche e configurabile:
+  - `poll`: polling ogni 3s su `/api/notifications/poll`
+  - `sse`: stream server-initiated su `/api/notifications/sse`
+  - `text-tail`: lettura continua di un file testuale append-only su `/api/notifications/log.txt`
 
 ### 2) Flusso simulatore diretto (opzionale)
 
@@ -194,12 +197,26 @@ sequenceDiagram
 
   Store->>Client: notifyParameters(callback)
   Client->>Adapter: onNotification(callback)
-  alt percorso rete
+  alt percorso rete (poll)
     Adapter->>Net: onNotification(callback)
     loop ogni 3 secondi
       Net->>SW: GET /api/notifications/poll
       SW-->>Net: updates
       Net-->>Client: callback(updates)
+      Client-->>Store: callback(updates)
+    end
+  else percorso rete (sse)
+    Adapter->>Net: onNotification(callback)
+    Net->>SW: GET /api/notifications/sse
+    SW-->>Net: stream eventi data
+    Net-->>Client: callback(updates)
+    Client-->>Store: callback(updates)
+  else percorso rete (text-tail)
+    Adapter->>Net: onNotification(callback)
+    loop ogni 3 secondi
+      Net->>SW: GET /api/notifications/log.txt
+      SW-->>Net: testo append-only (NDJSON)
+      Net-->>Client: parse solo righe nuove
       Client-->>Store: callback(updates)
     end
   else fallback simulatore
@@ -235,6 +252,8 @@ Configurazione tramite variabili ambiente Vite (file `.env*`):
 - `VITE_DEVICE_ADAPTER_MODE=network-auto` (default): usa sempre `NetworkAdapter`.
 - `VITE_DEVICE_ADAPTER_MODE=simulator-direct`: forza `SimulatorAdapter` diretto.
 - `VITE_DEVICE_API_BASE_URL=http://host:port` (opzionale): base URL backend reale; se omessa usa same-origin.
+- `VITE_DEVICE_NOTIFICATION_TRANSPORT=poll|sse|text-tail` (default `text-tail`): seleziona il canale notifiche del `NetworkAdapter`.
+- `VITE_DEVICE_NOTIFICATION_TEXT_URL=/api/notifications/log.txt` (opzionale): URL del file testuale append-only usato da `text-tail`.
 - `VITE_ENABLE_SW_SIMULATOR=true` (default): registra `public/sw.js` che intercetta `/api/*` per la simulazione.
 - `VITE_ENABLE_SW_SIMULATOR=false`: non registra il Service Worker simulatore.
 
@@ -243,6 +262,8 @@ Esempio backend reale senza customizzazione codice app (API compatibili):
 ```env
 VITE_DEVICE_ADAPTER_MODE=network-auto
 VITE_DEVICE_API_BASE_URL=http://192.168.1.100:8080
+VITE_DEVICE_NOTIFICATION_TRANSPORT=text-tail
+VITE_DEVICE_NOTIFICATION_TEXT_URL=/api/notifications/log.txt
 VITE_ENABLE_SW_SIMULATOR=false
 ```
 
@@ -276,6 +297,8 @@ Errori frequenti e azioni consigliate:
 - `Errore HTTP 404 da .../api/...`: route API mancante o prefisso path non allineato.
 - `Errore applicativo da ...`: backend ha risposto con `ok: false`; controllare `code`/`message` nel payload risposta.
 - polling notifiche senza update: verificare implementazione di `GET /api/notifications/poll` e formato `{ ok: true, updates: {...} }`.
+- SSE senza eventi: verificare endpoint `GET /api/notifications/sse`, header `text/event-stream` e frame `data: {...}`.
+- text-tail senza aggiornamenti: verificare endpoint testuale append-only e URL `VITE_DEVICE_NOTIFICATION_TEXT_URL`.
 
 Diagnosi rapida in browser:
 

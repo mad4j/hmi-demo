@@ -12,11 +12,20 @@
  *   POST /api/parameters                  → { ok: true }                          body: { id: value, … }
  *   POST /api/commands/:commandId         → { ok: true, result?: any }            body: { params: {…} }
  *   GET  /api/notifications/poll          → { ok: true, updates: { id: value, … } }
+ *   GET  /api/notifications/sse           → text/event-stream (SSE data events with JSON updates)
+ *   GET  /api/notifications/log.txt       → append-only text log (NDJSON, one update object per line)
  *
  * Error responses carry:  { ok: false, code: ErrorCode, message: string, details?: any }
  */
 
 import { DeviceAdapter, DeviceError, ErrorCode } from './DeviceAdapter.js'
+import { PollNotificationTransport } from './notifications/PollNotificationTransport.js'
+import { SseNotificationTransport } from './notifications/SseNotificationTransport.js'
+import { TextTailNotificationTransport } from './notifications/TextTailNotificationTransport.js'
+import {
+  NotificationTransportMode,
+  normalizeNotificationTransportMode,
+} from './notifications/notificationTransportModes.js'
 
 // Map HTTP status codes to DeviceError codes when the response body has no `code` field.
 const HTTP_STATUS_TO_ERROR_CODE = {
@@ -37,12 +46,25 @@ export class NetworkAdapter extends DeviceAdapter {
    * @param {string} [baseUrl='']  Base URL prepended to every API path.
    *   Leave empty to use the same origin (works with SW fetch interception).
    *   Example for a real server: 'http://192.168.1.100:8080'
+   * @param {{
+   *   notificationTransport?: 'poll'|'sse'|'text-tail',
+   *   notificationTextUrl?: string,
+   *   notificationIntervalMs?: number,
+   * }} [options]
    */
-  constructor(baseUrl = '') {
+  constructor(baseUrl = '', options = {}) {
     super()
     this._base = baseUrl.replace(/\/$/, '') // strip trailing slash
-    /** @type {number|null} */
-    this._pollTimerId = null
+    this._notificationTransport = normalizeNotificationTransportMode(options.notificationTransport)
+    this._notificationTextUrl =
+      typeof options.notificationTextUrl === 'string' && options.notificationTextUrl.trim()
+        ? options.notificationTextUrl.trim()
+        : '/api/notifications/log.txt'
+    this._notificationIntervalMs =
+      Number.isFinite(options.notificationIntervalMs) && options.notificationIntervalMs > 0
+        ? options.notificationIntervalMs
+        : POLL_INTERVAL_MS
+      this._notificationTransportInstance = this._createNotificationTransportInstance()
     /** @type {Set<(updates: Record<string, unknown>) => void>} */
     this._notificationCallbacks = new Set()
   }
@@ -51,6 +73,48 @@ export class NetworkAdapter extends DeviceAdapter {
 
   _url(path) {
     return `${this._base}${path}`
+  }
+
+  _resolveTextLogUrl() {
+    if (/^https?:\/\//i.test(this._notificationTextUrl)) return this._notificationTextUrl
+    if (this._notificationTextUrl.startsWith('/')) return this._url(this._notificationTextUrl)
+    return this._url(`/${this._notificationTextUrl}`)
+  }
+
+  _createNotificationTransportInstance() {
+    if (this._notificationTransport === NotificationTransportMode.SSE) {
+      if (!SseNotificationTransport.isSupported()) {
+        this._notificationTransport = NotificationTransportMode.POLL
+      } else {
+        return new SseNotificationTransport({
+          url: this._url('/api/notifications/sse'),
+          emitUpdates: (updates) => this._emitUpdates(updates),
+        })
+      }
+    }
+
+    if (this._notificationTransport === NotificationTransportMode.TEXT_TAIL) {
+      return new TextTailNotificationTransport({
+        intervalMs: this._notificationIntervalMs,
+        resolveUrl: () => this._resolveTextLogUrl(),
+        fetchText: async (url) => {
+          const response = await fetch(url, { cache: 'no-store' })
+          if (!response.ok) return null
+          return response.text()
+        },
+        emitUpdates: (updates) => this._emitUpdates(updates),
+      })
+    }
+
+    return new PollNotificationTransport({
+      intervalMs: this._notificationIntervalMs,
+      poll: async () => this._poll(),
+    })
+  }
+
+  _emitUpdates(updates) {
+    if (!updates || typeof updates !== 'object' || Object.keys(updates).length === 0) return
+    this._notificationCallbacks.forEach((cb) => cb(updates))
   }
 
   /**
@@ -159,37 +223,25 @@ export class NetworkAdapter extends DeviceAdapter {
    */
   onNotification(callback) {
     this._notificationCallbacks.add(callback)
-    this._startPolling()
+    this._notificationTransportInstance.start()
     return () => {
       this._notificationCallbacks.delete(callback)
-      if (this._notificationCallbacks.size === 0) this._stopPolling()
+      if (this._notificationCallbacks.size === 0) {
+        this._notificationTransportInstance.stop()
+      }
     }
   }
 
   /** @override */
   dispose() {
-    this._stopPolling()
+    this._notificationTransportInstance.stop()
     this._notificationCallbacks.clear()
-  }
-
-  // ── Polling internals ───────────────────────────────────────────────────
-
-  _startPolling() {
-    if (this._pollTimerId !== null) return
-    this._pollTimerId = setInterval(() => this._poll(), POLL_INTERVAL_MS)
-  }
-
-  _stopPolling() {
-    if (this._pollTimerId === null) return
-    clearInterval(this._pollTimerId)
-    this._pollTimerId = null
   }
 
   async _poll() {
     const result = await this._fetch(this._url('/api/notifications/poll'))
     if (!result.ok) return // swallow poll errors silently
     const updates = result.updates
-    if (!updates || typeof updates !== 'object' || Object.keys(updates).length === 0) return
-    this._notificationCallbacks.forEach((cb) => cb(updates))
+    this._emitUpdates(updates)
   }
 }

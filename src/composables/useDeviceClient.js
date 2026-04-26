@@ -23,6 +23,11 @@
  *
  *   VITE_DEVICE_API_BASE_URL=http://host:port
  *
+ * Notification transport (NetworkAdapter only):
+ *
+ *   VITE_DEVICE_NOTIFICATION_TRANSPORT=poll|sse|text-tail
+ *   VITE_DEVICE_NOTIFICATION_TEXT_URL=/api/notifications/log.txt
+ *
  * If omitted, same-origin `/api/*` is used.
  *
  * Public interface
@@ -43,6 +48,12 @@ import { SimulatorAdapter } from '../adapters/SimulatorAdapter.js'
 
 const ADAPTER_MODE = String(import.meta.env.VITE_DEVICE_ADAPTER_MODE ?? 'network-auto').toLowerCase()
 const API_BASE_URL = String(import.meta.env.VITE_DEVICE_API_BASE_URL ?? '').trim()
+const NOTIFICATION_TRANSPORT = String(
+  import.meta.env.VITE_DEVICE_NOTIFICATION_TRANSPORT ?? 'text-tail',
+).toLowerCase()
+const NOTIFICATION_TEXT_URL = String(
+  import.meta.env.VITE_DEVICE_NOTIFICATION_TEXT_URL ?? '/api/notifications/log.txt',
+).trim()
 
 /**
  * Pick and instantiate the appropriate adapter.
@@ -62,7 +73,10 @@ const createAdapter = () => {
   console.info(
     `[DeviceClient] Using NetworkAdapter (base URL: ${API_BASE_URL || 'same-origin'}).`,
   )
-  return new NetworkAdapter(API_BASE_URL)
+  return new NetworkAdapter(API_BASE_URL, {
+    notificationTransport: NOTIFICATION_TRANSPORT,
+    notificationTextUrl: NOTIFICATION_TEXT_URL,
+  })
 }
 
 const adapter = createAdapter()
