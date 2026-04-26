@@ -1,7 +1,7 @@
 import { computed, ref } from 'vue'
 import { useMenuNavigation } from './useMenuNavigation.js'
 
-const PRIORITY_ORDER = { ERROR: 0, WARNING: 1, SUCCESS: 2, NORMAL: 3 }
+const PRIORITY_ORDER = { ERROR: 0, WARNING: 1, SUCCESS: 2, NORMAL: 3, MENU: 4 }
 const NOTIFICATION_TIMEOUT_DEFAULT_MS = 5000
 const DISPLAY_MODE_TIMEOUT = 'TIMEOUT'
 const DISPLAY_MODE_ACKNOWLEDGED = 'ACKNOWLEDGED'
@@ -16,7 +16,7 @@ export const useNotificationBar = () => {
   const notification = computed(() =>
     activeMessage.value
       ? { status: activeMessage.value.status, message: activeMessage.value.message }
-      : { status: 'NORMAL', message: currentPage.value?.label ?? '' },
+      : { status: 'MENU', message: currentPage.value?.label ?? '' },
   )
 
   const pendingCount = computed(() => messageQueue.value.length)
