@@ -25,6 +25,8 @@ const {
 
 const { isDark, toggleTheme } = useTheme()
 
+const currentPanelIndex = ref(0)
+
 const {
   parameterValues,
   toggleParameter,
@@ -39,6 +41,17 @@ const {
   refreshParameters,
 } = useParameterStore()
 
+const currentPanelLabel = computed(() => {
+  if (!currentPagePanels.value) return ''
+  const panel = currentPagePanels.value[currentPanelIndex.value]
+  return typeof panel?.label === 'string' ? panel.label.trim() : ''
+})
+
+const menuNotificationMessage = computed(() => {
+  const menuLabel = currentPage.value?.label ?? ''
+  return currentPanelLabel.value ? `${menuLabel} / ${currentPanelLabel.value}` : menuLabel
+})
+
 const {
   notification,
   pendingCount,
@@ -46,7 +59,7 @@ const {
   setNotification,
   handleNotificationTap,
   disposeNotificationBar,
-} = useNotificationBar()
+} = useNotificationBar({ menuMessage: menuNotificationMessage })
 
 const NOTIFICATION_ICON = {
   MENU: 'menu',
@@ -109,11 +122,34 @@ const visibleCurrentSubmenus = computed(() =>
 )
 
 // ── Refresh parameters on page navigation ────────────────
+const currentPagePanels = computed(() =>
+  Array.isArray(currentPage.value?.panels) && currentPage.value.panels.length > 0
+    ? currentPage.value.panels
+    : null,
+)
+
+const pageParameters = computed(() =>
+  currentPagePanels.value
+    ? currentPagePanels.value.flatMap((p) => p.parameters ?? [])
+    : (currentPage.value?.parameters ?? []),
+)
+
+watch(
+  () => currentPage.value?.id,
+  () => {
+    currentPanelIndex.value = 0
+  },
+)
+
+const handlePanelChange = (index) => {
+  currentPanelIndex.value = Number.isInteger(index) && index >= 0 ? index : 0
+}
+
 watch(
   () => currentPage.value,
   (page) => {
     if (!page) return
-    const ids = page.parameters?.map((p) => p.id) ?? []
+    const ids = pageParameters.value.map((p) => p.id)
     if (ids.length > 0) {
       refreshParameters(ids)
     }
@@ -219,16 +255,18 @@ watch(
       </template>
       <template v-else>
         <PageParametersView
-          :parameters="currentPage.parameters"
+          :parameters="pageParameters"
           :parameter-values="currentPageValues"
           :transaction-mode="isTransactionPage"
           :modified-parameter-ids="currentPageModifiedIds"
           :can-submit-transaction="canSubmitTransaction"
           :viewport-width="viewportWidth"
+          :panels="currentPagePanels"
           @toggle-parameter="handleToggleParameter"
           @set-parameter-value="handleSetParameterValue"
           @reset-transaction="handleResetTransaction"
           @submit-transaction="handleSubmitTransaction"
+          @panel-change="handlePanelChange"
         />
       </template>
     </main>

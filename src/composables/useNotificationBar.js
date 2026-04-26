@@ -6,7 +6,7 @@ const NOTIFICATION_TIMEOUT_DEFAULT_MS = 5000
 const DISPLAY_MODE_TIMEOUT = 'TIMEOUT'
 const DISPLAY_MODE_ACKNOWLEDGED = 'ACKNOWLEDGED'
 
-export const useNotificationBar = () => {
+export const useNotificationBar = ({ menuMessage } = {}) => {
   const { currentPage } = useMenuNavigation()
 
   const messageQueue = ref([]) // messages waiting to be displayed
@@ -16,7 +16,13 @@ export const useNotificationBar = () => {
   const notification = computed(() =>
     activeMessage.value
       ? { status: activeMessage.value.status, message: activeMessage.value.message }
-      : { status: 'MENU', message: currentPage.value?.label ?? '' },
+      : {
+          status: 'MENU',
+          message:
+            typeof menuMessage?.value === 'string'
+              ? menuMessage.value
+              : (currentPage.value?.label ?? ''),
+        },
   )
 
   const pendingCount = computed(() => messageQueue.value.length)

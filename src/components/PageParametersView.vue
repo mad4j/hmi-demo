@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import AppIcon from './AppIcon.vue'
 import ParameterWidget from './ParameterWidget.vue'
 import PercentageEditorModal from './PercentageEditorModal.vue'
@@ -31,6 +31,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  panels: {
+    type: Array,
+    default: null,
+  },
 })
 
 const emit = defineEmits([
@@ -38,14 +42,71 @@ const emit = defineEmits([
   'set-parameter-value',
   'submit-transaction',
   'reset-transaction',
+  'panel-change',
 ])
+
+// ── Panel navigation ──────────────────────────────────────
+const currentPanel = ref(0)
+
+const hasPanels = computed(() => Array.isArray(props.panels) && props.panels.length > 0)
+
+const totalPanels = computed(() => hasPanels.value ? props.panels.length : 1)
+
+const visibleParameters = computed(() =>
+  hasPanels.value
+    ? (props.panels[currentPanel.value]?.parameters ?? [])
+    : props.parameters,
+)
+
+// All parameters flattened (used for edit-next cycling)
+const allParameters = computed(() =>
+  hasPanels.value
+    ? props.panels.flatMap((p) => p.parameters ?? [])
+    : props.parameters,
+)
+
+watch(
+  () => props.panels,
+  () => { currentPanel.value = 0 },
+)
+
+watch(
+  () => currentPanel.value,
+  (index) => {
+    emit('panel-change', index)
+  },
+  { immediate: true },
+)
+
+const goToPanel = (index) => {
+  currentPanel.value = Math.max(0, Math.min(index, totalPanels.value - 1))
+}
+
+// Drag / touch swipe
+let dragStartX = 0
+let isDragging = false
+
+const onDragStart = (e) => {
+  dragStartX = e.touches ? e.touches[0].clientX : e.clientX
+  isDragging = true
+}
+
+const onDragEnd = (e) => {
+  if (!isDragging) return
+  isDragging = false
+  const endX = e.changedTouches ? e.changedTouches[0].clientX : e.clientX
+  const delta = dragStartX - endX
+  if (Math.abs(delta) > 40) {
+    goToPanel(currentPanel.value + (delta > 0 ? 1 : -1))
+  }
+}
 
 // ── Parameter editing state ───────────────────────────────
 const editingParamId = ref(null)
 
 const editingParam = computed(() =>
   editingParamId.value
-    ? props.parameters.find((p) => p.id === editingParamId.value) ?? null
+    ? allParameters.value.find((p) => p.id === editingParamId.value) ?? null
     : null,
 )
 
@@ -70,7 +131,7 @@ const confirmAndNext = (newValue) => {
   if (editingParamId.value !== null) {
     emit('set-parameter-value', editingParamId.value, newValue)
   }
-  const editableParams = props.parameters.filter(
+  const editableParams = allParameters.value.filter(
     (p) => !p.readonly && EDITABLE_TYPES.includes(p.type),
   )
   const currentIdx = editableParams.findIndex((p) => p.id === editingParamId.value)
@@ -113,21 +174,46 @@ onUnmounted(() => document.removeEventListener('keydown', handleGlobalKeydown))
 
 <template>
   <div class="page-parameters-view">
-    <div v-if="parameters.length" class="widget-grid">
-      <ParameterWidget
-        v-for="(param, index) in parameters"
-        :key="param.id"
-        :name="param.name"
-        :type="param.type"
-        :unit="param.unit"
-        :precision="param.precision"
-        :options="param.options"
-        :value="parameterValues[param.id]"
-        :readonly="param.readonly"
-        :modified="isParameterModified(param.id)"
-        @toggle="handleToggle(param.id)"
-        @edit="startEditParameter(param.id)"
-      />
+    <div
+      v-if="parameters.length || hasPanels"
+      class="panels-wrapper"
+      :class="{ 'panels-wrapper--active': hasPanels }"
+      @mousedown="hasPanels ? onDragStart($event) : undefined"
+      @mouseup="hasPanels ? onDragEnd($event) : undefined"
+      @mouseleave="hasPanels ? onDragEnd($event) : undefined"
+      @touchstart.passive="hasPanels ? onDragStart($event) : undefined"
+      @touchend.passive="hasPanels ? onDragEnd($event) : undefined"
+    >
+      <div class="widget-grid">
+        <ParameterWidget
+          v-for="param in visibleParameters"
+          :key="param.id"
+          :name="param.name"
+          :type="param.type"
+          :unit="param.unit"
+          :precision="param.precision"
+          :options="param.options"
+          :value="parameterValues[param.id]"
+          :readonly="param.readonly"
+          :modified="isParameterModified(param.id)"
+          @toggle="handleToggle(param.id)"
+          @edit="startEditParameter(param.id)"
+        />
+      </div>
+
+      <!-- Panel dot indicators -->
+      <div v-if="hasPanels && totalPanels > 1" class="panel-indicators" role="tablist" aria-label="Pannelli">
+        <button
+          v-for="i in totalPanels"
+          :key="i"
+          class="panel-dot"
+          :class="{ 'panel-dot--active': i - 1 === currentPanel }"
+          role="tab"
+          :aria-selected="i - 1 === currentPanel"
+          :aria-label="`Pannello ${i}`"
+          @click.stop="goToPanel(i - 1)"
+        />
+      </div>
     </div>
 
     <div v-if="transactionMode" class="transaction-actions" role="group" aria-label="Azioni transazione">
@@ -183,6 +269,22 @@ onUnmounted(() => document.removeEventListener('keydown', handleGlobalKeydown))
 </template>
 
 <style scoped>
+.panels-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  position: relative;
+  user-select: none;
+}
+
+.panels-wrapper--active {
+  cursor: grab;
+}
+
+.panels-wrapper--active:active {
+  cursor: grabbing;
+}
+
 .widget-grid {
   display: flex;
   flex-wrap: wrap;
@@ -195,6 +297,59 @@ onUnmounted(() => document.removeEventListener('keydown', handleGlobalKeydown))
 .widget-grid > * {
   box-sizing: border-box;
   flex: 0 0 calc(25% - 0.375rem);
+}
+
+/* Panel dot indicators */
+.panel-indicators {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.6rem 0 0.2rem;
+}
+
+.panel-dot {
+  width: 1.9rem;
+  height: 1.9rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  border-radius: 50%;
+  border: none;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+
+.panel-dot::before {
+  content: '';
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 50%;
+  background: var(--text-secondary);
+  opacity: 0.45;
+  transition: opacity 0.2s, transform 0.2s, background 0.2s;
+}
+
+.panel-dot--active {
+  transform: scale(1.06);
+}
+
+.panel-dot--active::before {
+  width: 0.9rem;
+  height: 0.9rem;
+  background: var(--text-blue);
+  opacity: 1;
+}
+
+.panel-dot:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--text-blue) 60%, white);
+  outline-offset: 2px;
 }
 
 .page-parameters-view {

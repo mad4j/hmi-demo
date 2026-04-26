@@ -5,7 +5,11 @@ import { useEquipmentGateway } from './useEquipmentGateway.js'
 // ── Singleton state ───────────────────────────────────────
 const seenParameterIds = new Set()
 const uniqueParameters = flattenSelectablePages(menuConfig.pages)
-  .flatMap((page) => page.parameters)
+  .flatMap((page) =>
+    Array.isArray(page.panels) && page.panels.length > 0
+      ? page.panels.flatMap((panel) => panel.parameters ?? [])
+      : (page.parameters ?? []),
+  )
   .filter((p) => {
     if (seenParameterIds.has(p.id)) return false
     seenParameterIds.add(p.id)

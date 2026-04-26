@@ -119,6 +119,12 @@ export const normalizeParameters = (params) => {
     })
 }
 
+const warnMenuConfig = (message) => {
+  if (import.meta.env?.DEV) {
+    console.warn(`[menu-config] ${message}`)
+  }
+}
+
 export const normalizeMenuItems = (items, idPrefix = 'page', depth = 0) =>
   items
     .filter((item) => item && typeof item === 'object')
@@ -139,6 +145,38 @@ export const normalizeMenuItems = (items, idPrefix = 'page', depth = 0) =>
           ? item.goOnApply.trim().toUpperCase()
           : 'STAY_HERE'
 
+      const normalizedParameters = normalizeParameters(item.parameters)
+      if (Array.isArray(item.parameters) && normalizedParameters.length !== item.parameters.length) {
+        warnMenuConfig(`Page '${id}': some parameters are invalid and have been ignored.`)
+      }
+
+      const normalizedPanels = Array.isArray(item.panels)
+        ? item.panels
+            .filter((panel) => panel && typeof panel === 'object')
+            .map((panel, panelIndex) => {
+              const panelParameters = normalizeParameters(panel.parameters)
+              if (!Array.isArray(panel.parameters) || panel.parameters.length === 0) {
+                warnMenuConfig(`Page '${id}', panel #${panelIndex + 1}: missing or empty parameters array.`)
+              } else if (panelParameters.length !== panel.parameters.length) {
+                warnMenuConfig(`Page '${id}', panel #${panelIndex + 1}: some parameters are invalid and have been ignored.`)
+              }
+
+              return {
+                label: typeof panel.label === 'string' ? panel.label : '',
+                parameters: panelParameters,
+              }
+            })
+            .filter((panel) => panel.parameters.length > 0)
+        : null
+
+      if (Array.isArray(item.panels) && item.panels.length > 0 && normalizedPanels?.length === 0) {
+        warnMenuConfig(`Page '${id}': panels are defined but no valid panel parameters were found.`)
+      }
+
+      if (normalizedPanels !== null && normalizedPanels.length > 0 && normalizedParameters.length > 0) {
+        warnMenuConfig(`Page '${id}': both parameters and panels are defined; parameters are ignored in favor of panels.`)
+      }
+
       return {
         id,
         label:
@@ -148,7 +186,8 @@ export const normalizeMenuItems = (items, idPrefix = 'page', depth = 0) =>
         mode,
         goOnApply,
         submenus: normalizedSubmenus,
-        parameters: normalizeParameters(item.parameters),
+        parameters: normalizedPanels !== null && normalizedPanels.length > 0 ? [] : normalizedParameters,
+        ...(normalizedPanels !== null ? { panels: normalizedPanels } : {}),
       }
     })
 
