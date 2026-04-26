@@ -8,16 +8,22 @@
  *
  * Adapter selection
  * ─────────────────
- * The module auto-selects the best available adapter at startup:
+ * The default path is always NetworkAdapter so that a real backend exposing
+ * the same `/api/*` contract works without app code customizations.
  *
- *   1. NetworkAdapter  – used when a Service Worker is registered and
- *      controlling the page.  HTTP fetch calls are intercepted by the SW
- *      (public/sw.js) which runs the simulator logic in its own thread.
- *      This path is active during normal development and on GitHub Pages.
+ * Optional adapter modes via env vars:
  *
- *   2. SimulatorAdapter – direct fallback used when no SW is in control
- *      (e.g. very first page load before SW activation, Safari private mode,
- *      or any environment where Service Workers are unavailable).
+ *   VITE_DEVICE_ADAPTER_MODE=network-auto      (default)
+ *     -> use NetworkAdapter with optional base URL
+ *
+ *   VITE_DEVICE_ADAPTER_MODE=simulator-direct
+ *     -> force direct in-process simulator (SimulatorAdapter)
+ *
+ * Optional API base URL:
+ *
+ *   VITE_DEVICE_API_BASE_URL=http://host:port
+ *
+ * If omitted, same-origin `/api/*` is used.
  *
  * Public interface
  * ────────────────
@@ -30,35 +36,33 @@
  */
 
 import { ref } from 'vue'
-import { NetworkAdapter }   from '../adapters/NetworkAdapter.js'
+import { NetworkAdapter } from '../adapters/NetworkAdapter.js'
 import { SimulatorAdapter } from '../adapters/SimulatorAdapter.js'
 
 // ── Adapter selection ─────────────────────────────────────────────────────
 
-/**
- * Returns true when a Service Worker is registered *and* currently controlling
- * the page (i.e. the SW has already activated and claimed all clients).
- */
-const isSwControlling = () =>
-  typeof navigator !== 'undefined' &&
-  'serviceWorker' in navigator &&
-  navigator.serviceWorker.controller !== null
+const ADAPTER_MODE = String(import.meta.env.VITE_DEVICE_ADAPTER_MODE ?? 'network-auto').toLowerCase()
+const API_BASE_URL = String(import.meta.env.VITE_DEVICE_API_BASE_URL ?? '').trim()
 
 /**
  * Pick and instantiate the appropriate adapter.
- *
- * The selection happens once at module load-time.  If the SW is not yet
- * controlling the page (e.g. first-ever load), SimulatorAdapter is used so
- * the UI is immediately functional.  On subsequent loads the SW is in control
- * and NetworkAdapter is used.
  */
 const createAdapter = () => {
-  if (isSwControlling()) {
-    console.info('[DeviceClient] Using NetworkAdapter (Service Worker active).')
-    return new NetworkAdapter()
+  if (ADAPTER_MODE === 'simulator-direct') {
+    console.info('[DeviceClient] Using SimulatorAdapter (forced by VITE_DEVICE_ADAPTER_MODE).')
+    return new SimulatorAdapter()
   }
-  console.info('[DeviceClient] Using SimulatorAdapter (Service Worker not in control).')
-  return new SimulatorAdapter()
+
+  if (ADAPTER_MODE !== 'network-auto') {
+    console.warn(
+      `[DeviceClient] Unknown VITE_DEVICE_ADAPTER_MODE="${ADAPTER_MODE}", falling back to network-auto.`,
+    )
+  }
+
+  console.info(
+    `[DeviceClient] Using NetworkAdapter (base URL: ${API_BASE_URL || 'same-origin'}).`,
+  )
+  return new NetworkAdapter(API_BASE_URL)
 }
 
 const adapter = createAdapter()

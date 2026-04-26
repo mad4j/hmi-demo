@@ -84,16 +84,23 @@ export class NetworkAdapter extends DeviceAdapter {
       body = {}
     }
 
-    if (!response.ok) {
+    const hasApplicationError = body?.ok === false
+
+    if (!response.ok || hasApplicationError) {
       const code =
         body?.code ??
         HTTP_STATUS_TO_ERROR_CODE[response.status] ??
         ErrorCode.NETWORK_ERROR
+
+      const defaultMessage = response.ok
+        ? `Errore applicativo da ${url}.`
+        : `Errore HTTP ${response.status} da ${url}.`
+
       return {
         ok: false,
         error: new DeviceError(
           code,
-          body?.message ?? `Errore HTTP ${response.status} da ${url}.`,
+          body?.message ?? defaultMessage,
           body?.details,
         ),
       }
