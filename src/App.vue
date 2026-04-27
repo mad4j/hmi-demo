@@ -28,7 +28,7 @@ const {
   navigateToPage,
 } = useMenuNavigation()
 
-const { isDark, isNvis, theme, toggleTheme, toggleNvisMode } = useTheme()
+const { theme, cycleTheme } = useTheme()
 
 const {
   parameterValues,
@@ -210,18 +210,11 @@ useLogoutPageAction({
         <div class="settings-page">
           <div class="settings-widget">
             <ParameterWidget
-              name="Dark Theme"
-              type="boolean"
-              :value="isDark"
-              @toggle="toggleTheme"
-            />
-          </div>
-          <div class="settings-widget">
-            <ParameterWidget
-              name="NVIS Mode"
-              type="boolean"
-              :value="isNvis"
-              @toggle="toggleNvisMode"
+              name="Theme"
+              type="enum"
+              :value="theme.toUpperCase()"
+              :options="['LIGHT', 'DARK', 'NVIS']"
+              @toggle="cycleTheme"
             />
           </div>
         </div>
