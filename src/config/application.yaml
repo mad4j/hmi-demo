@@ -1,0 +1,61 @@
+name: HMI Demo Application
+pages:
+  - id: app-climatizzazione
+    label: Air Conditioning
+    icon: "menu"
+    parameters:
+      - id: temp_abitacolo
+        name: Temperature
+        type: number
+        unit: "°C"
+        precision: 1
+        readonly: true
+      - id: temp_impostata
+        name: Set
+        type: number
+        unit: "°C"
+        precision: 1
+      - id: umidita
+        name: Humidity
+        type: percentage
+        precision: 0
+        readonly: true
+      - id: ventilazione_attiva
+        name: Ventilation
+        type: boolean
+  - id: app-porte
+    label: Doors
+    icon: "menu"
+    parameters:
+      - id: porta_ant_sx
+        name: Front L
+        type: boolean
+      - id: porta_ant_dx
+        name: Front R
+        type: boolean
+      - id: blocco_centrale
+        name: Central Lock
+        type: boolean
+      - id: cofano
+        name: Hood
+        type: boolean
+  - id: app-stato
+    label: Status
+    icon: "menu"
+    parameters:
+      - id: test_viz_temp_motore
+        name: Engine Temp.
+        type: number
+        unit: "°C"
+        precision: 1
+        readonly: true
+      - id: test_viz_cpu_load
+        name: CPU load
+        type: percentage
+        precision: 0
+        readonly: true
+      - id: test_viz_stato_bus
+        name: Bus Status
+        type: enum
+        options: [OK, DEGRADED, OFFLINE]
+        readonly: true

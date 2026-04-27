@@ -5,10 +5,23 @@ import {
   findPageById,
 } from './useMenuConfig.js'
 
+// ── Constants ─────────────────────────────────────────────
+const HOME_PAGE_ID = '__home__'
+const HOME_PAGE = {
+  id: HOME_PAGE_ID,
+  label: '',
+  icon: '',
+  visibility: 'visible',
+  mode: 'standard',
+  goOnApply: 'STAY_HERE',
+  submenus: [],
+  parameters: [],
+}
+
 // ── Singleton state ───────────────────────────────────────
 const selectablePages = flattenSelectablePages(menuConfig.pages)
 
-const currentPageId = ref(selectablePages[0]?.id ?? menuConfig.pages[0].id)
+const currentPageId = ref(HOME_PAGE_ID)
 const pageHistory = ref([])
 
 export const useMenuNavigation = () => {
@@ -30,10 +43,9 @@ export const useMenuNavigation = () => {
   }
 
   const goHome = () => {
-    const homePageId = selectablePages[0]?.id ?? menuConfig.pages[0].id
-    if (!homePageId || homePageId === currentPageId.value) return
+    if (currentPageId.value === HOME_PAGE_ID) return
     pageHistory.value = currentPageId.value ? [currentPageId.value] : []
-    setCurrentPage(homePageId, { trackHistory: false })
+    setCurrentPage(HOME_PAGE_ID, { trackHistory: false })
   }
 
   const goToPreviousPage = () => {
@@ -50,18 +62,23 @@ export const useMenuNavigation = () => {
   )
 
   // ── Computed ──────────────────────────────────────────────
-  const currentPage = computed(
-    () =>
+  const isAtHome = computed(() => currentPageId.value === HOME_PAGE_ID)
+
+  const currentPage = computed(() => {
+    if (currentPageId.value === HOME_PAGE_ID) return HOME_PAGE
+    return (
       findPageById(menuConfig.pages, currentPageId.value) ??
       selectablePages[0] ??
-      menuConfig.pages[0],
-  )
+      menuConfig.pages[0]
+    )
+  })
 
   const level1Items = computed(() =>
     menuConfig.pages.filter((page) => page.visibility !== 'hidden'),
   )
 
   const activeLevel1Id = computed(() => {
+    if (currentPageId.value === HOME_PAGE_ID) return null
     const direct = menuConfig.pages.find((p) => p.id === currentPageId.value)
     if (direct) return direct.id
     for (const page of menuConfig.pages) {
@@ -77,6 +94,7 @@ export const useMenuNavigation = () => {
     currentPageId,
     // computed
     currentPage,
+    isAtHome,
     level1Items,
     activeLevel1Id,
     canGoToPreviousPage,

@@ -6,6 +6,7 @@ import AppIcon from './components/AppIcon.vue'
 import StatusIconBar from './components/StatusIconBar.vue'
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { menuConfig, findPageById } from './composables/useMenuConfig.js'
+import { applicationConfig } from './composables/useApplicationConfig.js'
 import { useMenuNavigation } from './composables/useMenuNavigation.js'
 import { useTheme } from './composables/useTheme.js'
 import { useParameterStore } from './composables/useParameterStore.js'
@@ -14,6 +15,7 @@ import { useTransactionPageActions } from './composables/useTransactionPageActio
 
 const {
   currentPage,
+  isAtHome,
   level1Items,
   activeLevel1Id,
   selectLevel1Item,
@@ -204,7 +206,7 @@ watch(
   <div class="hmi-shell" :data-theme="isDark ? 'dark' : 'light'">
     <header class="bar top-bar">
       <div class="top-left">
-        <span>{{ menuConfig.title }}</span>
+        <span>{{ applicationConfig.name }}</span>
       </div>
       <div class="top-right">
         <StatusIconBar />
@@ -230,7 +232,18 @@ watch(
     </div>
 
     <main class="content">
-      <template v-if="visibleCurrentSubmenus.length">
+      <template v-if="isAtHome">
+        <div class="widget-grid">
+          <LinkWidget
+            v-for="item in applicationConfig.pages"
+            :key="item.id"
+            :label="item.label"
+            :icon="item.icon"
+            @navigate="navigateToPage(item.id)"
+          />
+        </div>
+      </template>
+      <template v-else-if="visibleCurrentSubmenus.length">
         <div class="widget-grid">
           <LinkWidget
             v-for="item in visibleCurrentSubmenus"
