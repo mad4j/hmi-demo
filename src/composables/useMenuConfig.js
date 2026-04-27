@@ -34,6 +34,7 @@ const fallbackConfig = {
 
 const MAX_MENU_DEPTH = 8
 const TRANSACTION_GO_ON_APPLY_VALUES = ['STAY_HERE', 'GO_HOME', 'GO_BACK']
+const VALID_SELECTION_MODES = ['picker']
 
 const normalizeVisibility = (value) =>
   typeof value === 'string' && value.trim().toLowerCase() === 'hidden'
@@ -185,6 +186,14 @@ export const normalizeMenuItems = (items, idPrefix = 'page', depth = 0) =>
         visibility: normalizeVisibility(item.visibility),
         mode,
         goOnApply,
+        selectionMode: typeof item.selectionMode === 'string' && VALID_SELECTION_MODES.includes(item.selectionMode.trim())
+          ? item.selectionMode.trim()
+          : (() => {
+              if (typeof item.selectionMode === 'string' && item.selectionMode.trim()) {
+                warnMenuConfig(`Page '${id}': unknown selectionMode '${item.selectionMode.trim()}'; ignoring.`)
+              }
+              return ''
+            })(),
         submenus: normalizedSubmenus,
         parameters: normalizedPanels !== null && normalizedPanels.length > 0 ? [] : normalizedParameters,
         ...(normalizedPanels !== null ? { panels: normalizedPanels } : {}),

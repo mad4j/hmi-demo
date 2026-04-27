@@ -10,6 +10,10 @@ const props = defineProps({
     type: String,
     default: '',
   },
+  active: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const emit = defineEmits(['navigate'])
@@ -18,9 +22,11 @@ const emit = defineEmits(['navigate'])
 <template>
   <div
     class="link-widget"
+    :class="{ 'link-widget--active': active }"
     role="button"
     tabindex="0"
     :aria-label="label"
+    :aria-pressed="active"
     @click="emit('navigate')"
     @keydown.enter.space.prevent="emit('navigate')"
   >
@@ -56,14 +62,21 @@ const emit = defineEmits(['navigate'])
   outline-offset: 2px;
 }
 
-.link-widget:hover {
+.link-widget:hover,
+.link-widget:active,
+.link-widget--active {
   border-color: var(--btn-active-border);
   background: var(--btn-active-bg);
 }
 
-.link-widget:active {
-  border-color: var(--btn-active-border);
-  background: var(--btn-active-bg);
+.link-widget--active {
+  color: var(--text-blue);
+}
+
+.link-widget--active .link-icon,
+.link-widget--active .link-icon-arrow,
+.link-widget--active .link-label {
+  color: var(--text-blue);
 }
 
 .link-icon {
