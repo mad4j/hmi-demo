@@ -88,7 +88,7 @@ All interactive controls use `role="button"`, `aria-pressed` (boolean widgets), 
 | Symbol identifier (SIDC) encoding | ❌ No | No Symbol Identification Code is generated, stored, or transmitted. |
 | COP / SA data exchange | ❌ No | The application exchanges platform telemetry parameters, not tactical picture data. |
 
-**Conclusion:** MIL-STD-2525D does not impose any requirements on this application in its current form. Should a future version of `hmi-demo` incorporate a map view, force-tracking layer, or COP overlay, MIL-STD-2525D compliance (correct SIDC usage, affiliation colour palette, and icon set) would become mandatory.
+**Conclusion:** MIL-STD-2525D does not impose any requirements on this application in its current form.
 
 ---
 
