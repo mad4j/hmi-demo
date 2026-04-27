@@ -1,108 +1,62 @@
-import { computed } from 'vue'
+import { createDefaultTransactionPagePolicies } from '../features/transaction/transactionPagePolicies.js'
+import { useTransactionPageState } from '../features/transaction/useTransactionPageState.js'
+import { useTransactionSubmitFlow } from '../features/transaction/useTransactionSubmitFlow.js'
 
 export const useTransactionPageActions = ({
   currentPage,
   parameterValues,
-  refreshParameters,
-  setNotification,
-  goHome,
-  goToPreviousPage,
-  toggleParameter,
-  setParameterValue,
-  toggleTransactionParameter,
-  setTransactionParameterValue,
-  getTransactionDisplayValues,
-  getTransactionModifiedIds,
-  hasTransactionChanges,
-  resetTransactionPage,
-  commitTransactionPage,
+  transactionStore,
+  notifications,
+  navigation,
+  pagePolicies,
 }) => {
-  const isTransactionPage = computed(() => currentPage.value?.mode === 'transaction')
+  const resolvedPagePolicies = pagePolicies
+    ?? createDefaultTransactionPagePolicies({
+      refreshParameters: transactionStore.refreshParameters,
+      parameterValues,
+      setNotification: notifications.setNotification,
+    })
 
-  const currentPageValues = computed(() => {
-    if (!isTransactionPage.value) return parameterValues
-    return getTransactionDisplayValues(currentPage.value.id)
+  const {
+    isTransactionPage,
+    currentPageValues,
+    currentPageModifiedIds,
+    canSubmitTransaction,
+  } = useTransactionPageState({
+    currentPage,
+    parameterValues,
+    getTransactionDisplayValues: transactionStore.getTransactionDisplayValues,
+    getTransactionModifiedIds: transactionStore.getTransactionModifiedIds,
+    hasTransactionChanges: transactionStore.hasTransactionChanges,
   })
 
-  const currentPageModifiedIds = computed(() => {
-    if (!isTransactionPage.value) return []
-    return getTransactionModifiedIds(currentPage.value.id)
-  })
-
-  const canSubmitTransaction = computed(() => {
-    if (!isTransactionPage.value) return false
-    return hasTransactionChanges(currentPage.value.id)
+  const { handleSubmitTransaction } = useTransactionSubmitFlow({
+    currentPage,
+    commitTransactionPage: transactionStore.commitTransactionPage,
+    setNotification: notifications.setNotification,
+    navigation,
+    pagePolicies: resolvedPagePolicies,
   })
 
   const handleToggleParameter = (id) => {
     if (isTransactionPage.value) {
-      toggleTransactionParameter(currentPage.value.id, id)
+      transactionStore.toggleTransactionParameter(currentPage.value.id, id)
       return
     }
-    toggleParameter(id)
+    transactionStore.toggleParameter(id)
   }
 
   const handleSetParameterValue = (id, value) => {
     if (isTransactionPage.value) {
-      setTransactionParameterValue(currentPage.value.id, id, value)
+      transactionStore.setTransactionParameterValue(currentPage.value.id, id, value)
       return
     }
-    setParameterValue(id, value)
+    transactionStore.setParameterValue(id, value)
   }
 
   const handleResetTransaction = () => {
     if (!isTransactionPage.value) return
-    resetTransactionPage(currentPage.value.id)
-  }
-
-  const handleSubmitTransaction = async () => {
-    const page = currentPage.value
-    if (!page || page.mode !== 'transaction') return
-    const isLoginAttempt = page.id === 'login'
-    let completedSuccessfully = false
-
-    if (isLoginAttempt) {
-      setNotification('NORMAL', 'Login attempt in progress...')
-    }
-
-    const result = await commitTransactionPage(page.id)
-    if (!result.ok) {
-      setNotification(
-        'ERROR',
-        result.message ?? 'Command error: check device connection.',
-        { displayMode: 'ACKNOWLEDGED' },
-      )
-      return
-    }
-
-    if (isLoginAttempt) {
-      // Ensure login status is current before deciding success/failure flow.
-      await refreshParameters(['status_login'])
-      if (parameterValues.status_login === 'ok') {
-        setNotification('SUCCESS', 'Login successful.')
-        completedSuccessfully = true
-      } else {
-        setNotification('ERROR', 'Login failed: invalid credentials.', {
-          displayMode: 'ACKNOWLEDGED',
-        })
-      }
-    } else {
-      setNotification('SUCCESS', 'Command applied successfully.')
-      completedSuccessfully = true
-    }
-
-    if (!completedSuccessfully) {
-      return
-    }
-
-    if (page.goOnApply === 'GO_HOME') {
-      goHome()
-      return
-    }
-
-    if (page.goOnApply === 'GO_BACK') {
-      goToPreviousPage()
-    }
+    transactionStore.resetTransactionPage(currentPage.value.id)
   }
 
   return {

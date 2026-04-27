@@ -4,7 +4,7 @@ import ParameterWidget from './components/ParameterWidget.vue'
 import LinkWidget from './components/LinkWidget.vue'
 import AppIcon from './components/AppIcon.vue'
 import StatusIconBar from './components/StatusIconBar.vue'
-import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { menuConfig, findPageById } from './composables/useMenuConfig.js'
 import { applicationConfig } from './composables/useApplicationConfig.js'
 import { useMenuNavigation } from './composables/useMenuNavigation.js'
@@ -12,6 +12,9 @@ import { useTheme } from './composables/useTheme.js'
 import { useParameterStore } from './composables/useParameterStore.js'
 import { useNotificationBar } from './composables/useNotificationBar.js'
 import { useTransactionPageActions } from './composables/useTransactionPageActions.js'
+import { useCurrentPagePanels } from './composables/useCurrentPagePanels.js'
+import { useCurrentPageParameterRefresh } from './composables/useCurrentPageParameterRefresh.js'
+import { useLogoutPageAction } from './features/page-actions/useLogoutPageAction.js'
 
 const {
   currentPage,
@@ -27,8 +30,6 @@ const {
 
 const { isDark, toggleTheme } = useTheme()
 
-const currentPanelIndex = ref(0)
-
 const {
   parameterValues,
   toggleParameter,
@@ -43,11 +44,25 @@ const {
   refreshParameters,
 } = useParameterStore()
 
-const currentPanelLabel = computed(() => {
-  if (!currentPagePanels.value) return ''
-  const panel = currentPagePanels.value[currentPanelIndex.value]
-  return typeof panel?.label === 'string' ? panel.label.trim() : ''
-})
+const {
+  currentPagePanels,
+  pageParameters,
+  currentPanelLabel,
+  handlePanelChange,
+} = useCurrentPagePanels({ currentPage })
+
+const transactionStore = {
+  toggleParameter,
+  setParameterValue,
+  toggleTransactionParameter,
+  setTransactionParameterValue,
+  getTransactionDisplayValues,
+  getTransactionModifiedIds,
+  hasTransactionChanges,
+  resetTransactionPage,
+  commitTransactionPage,
+  refreshParameters,
+}
 
 const menuNotificationMessage = computed(() => {
   const menuLabel = currentPage.value?.label ?? ''
@@ -62,6 +77,15 @@ const {
   handleNotificationTap,
   disposeNotificationBar,
 } = useNotificationBar({ menuMessage: menuNotificationMessage })
+
+const notifications = {
+  setNotification,
+}
+
+const navigation = {
+  goHome,
+  goToPreviousPage,
+}
 
 const NOTIFICATION_ICON = {
   MENU: 'menu',
@@ -87,19 +111,9 @@ const {
 } = useTransactionPageActions({
   currentPage,
   parameterValues,
-  refreshParameters,
-  setNotification,
-  goHome,
-  goToPreviousPage,
-  toggleParameter,
-  setParameterValue,
-  toggleTransactionParameter,
-  setTransactionParameterValue,
-  getTransactionDisplayValues,
-  getTransactionModifiedIds,
-  hasTransactionChanges,
-  resetTransactionPage,
-  commitTransactionPage,
+  transactionStore,
+  notifications,
+  navigation,
 })
 
 // ── Grid layout helpers ───────────────────────────────────
@@ -113,93 +127,31 @@ onUnmounted(() => {
   disposeNotificationBar()
 })
 
-const widgetCols = computed(() => {
-  if (viewportWidth.value <= 399) return 2
-  if (viewportWidth.value <= 599) return 3
-  return 4
-})
-
 const visibleCurrentSubmenus = computed(() =>
   (currentPage.value?.submenus ?? []).filter((item) => item.visibility !== 'hidden'),
 )
 
-// ── Refresh parameters on page navigation ────────────────
-const currentPagePanels = computed(() =>
-  Array.isArray(currentPage.value?.panels) && currentPage.value.panels.length > 0
-    ? currentPage.value.panels
-    : null,
-)
-
-const pageParameters = computed(() =>
-  currentPagePanels.value
-    ? currentPagePanels.value.flatMap((p) => p.parameters ?? [])
-    : (currentPage.value?.parameters ?? []),
-)
-
-watch(
-  () => currentPage.value?.id,
-  () => {
-    currentPanelIndex.value = 0
-  },
-)
-
-const handlePanelChange = (index) => {
-  currentPanelIndex.value = Number.isInteger(index) && index >= 0 ? index : 0
-}
-
-watch(
-  () => currentPage.value,
-  (page) => {
-    if (!page) return
-    const ids = pageParameters.value.map((p) => p.id)
-    if (ids.length > 0) {
-      refreshParameters(ids)
-    }
-  },
-)
+useCurrentPageParameterRefresh({
+  currentPage,
+  pageParameters,
+  refreshParameters,
+})
 
 // ── Settings page ───────────────────────────────────────
 const SETTINGS_PAGE_ID = 'tema'
 const LOGOUT_PAGE_ID = 'logout'
 const logoutPageConfig = findPageById(menuConfig.pages, LOGOUT_PAGE_ID)
 
-const logoutInProgress = ref(false)
-
-watch(
-  () => currentPage.value?.id,
-  async (pageId) => {
-    if (pageId !== LOGOUT_PAGE_ID || logoutInProgress.value) return
-
-    const wasLoggedIn = parameterValues.status_login === 'ok'
-    logoutInProgress.value = true
-    setNotification('WARNING', 'Logging out...')
-    try {
-      // Always send both credentials reset commands: local values can already
-      // be empty due to clearOnApply, while remote state may still be logged in.
-      const nameResult = await setParameterValue('login_name', '')
-      const passwordResult = await setParameterValue('login_password', '')
-
-      if (!nameResult.ok || !passwordResult.ok) {
-        const msg = (!nameResult.ok ? nameResult.message : passwordResult.message)
-          ?? 'Logout error: command not applied.'
-        setNotification('ERROR', msg, { displayMode: 'ACKNOWLEDGED' })
-      } else if (wasLoggedIn) {
-        setNotification('SUCCESS', 'Logout completed successfully.')
-      } else {
-        setNotification('WARNING', 'No active session: user already logged out.')
-      }
-
-      const goOnApply = logoutPageConfig?.goOnApply ?? 'STAY_HERE'
-      if (goOnApply === 'GO_HOME') {
-        goHome()
-      } else if (goOnApply === 'GO_BACK' || goOnApply === 'STAY_HERE') {
-        goToPreviousPage()
-      }
-    } finally {
-      logoutInProgress.value = false
-    }
-  },
-)
+useLogoutPageAction({
+  currentPage,
+  parameterValues,
+  setParameterValue,
+  setNotification,
+  goHome,
+  goToPreviousPage,
+  logoutPageId: LOGOUT_PAGE_ID,
+  logoutPageGoOnApply: logoutPageConfig?.goOnApply ?? 'STAY_HERE',
+})
 </script>
 
 <template>
