@@ -2,13 +2,13 @@
 
 **Application:** hmi-demo  
 **Date:** 2026-04-27  
-**Standards referenced:** MIL-STD-1472H, DEF STAN 00-250, STANAG 4586, ARP4754A / DO-178C
+**Standards referenced:** MIL-STD-1472H, DEF STAN 00-250, STANAG 4586, ARP4754A / DO-178C, MIL-STD-2525D (assessed)
 
 ---
 
 ## 1. Scope
 
-This document assesses the compliance of the `hmi-demo` application against Human-Machine Interface (HMI) specifications applicable to defence and military vehicle systems. The analysis covers the Vue 3 + Vite frontend, the YAML-based menu configuration, the `NetworkAdapter`, and the Service Worker simulator.
+This document assesses the compliance of the `hmi-demo` application against Human-Machine Interface (HMI) specifications applicable to defence and military vehicle systems. The analysis covers the Vue 3 + Vite frontend, the YAML-based menu configuration, the `NetworkAdapter`, and the Service Worker simulator. MIL-STD-2525D (Common Warfighting Symbology) was additionally evaluated for applicability and the outcome is documented in Section 4.
 
 ---
 
@@ -22,6 +22,7 @@ This document assesses the compliance of the `hmi-demo` application against Huma
 | ARP4754A | Guidelines for Development of Civil Aircraft and Systems |
 | DO-178C | Software Considerations in Airborne Systems and Equipment Certification |
 | MIL-L-85762 | Night Vision Imaging System (NVIS) Lighting |
+| MIL-STD-2525D | Common Warfighting Symbology (assessed – see Section 4) |
 
 ---
 
@@ -64,7 +65,34 @@ All interactive controls use `role="button"`, `aria-pressed` (boolean widgets), 
 
 ---
 
-## 4. Non-Conformances and Gaps
+## 4. Standards Assessed as Not Applicable
+
+### 4.1 MIL-STD-2525D – Common Warfighting Symbology
+**Assessment: NOT APPLICABLE**
+
+**Standard scope:** MIL-STD-2525D defines a comprehensive set of standardised military symbols (pictograms, overlays, control measures, and tracks) intended for use on tactical situational-awareness displays, Common Operational Picture (COP) systems, and map-based Command & Control (C2) interfaces. It governs the visual encoding of unit affiliation (friend / hostile / neutral / unknown), echelon, equipment type, and operational status on georeferenced displays.
+
+**Application scope:** `hmi-demo` is an onboard platform HMI for vehicle subsystem management. Its function is limited to:
+
+- Monitoring and controlling vehicle subsystems: air conditioning (HVAC), door states, engine and battery telemetry, system alarms, and configuration settings.
+- Displaying scalar parameters, boolean states, enumeration values, and operational alarms through a tabbed widget interface.
+
+**Rationale for non-applicability:**
+
+| MIL-STD-2525D requirement area | Present in hmi-demo? | Justification |
+|---|---|---|
+| Map / georeferenced display | ❌ No | The application has no cartographic view or geographic coordinate system. |
+| Military unit / track symbols | ❌ No | No force-disposition icons, unit markers, or track objects are rendered. |
+| Affiliation colour coding (blue / red / green / yellow) | ❌ No | Status colours are used for alert severity (green / amber / red) per MIL-STD-1472H, not for force affiliation. |
+| Tactical overlays and control measures | ❌ No | No mission graphics, phase lines, engagement areas, or route overlays exist. |
+| Symbol identifier (SIDC) encoding | ❌ No | No Symbol Identification Code is generated, stored, or transmitted. |
+| COP / SA data exchange | ❌ No | The application exchanges platform telemetry parameters, not tactical picture data. |
+
+**Conclusion:** MIL-STD-2525D does not impose any requirements on this application in its current form. Should a future version of `hmi-demo` incorporate a map view, force-tracking layer, or COP overlay, MIL-STD-2525D compliance (correct SIDC usage, affiliation colour palette, and icon set) would become mandatory.
+
+---
+
+## 5. Non-Conformances and Gaps
 
 ### NC-01 – Missing Robust Authentication and RBAC (MIL-STD-1472H §5.14 / DEF STAN 00-250 §10.1)
 **Severity: CRITICAL**
@@ -190,7 +218,7 @@ The UI mixes Italian and English. YAML labels are in English ("Battery", "Engine
 
 ---
 
-## 5. Compliance Summary
+## 6. Compliance Summary
 
 | Area | Standard | Status |
 |---|---|---|
@@ -212,10 +240,11 @@ The UI mixes Italian and English. YAML labels are in English ("Battery", "Engine
 | Minimum font size | MIL-STD-1472H §5.3.1 | ⚠️ Partial |
 | Functional segregation | DEF STAN 00-250 §9.4 | ⚠️ Gap |
 | Single language / i18n | DEF STAN 00-250 §12 | ⚠️ Minor |
+| Warfighting symbology | MIL-STD-2525D | ➖ Not applicable |
 
 ---
 
-## 6. Remediation Priorities
+## 7. Remediation Priorities
 
 ### High – Blocking for Certification
 
