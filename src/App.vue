@@ -8,7 +8,7 @@ import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { menuConfig, findPageById } from './composables/useMenuConfig.js'
 import { applicationConfig } from './composables/useApplicationConfig.js'
 import { useMenuNavigation } from './composables/useMenuNavigation.js'
-import { useTheme } from './composables/useTheme.js'
+import { useTheme, VALID_THEMES } from './composables/useTheme.js'
 import { useParameterStore } from './composables/useParameterStore.js'
 import { useNotificationBar } from './composables/useNotificationBar.js'
 import { useTransactionPageActions } from './composables/useTransactionPageActions.js'
@@ -28,7 +28,7 @@ const {
   navigateToPage,
 } = useMenuNavigation()
 
-const { theme, cycleTheme } = useTheme()
+const { theme, setTheme, cycleTheme } = useTheme()
 
 const {
   parameterValues,
@@ -207,17 +207,31 @@ useLogoutPageAction({
         </div>
       </template>
       <template v-else-if="currentPage.id === SETTINGS_PAGE_ID">
-        <div class="settings-page">
-          <div class="settings-widget">
-            <ParameterWidget
-              name="Theme"
-              type="enum"
-              :value="theme.toUpperCase()"
-              :options="['LIGHT', 'DARK', 'NVIS']"
-              @toggle="cycleTheme"
+        <template v-if="currentPage.selectionMode === 'picker'">
+          <div class="widget-grid">
+            <LinkWidget
+              v-for="t in VALID_THEMES"
+              :key="t"
+              :label="t.toUpperCase()"
+              :icon="'theme'"
+              :active="theme === t"
+              @navigate="setTheme(t)"
             />
           </div>
-        </div>
+        </template>
+        <template v-else>
+          <div class="settings-page">
+            <div class="settings-widget">
+              <ParameterWidget
+                name="Theme"
+                type="enum"
+                :value="theme.toUpperCase()"
+                :options="['LIGHT', 'DARK', 'NVIS']"
+                @toggle="cycleTheme"
+              />
+            </div>
+          </div>
+        </template>
       </template>
       <template v-else>
         <PageParametersView
