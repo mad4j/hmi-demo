@@ -71,20 +71,20 @@ const stateClass = (parameterId) => {
 /* State colours */
 .si--ok {
   color: var(--text-green);
-  border-color: rgba(63, 185, 80, 0.35);
-  background: rgba(63, 185, 80, 0.1);
+  border-color: var(--status-ok-border);
+  background: var(--status-ok-bg);
 }
 
 .si--warning {
-  color: #e3a008;
-  border-color: rgba(227, 160, 8, 0.4);
-  background: rgba(227, 160, 8, 0.12);
+  color: var(--status-warning-color);
+  border-color: var(--status-warning-border);
+  background: var(--status-warning-bg);
 }
 
 .si--error {
-  color: #f85149;
-  border-color: rgba(248, 81, 73, 0.4);
-  background: rgba(248, 81, 73, 0.12);
+  color: var(--status-critical-color);
+  border-color: var(--status-critical-border);
+  background: var(--status-critical-bg);
 }
 
 .si--off {

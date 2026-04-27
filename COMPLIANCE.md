@@ -160,10 +160,27 @@ For gloved or vibration-affected operation the recommended minimum is 9–12 mm 
 
 ### NC-07 – Potential NVIS Incompatibility (MIL-L-85762 / MIL-STD-1472H §5.3.5)
 **Severity: MODERATE**
+**Status: PARTIALLY MITIGATED (software layer implemented; photometric hardware validation pending)**
 
-The status colours `#3fb950` (green) and `#e3a008` (amber) may produce spectral emission incompatible with Night Vision Goggle (NVG) operation. NVG-compatible displays must conform to MIL-L-85762, typically restricting visible emission and limiting spectral output to 600–900 nm. This cannot be fully assessed without photometric data but the current palette has not been verified for NVIS compatibility.
+The status colours `#3fb950` (green) and `#e3a008` (amber) may produce spectral emission incompatible with Night Vision Goggle (NVG) operation. NVG-compatible displays must conform to MIL-L-85762, typically restricting visible emission and limiting spectral output to 600–900 nm.
 
-**Affected files:** `src/App.vue` (CSS custom properties), `src/components/StatusIconBar.vue`
+**Software mitigation implemented:**
+
+A dedicated `nvis` theme has been added (`data-theme='nvis'`) replacing all green, blue, and amber hues with a low-luminance deep-red palette (625–780 nm range) to minimise NVG bleed:
+
+| Element | Previous value | NVIS value |
+|---|---|---|
+| `--text-green` / `--status-color` | `#3fb950` | `#8b1a00` |
+| `--status-warning-color` | `#e3a008` | `#8b3300` |
+| `--status-critical-color` | `#f85149` | `#8b0000` |
+| `--text-blue` | `#58a6ff` | `#aa2200` |
+| Background | `#161b22` | `#0a0000` |
+
+All previously hardcoded status-icon colours in `StatusIconBar.vue` have been converted to CSS custom properties (`--status-ok-border`, `--status-ok-bg`, `--status-warning-color`, `--status-warning-bg`, `--status-warning-border`, `--status-critical-color`, `--status-critical-bg`, `--status-critical-border`) so they respond to theme changes. A **NVIS Mode** toggle is available in the settings page.
+
+**Residual gap:** Full MIL-L-85762 certification requires photometric measurement (NVIS Radiance, spectral irradiance) on the physical display hardware. The software palette change is a necessary but not sufficient condition for compliance.
+
+**Affected files:** `src/App.vue` (CSS custom properties + NVIS theme block), `src/components/StatusIconBar.vue`, `src/composables/useTheme.js`
 
 ---
 
@@ -235,7 +252,7 @@ The UI mixes Italian and English. YAML labels are in English ("Battery", "Engine
 | Network timeout / fail-safe | MIL-STD-1472H §5.2.6 | ⚠️ Gap |
 | System-under-control indicator | STANAG 4586 §6.3 | ⚠️ Gap |
 | Touch target dimensions | MIL-STD-1472H §5.8.6 | ⚠️ Partial |
-| NVIS colour compatibility | MIL-L-85762 | ⚠️ Not verified |
+| NVIS colour compatibility | MIL-L-85762 | ⚠️ Partially mitigated (hw validation pending) |
 | Stale data warning | MIL-STD-1472H §5.2.7 | ⚠️ Gap |
 | Minimum font size | MIL-STD-1472H §5.3.1 | ⚠️ Partial |
 | Functional segregation | DEF STAN 00-250 §9.4 | ⚠️ Gap |
@@ -258,6 +275,7 @@ The UI mixes Italian and English. YAML labels are in English ("Battery", "Engine
 5. **Increase touch target sizes to ≥ 48 px** for status icon buttons and panel dot indicators.
 6. **Add a "system under control" indicator** in the top bar, driven by a new status parameter from the apparatus.
 7. **Increase minimum font size to 12pt (16px)** for all operationally relevant text.
+8. **Commission photometric NVIS validation** – measure NVIS Radiance and spectral irradiance of the physical display hardware in NVIS mode to complete MIL-L-85762 certification (software palette implemented).
 
 ### Low – Quality Improvement
 
