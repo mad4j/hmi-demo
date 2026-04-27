@@ -259,3 +259,25 @@ The UI mixes Italian and English. YAML labels are in English ("Battery", "Engine
 | Single language / i18n | DEF STAN 00-250 §12 | ⚠️ Minor |
 | Warfighting symbology | MIL-STD-2525D | ➖ Not applicable |
 
+---
+
+## 7. Remediation Priorities
+
+### High – Blocking for Certification
+
+1. **Implement RBAC** – enforce the roles already declared in `platform-pages-menu.yaml` (OPERATOR, SUPERVISOR, MAINTAINER) via conditional page/action visibility driven by the authenticated user's role.
+2. **Add confirmation dialogs for irreversible commands** – apply the existing transaction pattern (or a dedicated modal) to `RESET_ALARMS`, `GPS_RESET`, and `REBOOT`.
+3. **Implement an operational audit log** – record each command and parameter change with timestamp, user identity, and old/new value, either locally or forwarded to the backend.
+
+### Medium – Recommended Before Deployment
+
+4. **Add fetch timeouts and stale-data warnings** – wrap all `fetch()` calls with `AbortController` and display a "data may be outdated" indicator when the last successful update exceeds a configurable threshold.
+5. **Increase touch target sizes to ≥ 48 px** for status icon buttons and panel dot indicators.
+6. **Add a "system under control" indicator** in the top bar, driven by a new status parameter from the apparatus.
+7. **Increase minimum font size to 12pt (16px)** for all operationally relevant text.
+8. **Commission photometric NVIS validation** – measure NVIS Radiance and spectral irradiance of the physical display hardware in NVIS mode to complete MIL-L-85762 certification (software palette implemented).
+
+### Low – Quality Improvement
+
+8. **Unify the interface language** (English throughout, or a full i18n layer).
+9. **Visually segregate command controls** from monitoring displays (e.g. a dedicated "Actions" section requiring explicit navigation or an elevated privilege level).
