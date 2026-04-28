@@ -504,6 +504,7 @@ useLogoutPageAction({
 .notification-count {
   flex-shrink: 0;
   font-size: 1rem;
+  font-weight: 800;
   letter-spacing: 0.02em;
   padding: 0.12rem 0.35rem;
   border-radius: 999px;
