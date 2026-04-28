@@ -38,7 +38,7 @@ const stateClass = (parameterId) => {
       :title="icon.label"
       @click="navigateToPage(getTargetPageId(icon))"
     >
-      <AppIcon :name="icon.icon" :size="18" />
+      <AppIcon :name="icon.icon" :size="22" />
     </button>
   </div>
 </template>
@@ -51,8 +51,8 @@ const stateClass = (parameterId) => {
 }
 
 .si-btn {
-  width: 2rem;
-  height: 2rem;
+  width: 3rem;
+  height: 3rem;
   padding: 0;
   display: inline-flex;
   align-items: center;

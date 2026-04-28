@@ -309,8 +309,8 @@ onUnmounted(() => document.removeEventListener('keydown', handleGlobalKeydown))
 }
 
 .panel-dot {
-  width: 1.9rem;
-  height: 1.9rem;
+  width: 3rem;
+  height: 3rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
