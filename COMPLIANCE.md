@@ -196,16 +196,23 @@ If the connection to the apparatus is lost, widgets continue to display the last
 
 ### NC-09 – Font Size Below Operational Readability Threshold (MIL-STD-1472H §5.3.1.3)
 **Severity: MODERATE**
+**Status: RESOLVED**
 
-| Element | Current size | MIL-STD minimum |
-|---|---|---|
-| Parameter name label (`.param-name`) | 0.62rem ≈ 10px | 12pt / 16px |
-| Bottom tab labels (`.tab-label`) | 0.68rem ≈ 11px | 12pt / 16px |
-| Notification count badge | 0.68rem ≈ 11px | 12pt / 16px |
+All operationally relevant text elements previously rendered below the 12pt / 16px minimum have been updated to `1rem` (16px at the browser default of 96 dpi). The `param-unit` suffix, which inherits from a `1.55rem` context, has been adjusted from `0.55em` to `0.65em` (= 1.0075rem ≥ 16px). Responsive media-query overrides that previously reduced these values below 16px on narrow viewports have been removed.
 
-Under vibration or low-visibility conditions these text elements may be unreadable at operational viewing distances.
+| Element | Previous size | Current size | MIL-STD minimum |
+|---|---|---|---|
+| Parameter name label (`.param-name`) | 0.62rem ≈ 10px | 1rem = 16px | 12pt / 16px |
+| Parameter unit suffix (`.param-unit`) | 0.55em ≈ 14px | 0.65em ≈ 16px | 12pt / 16px |
+| Navigation link labels (`.link-label`) | 0.68rem ≈ 11px | 1rem = 16px | 12pt / 16px |
+| Modal header labels (`.modal-header`) | 0.72rem ≈ 12px | 1rem = 16px | 12pt / 16px |
+| Transaction button labels (`.transaction-button`) | 0.78rem ≈ 12px | 1rem = 16px | 12pt / 16px |
+| Top bar text (`.bar`) | 0.95rem ≈ 15px | 1rem = 16px | 12pt / 16px |
+| Notification bar message (`.notification-bar`) | 0.9rem ≈ 14px | 1rem = 16px | 12pt / 16px |
+| Notification count badge (`.notification-count`) | 0.68rem ≈ 11px | 1rem = 16px | 12pt / 16px |
+| Bottom tab labels (`.tab-button` / `.tab-label`) | 0.7rem / 0.68rem ≈ 11px | 1rem = 16px | 12pt / 16px |
 
-**Affected files:** `src/components/ParameterWidget.vue`, `src/App.vue`
+**Affected files:** `src/components/ParameterWidget.vue`, `src/components/LinkWidget.vue`, `src/components/DateEditorModal.vue`, `src/components/TextEditorModal.vue`, `src/components/PercentageEditorModal.vue`, `src/components/PageParametersView.vue`, `src/App.vue`
 
 ---
 
@@ -255,7 +262,7 @@ The UI mixes Italian and English. YAML labels are in English ("Battery", "Engine
 | Touch target dimensions | MIL-STD-1472H §5.8.6 | ✅ Compliant |
 | NVIS colour compatibility | MIL-L-85762 | ⚠️ Partially mitigated (hw validation pending) |
 | Stale data warning | MIL-STD-1472H §5.2.7 | ⚠️ Gap |
-| Minimum font size | MIL-STD-1472H §5.3.1 | ⚠️ Partial |
+| Minimum font size | MIL-STD-1472H §5.3.1 | ✅ Compliant |
 | Functional segregation | DEF STAN 00-250 §9.4 | ⚠️ Gap |
 | Single language / i18n | DEF STAN 00-250 §12 | ⚠️ Minor |
 | Warfighting symbology | MIL-STD-2525D | ➖ Not applicable |
@@ -274,7 +281,7 @@ The UI mixes Italian and English. YAML labels are in English ("Battery", "Engine
 
 4. **Add fetch timeouts and stale-data warnings** – wrap all `fetch()` calls with `AbortController` and display a "data may be outdated" indicator when the last successful update exceeds a configurable threshold.
 5. **Add a "system under control" indicator** in the top bar, driven by a new status parameter from the apparatus.
-6. **Increase minimum font size to 12pt (16px)** for all operationally relevant text.
+6. ~~**Increase minimum font size to 12pt (16px)**~~ – **DONE** (NC-09 resolved).
 7. **Commission photometric NVIS validation** – measure NVIS Radiance and spectral irradiance of the physical display hardware in NVIS mode to complete MIL-L-85762 certification (software palette implemented).
 
 ### Low – Quality Improvement

@@ -455,7 +455,7 @@ useLogoutPageAction({
   background: var(--bg-bar);
   border-bottom: 1px solid var(--border);
   font-weight: 700;
-  font-size: 0.95rem;
+  font-size: 1rem;
   letter-spacing: 0.03em;
   transition: background 0.25s, border-color 0.25s;
 }
@@ -481,7 +481,7 @@ useLogoutPageAction({
   border-bottom: 1px solid var(--notification-normal-border);
   background: var(--notification-normal-bg);
   color: var(--notification-normal-text);
-  font-size: 0.9rem;
+  font-size: 1rem;
   line-height: 1.15;
   cursor: pointer;
   transition: background 0.2s, border-color 0.2s, color 0.2s;
@@ -503,7 +503,7 @@ useLogoutPageAction({
 
 .notification-count {
   flex-shrink: 0;
-  font-size: 0.68rem;
+  font-size: 1rem;
   font-weight: 800;
   letter-spacing: 0.02em;
   padding: 0.12rem 0.35rem;
@@ -565,7 +565,7 @@ useLogoutPageAction({
   border-radius: 0;
   background: transparent;
   color: var(--text-secondary);
-  font-size: 0.7rem;
+  font-size: 1rem;
   font-weight: 600;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -609,7 +609,7 @@ useLogoutPageAction({
 }
 
 .tab-label {
-  font-size: 0.68rem;
+  font-size: 1rem;
 }
 
 /* ── Content ────────────────────────────────────────────── */
@@ -715,14 +715,9 @@ button:active {
 
 @media (max-width: 399px) {
   .notification-bar {
-    font-size: 0.86rem;
     line-height: 1.12;
     padding-top: 0.2rem;
     padding-bottom: 0.2rem;
-  }
-
-  .notification-count {
-    font-size: 0.64rem;
   }
 
   .widget-grid > * {

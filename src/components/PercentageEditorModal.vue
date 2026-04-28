@@ -184,7 +184,7 @@ const handleSliderInput = () => {
 /* ── Header ──────────────────────────────────────────────── */
 .modal-header {
   padding: 0.55rem 1rem;
-  font-size: 0.72rem;
+  font-size: 1rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
