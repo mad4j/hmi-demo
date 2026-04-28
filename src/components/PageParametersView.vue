@@ -82,6 +82,28 @@ const goToPanel = (index) => {
   currentPanel.value = Math.max(0, Math.min(index, totalPanels.value - 1))
 }
 
+// ── Keyboard navigation for panels ────────────────────────
+const handlePanelKeydown = (e, panelIndex) => {
+  switch (e.key) {
+    case 'ArrowRight':
+      e.preventDefault()
+      goToPanel(panelIndex + 1)
+      break
+    case 'ArrowLeft':
+      e.preventDefault()
+      goToPanel(panelIndex - 1)
+      break
+    case 'Home':
+      e.preventDefault()
+      goToPanel(0)
+      break
+    case 'End':
+      e.preventDefault()
+      goToPanel(totalPanels.value - 1)
+      break
+  }
+}
+
 // Drag / touch swipe
 let dragStartX = 0
 let isDragging = false
@@ -211,7 +233,10 @@ onUnmounted(() => document.removeEventListener('keydown', handleGlobalKeydown))
           role="tab"
           :aria-selected="i - 1 === currentPanel"
           :aria-label="`Panel ${i}`"
+          :aria-controls="`panel-${i - 1}`"
+          :tabindex="i - 1 === currentPanel ? 0 : -1"
           @click.stop="goToPanel(i - 1)"
+          @keydown="handlePanelKeydown($event, i - 1)"
         />
       </div>
     </div>
