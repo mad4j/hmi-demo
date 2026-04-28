@@ -379,7 +379,7 @@ onUnmounted(() => document.removeEventListener('keydown', handleGlobalKeydown))
   border: 1px solid var(--border);
   background: var(--bg-btn);
   color: var(--text-primary);
-  font-size: 0.78rem;
+  font-size: 1rem;
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;

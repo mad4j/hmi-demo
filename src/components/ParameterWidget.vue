@@ -146,7 +146,7 @@ const handleClick = () => {
 .param-name {
   flex: 0 0 auto;
   padding: 0.25rem 0.55rem;
-  font-size: 0.62rem;
+  font-size: 1rem;
   font-weight: 700;
   letter-spacing: 0.07em;
   text-transform: uppercase;
@@ -248,7 +248,7 @@ const handleClick = () => {
 }
 
 .param-unit {
-  font-size: 0.55em;
+  font-size: 0.65em;
   font-weight: 600;
   margin-left: 0.2em;
   opacity: 0.75;

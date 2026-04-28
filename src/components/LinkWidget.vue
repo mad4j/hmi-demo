@@ -93,7 +93,7 @@ const emit = defineEmits(['navigate'])
 }
 
 .link-label {
-  font-size: 0.68rem;
+  font-size: 1rem;
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
