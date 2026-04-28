@@ -146,13 +146,14 @@ There is no persistent indicator showing whether the vehicle / apparatus is curr
 
 ### NC-06 – Touch Target Size Below Standard (MIL-STD-1472H §5.8.6)
 **Severity: MODERATE**
+**Status: RESOLVED**
 
-| Element | Current size | MIL-STD minimum |
-|---|---|---|
-| Status icon buttons (`.si-btn`) | 2rem ≈ 32px | 48px (12.7mm at 96dpi) |
-| Panel dot indicators (`.panel-dot`) | 1.9rem ≈ 30px | 48px |
+| Element | Previous size | Current size | MIL-STD minimum |
+|---|---|---|---|
+| Status icon buttons (`.si-btn`) | 2rem ≈ 32px | 3rem = 48px | 48px (12.7mm at 96dpi) |
+| Panel dot indicators (`.panel-dot`) | 1.9rem ≈ 30px | 3rem = 48px | 48px |
 
-For gloved or vibration-affected operation the recommended minimum is 9–12 mm per control.
+Both elements have been updated to meet the 48 px minimum. The visual indicator inside `.panel-dot` (`::before` pseudo-element) retains its compact appearance while the full clickable/touchable area is now compliant with gloved and vibration-affected operation requirements.
 
 **Affected files:** `src/components/StatusIconBar.vue`, `src/components/PageParametersView.vue`
 
@@ -251,7 +252,7 @@ The UI mixes Italian and English. YAML labels are in English ("Battery", "Engine
 | Audit trail | DEF STAN 00-250 §10.3 | ❌ Non-compliant |
 | Network timeout / fail-safe | MIL-STD-1472H §5.2.6 | ⚠️ Gap |
 | System-under-control indicator | STANAG 4586 §6.3 | ⚠️ Gap |
-| Touch target dimensions | MIL-STD-1472H §5.8.6 | ⚠️ Partial |
+| Touch target dimensions | MIL-STD-1472H §5.8.6 | ✅ Compliant |
 | NVIS colour compatibility | MIL-L-85762 | ⚠️ Partially mitigated (hw validation pending) |
 | Stale data warning | MIL-STD-1472H §5.2.7 | ⚠️ Gap |
 | Minimum font size | MIL-STD-1472H §5.3.1 | ⚠️ Partial |
@@ -272,10 +273,9 @@ The UI mixes Italian and English. YAML labels are in English ("Battery", "Engine
 ### Medium – Recommended Before Deployment
 
 4. **Add fetch timeouts and stale-data warnings** – wrap all `fetch()` calls with `AbortController` and display a "data may be outdated" indicator when the last successful update exceeds a configurable threshold.
-5. **Increase touch target sizes to ≥ 48 px** for status icon buttons and panel dot indicators.
-6. **Add a "system under control" indicator** in the top bar, driven by a new status parameter from the apparatus.
-7. **Increase minimum font size to 12pt (16px)** for all operationally relevant text.
-8. **Commission photometric NVIS validation** – measure NVIS Radiance and spectral irradiance of the physical display hardware in NVIS mode to complete MIL-L-85762 certification (software palette implemented).
+5. **Add a "system under control" indicator** in the top bar, driven by a new status parameter from the apparatus.
+6. **Increase minimum font size to 12pt (16px)** for all operationally relevant text.
+7. **Commission photometric NVIS validation** – measure NVIS Radiance and spectral irradiance of the physical display hardware in NVIS mode to complete MIL-L-85762 certification (software palette implemented).
 
 ### Low – Quality Improvement
 
