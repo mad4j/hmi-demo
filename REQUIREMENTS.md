@@ -147,7 +147,31 @@ Authentication credentials shall not be hardcoded in source code or service work
 
 ---
 
-## 3. Traceability Matrix
+## 3. Acronyms
+
+| Acronym | Definition |
+|---|---|
+| ARIA | Accessible Rich Internet Applications |
+| CAC | Common Access Card |
+| DEF STAN | Defence Standard |
+| GPS | Global Positioning System |
+| HMI | Human-Machine Interface |
+| i18n | Internationalisation |
+| MFA | Multi-Factor Authentication |
+| NATO | North Atlantic Treaty Organization |
+| NC | Non-Conformance |
+| NVIS | Night Vision Imaging System |
+| NVG | Night Vision Goggle |
+| PKI | Public Key Infrastructure |
+| RBAC | Role-Based Access Control |
+| REQ | Requirement |
+| STANAG | NATO Standardization Agreement |
+| UI | User Interface |
+| WCAG | Web Content Accessibility Guidelines |
+
+---
+
+## 4. Traceability Matrix
 
 | Requirement | Standard | Compliance Area / NC Reference |
 |---|---|---|
