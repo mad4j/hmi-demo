@@ -505,5 +505,33 @@ This appendix explains the meaning of the standards and clauses cited in Section
 
 - Keyboard accessibility criteria: Used where all functionality must remain operable without pointer-only interaction.
 - Semantic accessibility criteria: Used where controls need machine-readable names, roles, and states for assistive technology.
-- Contrast criterion (4.5:1): Used where primary text must remain legible against its background.
-- Note: WCAG is web-oriented, but the cited criteria are used here as measurable accessibility baselines for the HMI.
+## 9. Acronyms
+
+| Acronym | Definition |
+| --- | --- |
+| ARIA | Accessible Rich Internet Applications |
+| ARP | Aerospace Recommended Practice |
+| CAC | Common Access Card |
+| CSS | Cascading Style Sheets |
+| DEF STAN | Defence Standard |
+| dpi | dots per inch |
+| GPS | Global Positioning System |
+| HMI | Human-Machine Interface |
+| i18n | Internationalisation |
+| IEC | International Electrotechnical Commission |
+| ISO | International Organization for Standardization |
+| MFA | Multi-Factor Authentication |
+| MIL-STD | Military Standard |
+| NATO | North Atlantic Treaty Organization |
+| NVIS | Night Vision Imaging System |
+| NVG | Night Vision Goggle |
+| PKI | Public Key Infrastructure |
+| RBAC | Role-Based Access Control |
+| REQ | Requirement |
+| RX | Receive |
+| SPEC | Specification (external standard reference, as used in this document) |
+| STANAG | NATO Standardization Agreement |
+| TX | Transmit |
+| UAS | Unmanned Aircraft System |
+| UI | User Interface |
+| WCAG | Web Content Accessibility Guidelines |
