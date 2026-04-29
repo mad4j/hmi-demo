@@ -129,7 +129,7 @@ button:active {
 .tab-button:disabled {
   color: var(--text-secondary);
   opacity: 0.45;
-  cursor: pointer;
+  cursor: not-allowed;
 }
 
 .tab-button:disabled:active {
