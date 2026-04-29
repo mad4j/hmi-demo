@@ -1,9 +1,11 @@
 <script setup>
+import HmiShell from './components/HmiShell.vue'
+import HmiHeader from './components/HmiHeader.vue'
+import HmiNotificationBar from './components/HmiNotificationBar.vue'
+import HmiFooter from './components/HmiFooter.vue'
 import PageParametersView from './components/PageParametersView.vue'
 import ParameterWidget from './components/ParameterWidget.vue'
 import LinkWidget from './components/LinkWidget.vue'
-import AppIcon from './components/AppIcon.vue'
-import StatusIconBar from './components/StatusIconBar.vue'
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { menuConfig, findPageById } from './composables/useMenuConfig.js'
 import { applicationConfig } from './composables/useApplicationConfig.js'
@@ -155,497 +157,101 @@ useLogoutPageAction({
 </script>
 
 <template>
-  <div class="hmi-shell" :data-theme="theme">
-    <header class="bar top-bar">
-      <div class="top-left">
-        <span>{{ applicationConfig.name }}</span>
-      </div>
-      <div class="top-right">
-        <StatusIconBar />
-      </div>
-    </header>
+  <HmiShell :theme="theme">
+    <template #header>
+      <HmiHeader />
+    </template>
 
-    <div
-      class="notification-bar"
-      :class="notificationBarClasses"
-      role="status"
-      aria-live="polite"
-      @click="handleNotificationTap"
-    >
-      <AppIcon :name="notificationIcon" :size="16" class="notification-icon" aria-hidden="true" />
-      <span class="notification-message">{{ notification.message }}</span>
-      <span
-        v-if="pendingCount > 0"
-        class="notification-count"
-        aria-label="Queued messages"
-      >
-        {{ pendingCount }}
-      </span>
-    </div>
+    <template #notification>
+      <HmiNotificationBar
+        :icon="notificationIcon"
+        :message="notification.message"
+        :pending-count="pendingCount"
+        :bar-classes="notificationBarClasses"
+        @tap="handleNotificationTap"
+      />
+    </template>
 
-    <main class="content">
-      <template v-if="isAtHome">
+    <template v-if="isAtHome">
+      <div class="widget-grid">
+        <LinkWidget
+          v-for="item in applicationConfig.pages"
+          :key="item.id"
+          :label="item.label"
+          :icon="item.icon"
+          @navigate="navigateToPage(item.id)"
+        />
+      </div>
+    </template>
+    <template v-else-if="visibleCurrentSubmenus.length">
+      <div class="widget-grid">
+        <LinkWidget
+          v-for="item in visibleCurrentSubmenus"
+          :key="item.id"
+          :label="item.label"
+          :icon="item.icon"
+          @navigate="navigateToPage(item.id)"
+        />
+      </div>
+    </template>
+    <template v-else-if="currentPage.id === SETTINGS_PAGE_ID">
+      <template v-if="currentPage.selectionMode === 'picker'">
         <div class="widget-grid">
           <LinkWidget
-            v-for="item in applicationConfig.pages"
-            :key="item.id"
-            :label="item.label"
-            :icon="item.icon"
-            @navigate="navigateToPage(item.id)"
+            v-for="t in VALID_THEMES"
+            :key="t"
+            :label="t.toUpperCase()"
+            :icon="'theme'"
+            :active="theme === t"
+            @navigate="setTheme(t)"
           />
         </div>
-      </template>
-      <template v-else-if="visibleCurrentSubmenus.length">
-        <div class="widget-grid">
-          <LinkWidget
-            v-for="item in visibleCurrentSubmenus"
-            :key="item.id"
-            :label="item.label"
-            :icon="item.icon"
-            @navigate="navigateToPage(item.id)"
-          />
-        </div>
-      </template>
-      <template v-else-if="currentPage.id === SETTINGS_PAGE_ID">
-        <template v-if="currentPage.selectionMode === 'picker'">
-          <div class="widget-grid">
-            <LinkWidget
-              v-for="t in VALID_THEMES"
-              :key="t"
-              :label="t.toUpperCase()"
-              :icon="'theme'"
-              :active="theme === t"
-              @navigate="setTheme(t)"
-            />
-          </div>
-        </template>
-        <template v-else>
-          <div class="settings-page">
-            <div class="settings-widget">
-              <ParameterWidget
-                name="Theme"
-                type="enum"
-                :value="theme.toUpperCase()"
-                :options="['LIGHT', 'DARK', 'NVIS']"
-                @toggle="cycleTheme"
-              />
-            </div>
-          </div>
-        </template>
       </template>
       <template v-else>
-        <PageParametersView
-          :parameters="pageParameters"
-          :parameter-values="currentPageValues"
-          :transaction-mode="isTransactionPage"
-          :modified-parameter-ids="currentPageModifiedIds"
-          :can-submit-transaction="canSubmitTransaction"
-          :viewport-width="viewportWidth"
-          :panels="currentPagePanels"
-          @toggle-parameter="handleToggleParameter"
-          @set-parameter-value="handleSetParameterValue"
-          @reset-transaction="handleResetTransaction"
-          @submit-transaction="handleSubmitTransaction"
-          @panel-change="handlePanelChange"
-        />
+        <div class="settings-page">
+          <div class="settings-widget">
+            <ParameterWidget
+              name="Theme"
+              type="enum"
+              :value="theme.toUpperCase()"
+              :options="['LIGHT', 'DARK', 'NVIS']"
+              @toggle="cycleTheme"
+            />
+          </div>
+        </div>
       </template>
-    </main>
+    </template>
+    <template v-else>
+      <PageParametersView
+        :parameters="pageParameters"
+        :parameter-values="currentPageValues"
+        :transaction-mode="isTransactionPage"
+        :modified-parameter-ids="currentPageModifiedIds"
+        :can-submit-transaction="canSubmitTransaction"
+        :viewport-width="viewportWidth"
+        :panels="currentPagePanels"
+        @toggle-parameter="handleToggleParameter"
+        @set-parameter-value="handleSetParameterValue"
+        @reset-transaction="handleResetTransaction"
+        @submit-transaction="handleSubmitTransaction"
+        @panel-change="handlePanelChange"
+      />
+    </template>
 
-    <footer class="bar bottom-bar">
-      <button
-        class="tab-button tab-button--back"
-        type="button"
-        aria-label="Back"
-        :disabled="!canGoToPreviousPage"
-        @click="goToPreviousPage"
-      >
-        <AppIcon name="back" :size="22" class="tab-icon" />
-      </button>
-      <button
-        class="tab-button tab-button--home"
-        type="button"
-        aria-label="Home"
-        @click="goHome"
-      >
-        <AppIcon name="home" :size="22" class="tab-icon" />
-        <span class="tab-label">Home</span>
-      </button>
-      <button
-        v-for="item in level1Items"
-        :key="item.id"
-        class="tab-button"
-        :class="{ 'tab-button--active': item.id === activeLevel1Id }"
-        type="button"
-        @click="selectLevel1Item(item)"
-      >
-        <AppIcon v-if="item.icon" :name="item.icon" :size="22" class="tab-icon" />
-        <span class="tab-label">{{ item.label }}</span>
-      </button>
-    </footer>
-  </div>
+    <template #footer>
+      <HmiFooter
+        :level1-items="level1Items"
+        :active-level1-id="activeLevel1Id"
+        :can-go-to-previous-page="canGoToPreviousPage"
+        @go-back="goToPreviousPage"
+        @go-home="goHome"
+        @select-item="selectLevel1Item"
+      />
+    </template>
+  </HmiShell>
 </template>
 
 <style scoped>
-/* ── Theme: dark (default) ──────────────────────────────── */
-.hmi-shell[data-theme='dark'] {
-  --bg-main: #161b22;
-  --bg-bar: #0d1117;
-  --bg-btn: #21262d;
-  --border: #30363d;
-  --text-primary: #e6edf3;
-  --text-secondary: #8b949e;
-  --text-blue: #58a6ff;
-  --text-green: #3fb950;
-  --status-bg: rgba(35, 134, 54, 0.2);
-  --status-border: rgba(63, 185, 80, 0.4);
-  --status-color: #3fb950;
-  --status-ok-bg: rgba(63, 185, 80, 0.1);
-  --status-ok-border: rgba(63, 185, 80, 0.35);
-  --status-warning-color: #e3a008;
-  --status-warning-bg: rgba(227, 160, 8, 0.12);
-  --status-warning-border: rgba(227, 160, 8, 0.4);
-  --status-critical-color: #f85149;
-  --status-critical-bg: rgba(248, 81, 73, 0.12);
-  --status-critical-border: rgba(248, 81, 73, 0.4);
-  --btn-active-bg: #388bfd22;
-  --btn-active-border: #388bfd;
-  --active-border: rgba(63, 185, 80, 0.5);
-  --active-name-bg: rgba(35, 134, 54, 0.2);
-  --active-name-border: rgba(63, 185, 80, 0.4);
-  --active-text: #3fb950;
-  --transaction-modified-border: #c99500;
-  --transaction-modified-bg: #fff3bf;
-  --transaction-modified-text: #5f4300;
-  --notification-normal-bg: var(--bg-bar);
-  --notification-normal-border: var(--border);
-  --notification-normal-text: var(--text-primary);
-  --notification-warning-bg: #4a3900;
-  --notification-warning-border: #c99500;
-  --notification-warning-text: #ffe08a;
-  --notification-success-bg: #123a22;
-  --notification-success-border: #2ea043;
-  --notification-success-text: #b7f5c8;
-  --notification-error-bg: #4b141b;
-  --notification-error-border: #f85149;
-  --notification-error-text: #ffd6d6;
-  --scrollbar-track: color-mix(in srgb, var(--bg-main) 72%, black);
-  --scrollbar-thumb: color-mix(in srgb, var(--text-secondary) 55%, var(--bg-main));
-  --scrollbar-thumb-hover: color-mix(in srgb, var(--text-blue) 55%, var(--text-secondary));
-}
-
-/* ── Theme: light ───────────────────────────────────────── */
-.hmi-shell[data-theme='light'] {
-  --bg-main: #f6f8fa;
-  --bg-bar: #ffffff;
-  --bg-btn: #f0f3f6;
-  --border: #d0d7de;
-  --text-primary: #1f2328;
-  --text-secondary: #57606a;
-  --text-blue: #0550ae;
-  --text-green: #1a7f37;
-  --status-bg: rgba(31, 136, 61, 0.1);
-  --status-border: rgba(31, 136, 61, 0.35);
-  --status-color: #1a7f37;
-  --status-ok-bg: rgba(31, 136, 61, 0.1);
-  --status-ok-border: rgba(31, 136, 61, 0.35);
-  --status-warning-color: #d97706;
-  --status-warning-bg: rgba(217, 119, 6, 0.1);
-  --status-warning-border: rgba(217, 119, 6, 0.4);
-  --status-critical-color: #dc2626;
-  --status-critical-bg: rgba(220, 38, 38, 0.1);
-  --status-critical-border: rgba(220, 38, 38, 0.4);
-  --btn-active-bg: rgba(5, 80, 174, 0.1);
-  --btn-active-border: #0550ae;
-  --active-border: rgba(31, 136, 61, 0.45);
-  --active-name-bg: rgba(31, 136, 61, 0.1);
-  --active-name-border: rgba(31, 136, 61, 0.35);
-  --active-text: #1a7f37;
-  --transaction-modified-border: #c99500;
-  --transaction-modified-bg: #fff3bf;
-  --transaction-modified-text: #5f4300;
-  --notification-normal-bg: var(--bg-bar);
-  --notification-normal-border: var(--border);
-  --notification-normal-text: var(--text-primary);
-  --notification-warning-bg: #fff3bf;
-  --notification-warning-border: #c99500;
-  --notification-warning-text: #5f4300;
-  --notification-success-bg: #dcffe4;
-  --notification-success-border: #2da44e;
-  --notification-success-text: #0f5132;
-  --notification-error-bg: #ffe3e3;
-  --notification-error-border: #d1242f;
-  --notification-error-text: #7f1d1d;
-  --scrollbar-track: color-mix(in srgb, var(--bg-main) 92%, black);
-  --scrollbar-thumb: color-mix(in srgb, var(--text-secondary) 45%, var(--bg-main));
-  --scrollbar-thumb-hover: color-mix(in srgb, var(--text-blue) 45%, var(--text-secondary));
-}
-
-/* ── Theme: nvis (Night Vision Imaging System – MIL-L-85762) ── */
-/* Low-luminance deep-red palette to minimise NVG bleed.         */
-/* Spectral output shifts toward 625-780 nm (red / near-IR),     */
-/* replacing all green, blue, and amber hues with dim red tones. */
-/* Full MIL-L-85762 certification requires photometric testing   */
-/* on physical display hardware.                                  */
-.hmi-shell[data-theme='nvis'] {
-  --bg-main: #0a0000;
-  --bg-bar: #060000;
-  --bg-btn: #180500;
-  --border: #3d1500;
-  --text-primary: #cc2200;
-  --text-secondary: #7a1800;
-  --text-blue: #aa2200;
-  --text-green: #8b1a00;
-  --status-bg: rgba(100, 20, 0, 0.3);
-  --status-border: rgba(150, 30, 0, 0.5);
-  --status-color: #8b1a00;
-  --status-ok-bg: rgba(100, 20, 0, 0.2);
-  --status-ok-border: rgba(120, 30, 0, 0.4);
-  --status-warning-color: #8b3300;
-  --status-warning-bg: rgba(80, 30, 0, 0.25);
-  --status-warning-border: rgba(100, 40, 0, 0.5);
-  --status-critical-color: #8b0000;
-  --status-critical-bg: rgba(80, 0, 0, 0.25);
-  --status-critical-border: rgba(100, 0, 0, 0.5);
-  --btn-active-bg: rgba(150, 30, 0, 0.15);
-  --btn-active-border: #aa2200;
-  --active-border: rgba(120, 25, 0, 0.5);
-  --active-name-bg: rgba(80, 15, 0, 0.3);
-  --active-name-border: rgba(120, 25, 0, 0.5);
-  --active-text: #8b1a00;
-  --transaction-modified-border: #7a3300;
-  --transaction-modified-bg: #1a0800;
-  --transaction-modified-text: #cc5500;
-  --notification-normal-bg: var(--bg-bar);
-  --notification-normal-border: var(--border);
-  --notification-normal-text: var(--text-primary);
-  --notification-warning-bg: #1a0800;
-  --notification-warning-border: #7a3300;
-  --notification-warning-text: #cc5500;
-  --notification-success-bg: #0d0500;
-  --notification-success-border: #5a1a00;
-  --notification-success-text: #8b3300;
-  --notification-error-bg: #1a0000;
-  --notification-error-border: #6b0000;
-  --notification-error-text: #cc0000;
-  --scrollbar-track: #060000;
-  --scrollbar-thumb: #3d1500;
-  --scrollbar-thumb-hover: #5a2000;
-}
-
-/* ── Shell ──────────────────────────────────────────────── */
-.hmi-shell {
-  display: grid;
-  grid-template-rows: 3.5rem auto 1fr 4.5rem;
-  width: 100%;
-  height: 100%;
-  background: var(--bg-main);
-  color: var(--text-primary);
-  border: 1px solid var(--border);
-  border-radius: 0.5rem;
-  overflow: hidden;
-  transition: background 0.25s, color 0.25s, border-color 0.25s;
-}
-
-/* ── Bars ───────────────────────────────────────────────── */
-.bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 1rem;
-  background: var(--bg-bar);
-  border-bottom: 1px solid var(--border);
-  font-weight: 700;
-  font-size: 1rem;
-  letter-spacing: 0.03em;
-  transition: background 0.25s, border-color 0.25s;
-}
-
-.top-left {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.top-right {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-}
-
-.notification-bar {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  min-height: 2rem;
-  padding: 0.25rem 0.85rem;
-  border-bottom: 1px solid var(--notification-normal-border);
-  background: var(--notification-normal-bg);
-  color: var(--notification-normal-text);
-  font-size: 1rem;
-  line-height: 1.15;
-  cursor: pointer;
-  transition: background 0.2s, border-color 0.2s, color 0.2s;
-}
-
-.notification-icon {
-  flex-shrink: 0;
-  width: 1rem;
-  height: 1rem;
-}
-
-.notification-message {
-  min-width: 0;
-  flex: 1 1 auto;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.notification-count {
-  flex-shrink: 0;
-  font-size: 1rem;
-  font-weight: 800;
-  letter-spacing: 0.02em;
-  padding: 0.12rem 0.35rem;
-  border-radius: 999px;
-  border: 1px solid currentColor;
-  opacity: 0.85;
-}
-
-.notification-bar--menu {
-  background: var(--notification-normal-bg);
-  border-bottom-color: var(--notification-normal-border);
-  color: var(--text-secondary);
-}
-
-.notification-bar--normal {
-  background: var(--notification-normal-bg);
-  border-bottom-color: var(--notification-normal-border);
-  color: var(--notification-normal-text);
-}
-
-.notification-bar--warning {
-  background: var(--notification-warning-bg);
-  border-bottom-color: var(--notification-warning-border);
-  color: var(--notification-warning-text);
-}
-
-.notification-bar--success {
-  background: var(--notification-success-bg);
-  border-bottom-color: var(--notification-success-border);
-  color: var(--notification-success-text);
-}
-
-.notification-bar--error {
-  background: var(--notification-error-bg);
-  border-bottom-color: var(--notification-error-border);
-  color: var(--notification-error-text);
-}
-
-/* ── Bottom tab bar ─────────────────────────────────────── */
-.bottom-bar {
-  border-bottom: 0;
-  border-top: 1px solid var(--border);
-  padding: 0;
-  gap: 0;
-  align-items: stretch;
-  justify-content: space-around;
-}
-
-.tab-button {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.2rem;
-  padding: 0.35rem 0.25rem;
-  border: none;
-  border-left: 1px solid var(--border);
-  border-radius: 0;
-  background: transparent;
-  color: var(--text-secondary);
-  font-size: 1rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  touch-action: manipulation;
-  cursor: pointer;
-  transition: background 0.12s, color 0.12s, border-color 0.12s;
-}
-
-.tab-button:first-child {
-  border-left: none;
-}
-
-.tab-button--back {
-  flex: 0.333333;
-}
-
-.tab-button:disabled {
-  color: var(--text-secondary);
-  opacity: 0.45;
-  cursor: pointer;
-}
-
-.tab-button:disabled:active {
-  background: transparent;
-}
-
-.tab-button:active {
-  background: var(--btn-active-bg);
-}
-
-.tab-button--active {
-  color: var(--text-blue);
-  background: var(--btn-active-bg);
-  border-top: 2px solid var(--btn-active-border);
-}
-
-.tab-icon {
-  width: 1.5rem;
-  height: 1.5rem;
-  flex-shrink: 0;
-}
-
-.tab-label {
-  font-size: 1rem;
-}
-
-/* ── Content ────────────────────────────────────────────── */
-.content {
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-  align-items: center;
-  justify-content: flex-start;
-  padding: 0.75rem;
-  min-height: 0;
-  overflow-x: hidden;
-  overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
-}
-
-.content::-webkit-scrollbar {
-  width: 0.6rem;
-}
-
-.content::-webkit-scrollbar-track {
-  background: var(--scrollbar-track);
-  border-radius: 999px;
-}
-
-.content::-webkit-scrollbar-thumb {
-  background: var(--scrollbar-thumb);
-  border-radius: 999px;
-  border: 2px solid var(--scrollbar-track);
-}
-
-.content::-webkit-scrollbar-thumb:hover {
-  background: var(--scrollbar-thumb-hover);
-}
-
 /* ── Buttons ────────────────────────────────────────────── */
 button {
   border: 1px solid var(--border);
@@ -714,25 +320,12 @@ button:active {
 }
 
 @media (max-width: 399px) {
-  .notification-bar {
-    line-height: 1.12;
-    padding-top: 0.2rem;
-    padding-bottom: 0.2rem;
-  }
-
   .widget-grid > * {
     flex: 0 0 calc(50% - 0.25rem);
   }
 
   .settings-widget {
     width: calc((100% - 0.5rem) / 2);
-  }
-}
-
-@media (max-width: 600px), (max-height: 600px) {
-  .hmi-shell {
-    border-radius: 0;
-    border: none;
   }
 }
 </style>
