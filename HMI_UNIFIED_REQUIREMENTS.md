@@ -1,7 +1,7 @@
 # Unified HMI Requirements Specification - Tactical Radio
 
-Version: 1.0
-Date: 2026-04-28
+Version: 1.1
+Date: 2026-04-30
 
 ## 1. Scope
 
@@ -205,6 +205,27 @@ The system shall display encryption state using unambiguous encoding (SECURE/PLA
 - Acceptance: State visible and readable in all operational screens.
 - Rationale: Explicit crypto-state visibility supports correct tactical communication decisions.
 
+#### HMI-REQ-039 - Transmission inhibit during critical radio operations
+
+The system shall automatically inhibit both Tx (outgoing transmission) and Rx (incoming reception) capabilities of the controlled radio apparatus whenever the apparatus asserts a CRITICAL_OPERATION_ACTIVE flag. Operations that require this flag include, but are not limited to:
+
+- Firmware or software update of the radio apparatus.
+- Cryptographic key loading, key fill, or key zeroization operations.
+- Security parameter initialization or change.
+- Hardware self-test routines that affect the RF front-end.
+
+During the inhibit period the system shall:
+
+1. Disable and visually mark as inhibited all operator-accessible Tx and Rx command controls.
+2. Display a persistent notification of at minimum WARNING severity, identifying the active critical operation type and the reason for the communication inhibition.
+3. Provide no operator-level override path that would allow bypassing the inhibit state.
+4. Automatically release the inhibit only when the apparatus clears the CRITICAL_OPERATION_ACTIVE flag and confirms completion of the critical operation.
+5. Record the inhibit start and inhibit end events in the operational audit trail, including the operation type and duration.
+
+- Verification: T + I
+- Acceptance: (a) Tx/Rx commands are blocked for the full duration of any asserted CRITICAL_OPERATION_ACTIVE flag; (b) inhibit notification is visible within 200 ms of flag assertion; (c) no manual bypass path exists; (d) audit records are generated for each inhibit-start and inhibit-end event.
+- Rationale: Transmission or reception during firmware updates, cryptographic key loading, or security parameter changes can corrupt system state, expose key material in transit, or produce inadvertent RF emissions that violate COMSEC and RF management procedures. Automatic inhibition with no operator override is a fundamental safety and security requirement common to tactical radio systems operating under NATO COMSEC procedures and SDR software-update lifecycles.
+
 ### 3.5 Security, Identity, and Auditability
 
 #### HMI-REQ-023 - Authentication and role-based access control
@@ -354,6 +375,8 @@ Where tactical symbols are displayed, symbology shall conform to configured MIL-
 - SPEC-009: ISO 9241-110 - Dialogue Principles
 - SPEC-010: IEC 61511 - Functional Safety for Process Industry Sector
 - SPEC-011: WCAG 2.x AA - Contrast and Accessibility Criteria
+- SPEC-012: STANAG 4691 - NATO Electronic Key Management System (EKMS) Interoperability Standard
+- SPEC-013: SCA v4.1 - Software Communications Architecture (JTRS Joint Program Office)
 
 ## 5. Traceability Matrix (Requirements -> External Specifications and Clauses)
 
@@ -405,6 +428,7 @@ Traceability type legend:
 | HMI-REQ-036 | SPEC-006, SPEC-007 | MIL-L-85762; MIL-STD-3009 | Gap |
 | HMI-REQ-037 | SPEC-002, SPEC-009 | DEF STAN 00-250, section 12; ISO 9241-110 (consistency principles) | Direct |
 | HMI-REQ-038 | SPEC-008 | MIL-STD-2525 (symbol set/profile conformance) | Derived |
+| HMI-REQ-039 | SPEC-001, SPEC-002, SPEC-010, SPEC-012, SPEC-013 | MIL-STD-1472H §5.10.5 (protection for dangerous operations); DEF STAN 00-250 §9.4 (functional segregation of critical operations); IEC 61511 (automatic inhibit as safety function); STANAG 4691 (EKMS key management – RF silence during key fill); SCA v4.1 (RF Standby/RF Mute during SDR software update) | Gap |
 
 ## 6. Notes on Verification Planning
 
@@ -505,6 +529,15 @@ This appendix explains the meaning of the standards and clauses cited in Section
 
 - Keyboard accessibility criteria: Used where all functionality must remain operable without pointer-only interaction.
 - Semantic accessibility criteria: Used where controls need machine-readable names, roles, and states for assistive technology.
+
+### 8.12 SPEC-012 - STANAG 4691
+
+- NATO Electronic Key Management System (EKMS) interoperability standard: Used to support the requirement that radio communication shall be inhibited (no Tx, no Rx) during cryptographic key loading, key fill, and key zeroization operations. COMSEC management procedures consistently require the radio to be in a non-transmitting state during key handling to prevent inadvertent key material exposure or compromise. The reference is used at standard level; specific clause-level mapping requires confirmation against the edition applicable to the target system's COMSEC baseline.
+
+### 8.13 SPEC-013 - SCA v4.1 (Software Communications Architecture)
+
+- SDR device lifecycle and RF management: Used to support the requirement that radio communication shall be inhibited during firmware or waveform software updates. The Software Communications Architecture (SCA), published by the JTRS Joint Program Office (PEO C3T), defines the SDR device and waveform lifecycle, including an RF Standby / RF Mute state that must be asserted during software loading to prevent incomplete or undefined RF behaviour. The reference is used at standard level; specific clause-level mapping requires confirmation against the applicable SCA version and platform-specific OAL implementation.
+
 ## 9. Acronyms
 
 | Acronym | Definition |
@@ -512,23 +545,30 @@ This appendix explains the meaning of the standards and clauses cited in Section
 | ARIA | Accessible Rich Internet Applications |
 | ARP | Aerospace Recommended Practice |
 | CAC | Common Access Card |
+| COMSEC | Communications Security |
 | CSS | Cascading Style Sheets |
 | DEF STAN | Defence Standard |
 | dpi | dots per inch |
+| EKMS | Electronic Key Management System |
+| FILL | Cryptographic Key Fill (loading operation) |
 | GPS | Global Positioning System |
 | HMI | Human-Machine Interface |
 | i18n | Internationalisation |
 | IEC | International Electrotechnical Commission |
 | ISO | International Organization for Standardization |
+| JTRS | Joint Tactical Radio System |
 | MFA | Multi-Factor Authentication |
 | MIL-STD | Military Standard |
 | NATO | North Atlantic Treaty Organization |
 | NVIS | Night Vision Imaging System |
 | NVG | Night Vision Goggle |
+| OAL | Operating Environment Adaptation Layer |
 | PKI | Public Key Infrastructure |
 | RBAC | Role-Based Access Control |
 | REQ | Requirement |
 | RX | Receive |
+| SCA | Software Communications Architecture |
+| SDR | Software Defined Radio |
 | SPEC | Specification (external standard reference, as used in this document) |
 | STANAG | NATO Standardization Agreement |
 | TX | Transmit |
