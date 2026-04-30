@@ -147,16 +147,26 @@ Authentication credentials shall not be hardcoded in source code or service work
 
 ---
 
+### REQ-20 – Transmission Inhibit During Critical Radio Operations  
+**Standard:** MIL-STD-1472H §5.10.5 / DEF STAN 00-250 §9.4 / IEC 61511 / STANAG 4691 / SCA v4.1  
+
+The system shall automatically inhibit both Tx and Rx radio capabilities while the apparatus is executing a critical operation (e.g., firmware/software update, cryptographic key loading or zeroization, security parameter initialization, hardware self-test). During the inhibit period all transmission-related controls shall be disabled with no operator override, a persistent WARNING-or-higher notification shall identify the active operation, and the inhibit shall be released automatically and exclusively when the apparatus signals completion. Each inhibit event shall be recorded in the operational audit trail.
+
+---
+
 ## 3. Acronyms
 
 | Acronym | Definition |
 |---|---|
 | ARIA | Accessible Rich Internet Applications |
 | CAC | Common Access Card |
+| COMSEC | Communications Security |
 | DEF STAN | Defence Standard |
+| EKMS | Electronic Key Management System |
 | GPS | Global Positioning System |
 | HMI | Human-Machine Interface |
 | i18n | Internationalisation |
+| JTRS | Joint Tactical Radio System |
 | MFA | Multi-Factor Authentication |
 | NATO | North Atlantic Treaty Organization |
 | NC | Non-Conformance |
@@ -165,7 +175,11 @@ Authentication credentials shall not be hardcoded in source code or service work
 | PKI | Public Key Infrastructure |
 | RBAC | Role-Based Access Control |
 | REQ | Requirement |
+| RX | Receive |
+| SCA | Software Communications Architecture |
+| SDR | Software Defined Radio |
 | STANAG | NATO Standardization Agreement |
+| TX | Transmit |
 | UI | User Interface |
 | WCAG | Web Content Accessibility Guidelines |
 
@@ -194,3 +208,4 @@ Authentication credentials shall not be hardcoded in source code or service work
 | REQ-17 | DEF STAN 00-250 §9.4 / IEC 61511 | NC-10 – Functional Segregation |
 | REQ-18 | DEF STAN 00-250 §12 | NC-12 – Mixed Localisation |
 | REQ-19 | Security | NC-11 – Hardcoded Credentials |
+| REQ-20 | MIL-STD-1472H §5.10.5 / DEF STAN 00-250 §9.4 / IEC 61511 / STANAG 4691 / SCA v4.1 | NC-13 – Tx/Rx Inhibit During Critical Operations |

@@ -387,6 +387,29 @@ There is no indicator showing encryption state (SECURE / PLAIN).
 
 ---
 
+#### HMI-REQ-039 – Transmission inhibit during critical radio operations
+**Status: NON-COMPLIANT (Gap)**
+
+The application has no mechanism to detect or respond to a CRITICAL_OPERATION_ACTIVE apparatus flag. There is therefore no inhibition of Tx/Rx controls, no notification to the operator, and no audit record for events such as firmware update, key loading, or hardware self-test that require radio silence.
+
+**Severity:** CRITICAL (for any deployment involving firmware update or cryptographic key management procedures)
+
+**Rationale:** Transmission or reception during firmware updates, cryptographic key fill operations, or security parameter changes can corrupt system state, expose key material, or generate inadvertent RF emissions. MIL-STD-1472H §5.10.5 and DEF STAN 00-250 §9.4 require that hazardous operations be protected against inadvertent activation; STANAG 4691 (EKMS) key-management procedures mandate radio silence during key fill; SCA v4.1 defines an RF Standby/RF Mute state that must be asserted during SDR software updates.
+
+**Affected files:** N/A (feature not yet implemented)
+
+**Remediation:**
+1. Add a `CRITICAL_OPERATION_ACTIVE` parameter (boolean) and a `CRITICAL_OPERATION_TYPE` parameter (enum: SW_UPDATE, KEY_FILL, KEY_ZEROIZE, SECURITY_INIT, SELF_TEST) from the apparatus.
+2. When `CRITICAL_OPERATION_ACTIVE == true`:
+   - Disable (grey out with inhibited visual treatment) all Tx and Rx command controls.
+   - Display a persistent WARNING-or-higher notification: "Radio inhibited – [operation type] in progress. Do not attempt transmission."
+   - Block any command path that would initiate a transmission.
+3. Provide no operator-level override for bypassing the inhibit state.
+4. Release the inhibit automatically and only when the apparatus clears `CRITICAL_OPERATION_ACTIVE`.
+5. Emit audit-trail records for inhibit-start and inhibit-end events (timestamp, user, operation type).
+
+---
+
 ### 3.5 Security, Identity, and Auditability (HMI-REQ-023 to HMI-REQ-026)
 
 #### HMI-REQ-023 – Authentication and role-based access control
@@ -749,6 +772,7 @@ The application is an onboard platform HMI for vehicle subsystem management, not
 | HMI-REQ-020 | Functional segregation of controls | ❌ NON-COMPLIANT | MODERATE | SPEC-002, SPEC-010 |
 | HMI-REQ-021 | Transmission inhibit (encryption) | ❌ NON-COMPLIANT | CRITICAL | SPEC-001 |
 | HMI-REQ-022 | Explicit encryption state indicator | ❌ NON-COMPLIANT | SIGNIFICANT | SPEC-001 |
+| HMI-REQ-039 | Transmission inhibit during critical operations | ❌ NON-COMPLIANT | CRITICAL | SPEC-001, SPEC-002, SPEC-010, SPEC-012, SPEC-013 |
 | HMI-REQ-023 | Authentication and RBAC | ❌ NON-COMPLIANT | CRITICAL | SPEC-001, SPEC-002 |
 | HMI-REQ-024 | Session timeout | ❌ NON-COMPLIANT | CRITICAL | SPEC-001, SPEC-002 |
 | HMI-REQ-025 | Access and action audit trail | ❌ NON-COMPLIANT | CRITICAL | SPEC-001, SPEC-002 |
@@ -769,15 +793,16 @@ The application is an onboard platform HMI for vehicle subsystem management, not
 **Summary:**
 - ✅ **Compliant:** 14 requirements
 - ⚠️ **Partial/Gap:** 8 requirements
-- ❌ **Non-Compliant:** 15 requirements
+- ❌ **Non-Compliant:** 16 requirements
 - ➖ **Not Applicable:** 1 requirement
 
 **Blocking requirements for certification** (CRITICAL severity):
 - HMI-REQ-019 (Two-step confirmation)
-- HMI-REQ-021 (Transmission inhibit)
+- HMI-REQ-021 (Transmission inhibit – encryption)
 - HMI-REQ-023 (Authentication and RBAC)
 - HMI-REQ-024 (Session timeout)
 - HMI-REQ-025 (Audit trail)
+- HMI-REQ-039 (Transmission inhibit – critical operations)
 
 ---
 
@@ -792,8 +817,9 @@ The application is an onboard platform HMI for vehicle subsystem management, not
 | HMI-REQ-024 | Implement session timeout with inactivity tracking | P0 | 2–3 days |
 | HMI-REQ-025 | Implement operational audit log (timestamp, user, action, before/after) | P0 | 3–4 days |
 | HMI-REQ-021 | Implement transmission inhibit logic (encrypt validation) | P0 | 2 days |
+| HMI-REQ-039 | Implement Tx/Rx inhibit for CRITICAL_OPERATION_ACTIVE flag (SW update, key fill, self-test) with notification and audit trail | P0 | 2–3 days |
 
-**Subtotal:** ~12–17 days
+**Subtotal:** ~14–20 days
 
 ### Phase 2: Significant (Recommended Before Deployment)
 
@@ -833,7 +859,7 @@ The application is an onboard platform HMI for vehicle subsystem management, not
 
 ### Open Items
 
-1. **Apparatus API completeness:** Several requirements (HMI-REQ-001, HMI-REQ-004, HMI-REQ-015, HMI-REQ-016, HMI-REQ-021, HMI-REQ-022) depend on parameters/commands being exposed by the apparatus (TX_STATE, CONTROL_AUTHORITY, ENCRYPTION_STATE, ENCRYPTION_REQUIRED, etc.). Confirm apparatus firmware supports these parameters before finalizing HMI.
+1. **Apparatus API completeness:** Several requirements (HMI-REQ-001, HMI-REQ-004, HMI-REQ-015, HMI-REQ-016, HMI-REQ-021, HMI-REQ-022, HMI-REQ-039) depend on parameters/commands being exposed by the apparatus (TX_STATE, CONTROL_AUTHORITY, ENCRYPTION_STATE, ENCRYPTION_REQUIRED, CRITICAL_OPERATION_ACTIVE, CRITICAL_OPERATION_TYPE, etc.). Confirm apparatus firmware supports these parameters before finalizing HMI.
 
 2. **Hardware display characteristics:** NVIS and daylight readability compliance require photometric testing on the final display hardware. Ensure device procurement specifies compatibility requirements.
 
@@ -852,13 +878,14 @@ The `hmi-demo` application demonstrates solid compliance with accessibility, nav
 - No audit trail exists.
 - Network resilience and timeout handling are incomplete.
 - Encryption state and system-control indicators are missing.
+- Tx/Rx inhibition during critical operations (firmware update, key loading, self-test) is not implemented.
 
 **For certification and operational deployment, the Phase 1 (Critical) remediation items must be completed first.** Phase 2 items should be addressed before production release. Phase 3 and Phase 4 items represent quality improvements and hardware-specific validations that can be planned for future iterations.
 
 ---
 
 **Document prepared by:** Compliance Assessment Team  
-**Last reviewed:** 2026-04-28  
+**Last reviewed:** 2026-04-30  
 **Next review:** Upon completion of Phase 1 remediation
 | `--status-critical-color` | `#f85149` | `#8b0000` |
 | `--text-blue` | `#58a6ff` | `#aa2200` |
