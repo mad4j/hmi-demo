@@ -23,14 +23,9 @@ export const useTheme = () => {
     _applyTheme(theme.value)
   }
 
-  const cycleTheme = () => {
-    const idx = VALID_THEMES.indexOf(theme.value)
-    setTheme(VALID_THEMES[(idx + 1) % VALID_THEMES.length])
-  }
-
   onMounted(() => {
     _applyTheme(theme.value)
   })
 
-  return { theme, setTheme, cycleTheme }
+  return { theme, setTheme }
 }

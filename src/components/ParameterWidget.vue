@@ -95,15 +95,10 @@ const isClickable = computed(
 
 const handleClick = () => {
   if (!isClickable.value) return
-  if (
-    props.type === 'percentage' ||
-    props.type === 'text' ||
-    props.type === 'password' ||
-    props.type === 'date'
-  ) {
-    emit('edit')
-  } else {
+  if (props.type === 'boolean') {
     emit('toggle')
+  } else {
+    emit('edit')
   }
 }
 </script>

@@ -306,7 +306,7 @@ I parametri dichiarati nel file YAML supportano questi tipi:
 - `boolean`
 - `number`
 - `percentage`
-- `enum`
+- `enum` – seleziona un valore da una lista tramite un picker modale
 - `text`
 - `password`
 - `date`
