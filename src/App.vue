@@ -5,6 +5,7 @@ import HmiNotificationBar from './components/HmiNotificationBar.vue'
 import HmiFooter from './components/HmiFooter.vue'
 import PageParametersView from './components/PageParametersView.vue'
 import ParameterWidget from './components/ParameterWidget.vue'
+import EnumEditorModal from './components/EnumEditorModal.vue'
 import LinkWidget from './components/LinkWidget.vue'
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { menuConfig, findPageById } from './composables/useMenuConfig.js'
@@ -30,7 +31,7 @@ const {
   navigateToPage,
 } = useMenuNavigation()
 
-const { theme, setTheme, cycleTheme } = useTheme()
+const { theme, setTheme } = useTheme()
 
 const {
   parameterValues,
@@ -143,6 +144,7 @@ useCurrentPageParameterRefresh({
 const SETTINGS_PAGE_ID = 'tema'
 const LOGOUT_PAGE_ID = 'logout'
 const logoutPageConfig = findPageById(menuConfig.pages, LOGOUT_PAGE_ID)
+const isEditingTheme = ref(false)
 
 useLogoutPageAction({
   currentPage,
@@ -195,31 +197,25 @@ useLogoutPageAction({
       </div>
     </template>
     <template v-else-if="currentPage.id === SETTINGS_PAGE_ID">
-      <template v-if="currentPage.selectionMode === 'picker'">
-        <div class="widget-grid">
-          <LinkWidget
-            v-for="t in VALID_THEMES"
-            :key="t"
-            :label="t.toUpperCase()"
-            :icon="'theme'"
-            :active="theme === t"
-            @navigate="setTheme(t)"
+      <div class="settings-page">
+        <div class="settings-widget">
+          <ParameterWidget
+            name="Theme"
+            type="enum"
+            :value="theme.toUpperCase()"
+            :options="VALID_THEMES.map((t) => t.toUpperCase())"
+            @edit="isEditingTheme = true"
           />
         </div>
-      </template>
-      <template v-else>
-        <div class="settings-page">
-          <div class="settings-widget">
-            <ParameterWidget
-              name="Theme"
-              type="enum"
-              :value="theme.toUpperCase()"
-              :options="['LIGHT', 'DARK', 'NVIS']"
-              @toggle="cycleTheme"
-            />
-          </div>
-        </div>
-      </template>
+      </div>
+      <EnumEditorModal
+        v-if="isEditingTheme"
+        name="Theme"
+        :value="theme.toUpperCase()"
+        :options="VALID_THEMES.map((t) => t.toUpperCase())"
+        @confirm="(v) => { setTheme(v.toLowerCase()); isEditingTheme = false }"
+        @cancel="isEditingTheme = false"
+      />
     </template>
     <template v-else>
       <PageParametersView

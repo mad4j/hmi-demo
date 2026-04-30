@@ -2,6 +2,7 @@
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import AppIcon from './AppIcon.vue'
 import ParameterWidget from './ParameterWidget.vue'
+import EnumEditorModal from './EnumEditorModal.vue'
 import PercentageEditorModal from './PercentageEditorModal.vue'
 import TextEditorModal from './TextEditorModal.vue'
 import DateEditorModal from './DateEditorModal.vue'
@@ -147,7 +148,7 @@ const cancelEdit = () => {
   editingParamId.value = null
 }
 
-const EDITABLE_TYPES = ['percentage', 'text', 'password', 'date']
+const EDITABLE_TYPES = ['percentage', 'text', 'password', 'date', 'enum']
 
 const confirmAndNext = (newValue) => {
   if (editingParamId.value !== null) {
@@ -166,6 +167,7 @@ const isEditingText = computed(
   () => editingParam.value?.type === 'text' || editingParam.value?.type === 'password',
 )
 const isEditingDate = computed(() => editingParam.value?.type === 'date')
+const isEditingEnum = computed(() => editingParam.value?.type === 'enum')
 
 const handleToggle = (paramId) => {
   emit('toggle-parameter', paramId)
@@ -262,6 +264,15 @@ onUnmounted(() => document.removeEventListener('keydown', handleGlobalKeydown))
       </button>
     </div>
   </div>
+
+  <EnumEditorModal
+    v-if="editingParam && isEditingEnum"
+    :name="editingParam.name"
+    :value="parameterValues[editingParam.id]"
+    :options="editingParam.options ?? []"
+    @confirm="confirmEdit"
+    @cancel="cancelEdit"
+  />
 
   <PercentageEditorModal
     v-if="editingParam && isEditingPercentage"
