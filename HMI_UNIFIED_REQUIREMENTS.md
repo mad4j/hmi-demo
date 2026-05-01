@@ -207,24 +207,17 @@ The system shall display encryption state using unambiguous encoding (SECURE/PLA
 
 #### HMI-REQ-039 - Transmission inhibit during critical radio operations
 
-The system shall automatically inhibit both Tx (outgoing transmission) and Rx (incoming reception) capabilities of the controlled radio apparatus whenever the apparatus asserts a CRITICAL_OPERATION_ACTIVE flag. Operations that require this flag include, but are not limited to:
+The system shall inhibit both Tx (outgoing transmission) and Rx (incoming reception) capabilities of the controlled radio apparatus whenever the apparatus signals that a critical operation requiring radio silence is active. During the inhibit period the system shall:
 
-- Firmware or software update of the radio apparatus.
-- Cryptographic key loading, key fill, or key zeroization operations.
-- Security parameter initialization or change.
-- Hardware self-test routines that affect the RF front-end.
-
-During the inhibit period the system shall:
-
-1. Disable and visually mark as inhibited all operator-accessible Tx and Rx command controls.
-2. Display a persistent notification of at minimum WARNING severity, identifying the active critical operation type and the reason for the communication inhibition.
-3. Provide no operator-level override path that would allow bypassing the inhibit state.
-4. Automatically release the inhibit only when the apparatus clears the CRITICAL_OPERATION_ACTIVE flag and confirms completion of the critical operation.
-5. Record the inhibit start and inhibit end events in the operational audit trail, including the operation type and duration.
+1. Prevent the operator from issuing any Tx or Rx command, with a clear visual indication that the controls are inhibited.
+2. Display a persistent operator notification identifying the nature of the active critical operation and the reason for the communication inhibition.
+3. Provide no operator-level path to override the inhibit state.
+4. Release the inhibit automatically upon apparatus confirmation that the critical operation is complete.
+5. Record the start and end of each inhibit period in the operational audit trail.
 
 - Verification: T + I
-- Acceptance: (a) Tx/Rx commands are blocked for the full duration of any asserted CRITICAL_OPERATION_ACTIVE flag; (b) inhibit notification is visible within 200 ms of flag assertion; (c) no manual bypass path exists; (d) audit records are generated for each inhibit-start and inhibit-end event.
-- Rationale: Transmission or reception during firmware updates, cryptographic key loading, or security parameter changes can corrupt system state, expose key material in transit, or produce inadvertent RF emissions that violate COMSEC and RF management procedures. Automatic inhibition with no operator override is a fundamental safety and security requirement common to tactical radio systems operating under NATO COMSEC procedures and SDR software-update lifecycles.
+- Acceptance: (a) Tx/Rx commands are blocked for the full duration of any active critical operation signaled by the apparatus; (b) the inhibit notification is visible and identifies the active critical operation; (c) no manual bypass path exists; (d) audit records are generated for each inhibit-start and inhibit-end event.
+- Rationale: Transmission or reception during critical radio operations can corrupt system state, expose key material, or produce inadvertent RF emissions that violate COMSEC and RF management procedures. Automatic inhibition with no operator override is a fundamental safety and security requirement for tactical radio systems operating under NATO COMSEC procedures and SDR software-update lifecycles.
 
 ### 3.5 Security, Identity, and Auditability
 
@@ -538,7 +531,40 @@ This appendix explains the meaning of the standards and clauses cited in Section
 
 - SDR device lifecycle and RF management: Used to support the requirement that radio communication shall be inhibited during firmware or waveform software updates. The Software Communications Architecture (SCA), published by the JTRS Joint Program Office (PEO C3T), defines the SDR device and waveform lifecycle, including an RF Standby / RF Mute state that must be asserted during software loading to prevent incomplete or undefined RF behaviour. The reference is used at standard level; specific clause-level mapping requires confirmation against the applicable SCA version and platform-specific OAL implementation.
 
-## 9. Acronyms
+## 9. Implementation Details (Non-Normative)
+
+This section provides possible implementation approaches for selected requirements. These notes are informative and do not alter normative requirement compliance criteria. Alternative approaches may be used provided all acceptance criteria are satisfied.
+
+### 9.1 HMI-REQ-039 - Transmission inhibit during critical radio operations
+
+#### Apparatus signaling
+
+A typical implementation relies on the apparatus exposing a `CRITICAL_OPERATION_ACTIVE` boolean flag and a `CRITICAL_OPERATION_TYPE` parameter (enum or string) that identifies the nature of the active critical operation. The HMI subscribes to changes in these parameters and enters the inhibit state whenever the flag is asserted.
+
+Operations that may assert the flag include, but are not limited to:
+
+- Firmware or software update of the radio apparatus.
+- Cryptographic key loading, key fill, or key zeroization operations.
+- Security parameter initialization or change.
+- Hardware self-test routines that affect the RF front-end.
+
+#### HMI behavior during the inhibit period
+
+- All operator-accessible Tx and Rx command controls are disabled and visually marked as inhibited (e.g., greyed out with a lock or warning badge).
+- A persistent notification of at minimum WARNING severity is displayed within 200 ms of flag assertion. The notification should identify the active operation type (from `CRITICAL_OPERATION_TYPE`) and explain the reason for the communication inhibition.
+- No mechanism (button, gesture, keyboard shortcut, or programmatic path) shall allow the operator to bypass the inhibit state.
+
+#### Inhibit release
+
+The inhibit is automatically released when the apparatus clears the `CRITICAL_OPERATION_ACTIVE` flag and confirms that the critical operation is complete. The HMI should validate the cleared state before re-enabling controls to avoid race conditions.
+
+#### Audit trail
+
+Each inhibit-start and inhibit-end event is recorded in the operational audit trail with at minimum: timestamp, operation type, and inhibit duration (calculated at release time). If user identity is available at the time of the event, it should also be included.
+
+---
+
+## 10. Acronyms
 
 | Acronym | Definition |
 | --- | --- |
