@@ -10,6 +10,10 @@ defineProps({
     type: String,
     default: null,
   },
+  isAtHome: {
+    type: Boolean,
+    default: false,
+  },
   canGoToPreviousPage: {
     type: Boolean,
     default: false,
@@ -32,6 +36,7 @@ defineEmits(['go-back', 'go-home', 'select-item'])
     </button>
     <button
       class="tab-button tab-button--home"
+      :class="{ 'tab-button--active': isAtHome }"
       type="button"
       aria-label="Home"
       @click="$emit('go-home')"

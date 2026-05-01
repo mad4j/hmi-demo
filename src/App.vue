@@ -238,6 +238,7 @@ useLogoutPageAction({
       <HmiFooter
         :level1-items="level1Items"
         :active-level1-id="activeLevel1Id"
+        :is-at-home="isAtHome"
         :can-go-to-previous-page="canGoToPreviousPage"
         @go-back="goToPreviousPage"
         @go-home="goHome"
