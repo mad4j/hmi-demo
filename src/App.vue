@@ -7,7 +7,7 @@ import PageParametersView from './components/PageParametersView.vue'
 import ParameterWidget from './components/ParameterWidget.vue'
 import EnumEditorModal from './components/EnumEditorModal.vue'
 import LinkWidget from './components/LinkWidget.vue'
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watchEffect } from 'vue'
 import { menuConfig, findPageById } from './composables/useMenuConfig.js'
 import { applicationConfig } from './composables/useApplicationConfig.js'
 import { useMenuNavigation } from './composables/useMenuNavigation.js'
@@ -134,6 +134,28 @@ const visibleCurrentSubmenus = computed(() =>
   (currentPage.value?.submenus ?? []).filter((item) => item.visibility !== 'hidden'),
 )
 
+const visibleHomePages = computed(() =>
+  (applicationConfig.pages ?? []).filter((item) => item.visibility !== 'hidden'),
+)
+
+const autoOpenedHomePageId = computed(() =>
+  visibleHomePages.value.length === 1 ? visibleHomePages.value[0]?.id ?? null : null,
+)
+
+const isHomeTabActive = computed(() =>
+  isAtHome.value ||
+  (autoOpenedHomePageId.value !== null && currentPage.value?.id === autoOpenedHomePageId.value),
+)
+
+const activeLevel1IdForFooter = computed(() =>
+  isHomeTabActive.value ? null : activeLevel1Id.value,
+)
+
+watchEffect(() => {
+  if (!isAtHome.value || !autoOpenedHomePageId.value) return
+  navigateToPage(autoOpenedHomePageId.value)
+})
+
 useCurrentPageParameterRefresh({
   currentPage,
   pageParameters,
@@ -177,7 +199,7 @@ useLogoutPageAction({
     <template v-if="isAtHome">
       <div class="widget-grid">
         <LinkWidget
-          v-for="item in applicationConfig.pages"
+          v-for="item in visibleHomePages"
           :key="item.id"
           :label="item.label"
           :icon="item.icon"
@@ -237,8 +259,8 @@ useLogoutPageAction({
     <template #footer>
       <HmiFooter
         :level1-items="level1Items"
-        :active-level1-id="activeLevel1Id"
-        :is-at-home="isAtHome"
+        :active-level1-id="activeLevel1IdForFooter"
+        :is-at-home="isHomeTabActive"
         :can-go-to-previous-page="canGoToPreviousPage"
         @go-back="goToPreviousPage"
         @go-home="goHome"
