@@ -11,7 +11,6 @@ This document defines a single, consistent, and verifiable set of HMI requiremen
 
 - Requirement IDs use format HMI-REQ-XXX.
 - "SHALL" indicates mandatory behavior.
-- Unless otherwise specified, all pixel-based dimensions are referenced at 96 dpi (CSS pixel grid).
 - Verification methods:
   - Inspection (I)
   - Analysis (A)
@@ -153,7 +152,7 @@ Critical alerts SHALL require explicit operator acknowledgement before dismissal
 - Acceptance: No auto-dismiss permitted for CRITICAL severity.
 - Rationale: Mandatory acknowledgment ensures critical events are consciously assessed before continuation.
 
-#### HMI-REQ-008 - Multimodal transmission-start feedback !!!TBV!!!
+#### HMI-REQ-008 - Multimodal transmission-start feedback !!!TBV
 
 The system SHALL provide at least two feedback modalities when transmission starts (e.g., visual and audible/haptic where available).
 
@@ -219,6 +218,14 @@ In case of multi-channel radio equipments, the system SHALL permit channel switc
 - Acceptance: >= 95% users complete channel switch <= 3 s.
 - Rationale: Reduced interaction steps improve operational tempo and reduce mis-selections.
 
+#### HMI-REQ-050 - Active waveform switch capability and interaction budget
+
+The system SHALL permit switching the active waveform through an explicit operator workflow that is reachable within a maximum of 3 navigation levels and completable in no more than 3 discrete user actions from the waveform management entry point.
+
+- Verification: UT + T
+- Acceptance: >= 95% users complete waveform switch <= 10 s in nominal conditions; waveform switch progress is shown within 200 ms of command acceptance; the persistent active waveform indicator (HMI-REQ-047) updates <= 500 ms after apparatus confirmation.
+- Rationale: Operators must be able to intentionally change waveform under mission tempo while preserving control, predictability, and immediate state awareness.
+
 #### HMI-REQ-016 - Transmission initiation simplicity
 
 The system SHALL permit transmission initiation through a single operator action.
@@ -264,7 +271,7 @@ Command/write controls SHALL be physically or logically segregated from monitori
 - Acceptance: Critical actions are not colocated at equivalent prominence with passive monitoring controls.
 - Rationale: Functional separation lowers inadvertent activation risk and supports defense-in-depth.
 
-#### HMI-REQ-021 - Transmission inhibit when encryption required !!!TBV!!!
+#### HMI-REQ-021 - Transmission inhibit when encryption required !!!TBV
 
 The system SHALL inhibit transmission whenever mission policy requires encryption and encryption is not active.
 
@@ -272,7 +279,7 @@ The system SHALL inhibit transmission whenever mission policy requires encryptio
 - Acceptance: TX action blocked in all such states.
 - Rationale: Transmission inhibition enforces communication security policy in constrained scenarios.
 
-#### HMI-REQ-022 - Explicit encryption state indicator !!!RED!!!
+#### HMI-REQ-022 - Explicit encryption state indicator !!!RED
 
 The system SHALL display encryption state using unambiguous encoding (SECURE/PLAIN) continuously during operation.
 
@@ -294,6 +301,38 @@ The system SHALL inhibit both Tx (outgoing transmission) and Rx (incoming recept
 - Acceptance: (a) Tx/Rx commands are blocked for the full duration of any active critical operation signaled by the apparatus; (b) the inhibit notification is visible and identifies the active critical operation; (c) no manual bypass path exists; (d) audit records are generated for each inhibit-start and inhibit-end event.
 - Rationale: Transmission or reception during critical radio operations can corrupt system state, expose key material, or produce inadvertent RF emissions that violate COMSEC and RF management procedures. Automatic inhibition with no operator override is a fundamental safety and security requirement for tactical radio systems operating under NATO COMSEC procedures and SDR software-update lifecycles.
 
+#### HMI-REQ-051 - Waveform deinstantiation precondition for administrative operations
+
+For administrative operations that modify executable radio software state (including, but not limited to, firmware update, platform software update, waveform software load/update/remove), the system SHALL enforce waveform deinstantiation (no active waveform instance) before operation start, consistent with SCA lifecycle constraints.
+
+During this precondition the system SHALL:
+
+1. Block operation start if any waveform is still instantiated, with a clear operator message indicating required deinstantiation.
+2. Provide an explicit guided action to deinstantiate the active waveform when the operator has sufficient privileges.
+3. Keep Tx/Rx inhibited for the entire administrative operation lifecycle, from pre-check start to completion acknowledgment.
+4. Prevent operator override of the deinstantiation precondition.
+5. Record in the audit trail: operation type, precondition check result, deinstantiation timestamp, operation start/end timestamps, and outcome.
+
+- Verification: T + I
+- Acceptance: (a) administrative operation dispatch is rejected whenever an active waveform instance exists; (b) operation dispatch succeeds only after confirmed deinstantiation; (c) Tx/Rx remain inhibited throughout the operation; (d) audit entries are generated for each operation with all mandatory fields.
+- Rationale: Enforcing waveform deinstantiation prior to software-administration activities prevents undefined runtime behavior, RF emissions in inconsistent states, and lifecycle violations under SCA-governed SDR operation.
+
+#### HMI-REQ-052 - Waveform preset lifecycle management
+
+The system SHALL provide managed lifecycle operations for waveform presets, including create, validate, save, load/apply, rename, duplicate, delete, import, and export, under role-based authorization.
+
+The preset workflow SHALL:
+
+1. Use draft semantics for editable preset data, with explicit Submit and Reset actions consistent with HMI-REQ-017.
+2. Validate preset schema and mission policy constraints before save or apply, returning field-level errors for invalid data.
+3. Require explicit confirmation before deleting a preset or applying a preset that changes security-relevant parameters.
+4. Clearly indicate whether the running configuration exactly matches a saved preset or contains unsaved changes, consistent with HMI-REQ-048.
+5. Record all preset lifecycle operations in the audit trail, including actor, target preset identifier, operation type, and outcome.
+
+- Verification: T + I + UT
+- Acceptance: (a) invalid presets cannot be saved or applied; (b) applying a valid preset updates apparatus parameters through the bidirectional contract defined in HMI-REQ-049 and reports completion outcome; (c) preset state indicator updates <= 500 ms after apply completion; (d) authorized users can complete create-save-apply workflow <= 20 s in nominal conditions.
+- Rationale: Structured waveform preset management reduces setup time, improves repeatability between missions, and limits configuration errors for complex waveform parameter sets.
+
 ### 3.5 Security, Identity, and Auditability
 
 #### HMI-REQ-023 - Authentication and role-based access control
@@ -312,7 +351,7 @@ The system SHALL enforce configurable inactivity timeout with automatic session 
 - Acceptance: Session closes after configured inactivity threshold.
 - Rationale: Session timeout reduces unauthorized use after operator absence.
 
-#### HMI-REQ-025 - Access and action audit trail !!!TBV!!!
+#### HMI-REQ-025 - Access and action audit trail !!!TBV
 
 The system SHALL record authentication events, command executions, and parameter changes with timestamp, user identity, target, previous value, and new value where applicable.
 
@@ -334,13 +373,13 @@ No production credential or authentication secret SHALL be hardcoded in source f
 
 The communication interface SHALL support the following interaction primitives in both directions:
 
-**HMI → Apparatus (synchronous requests)**
+**HMI → Apparatus** (synchronous requests)
 
 - **Synchronous parameter read**: the HMI issues a read request for one or more apparatus parameters and receives the current value(s) within a bounded response time.
 - **Synchronous parameter update**: the HMI issues a write request to set one or more apparatus parameters and receives a completion acknowledgement (success or error) within a bounded response time.
 - **Synchronous command execution**: the HMI issues a command request (e.g., RESET, KEY_ZEROIZE, WAVEFORM_LOAD) and receives an immediate acceptance response (or error) within a bounded response time; execution progress and final outcome are subsequently delivered via asynchronous notifications.
 
-**Apparatus → HMI (asynchronous notifications)**
+**Apparatus → HMI** (asynchronous notifications)
 
 - **Asynchronous state-change notification**: the apparatus proactively notifies the HMI whenever a relevant system state changes (e.g., communication state, control authority, crypto mode, fault condition) without the HMI having issued a prior read request.
 - **Asynchronous parameter-update notification**: the apparatus proactively notifies the HMI whenever the value of one or more monitored parameters changes, enabling the HMI to keep displayed values current without polling.
@@ -374,7 +413,7 @@ When link to the controlled apparatus is interrupted, all displayed live paramet
 - Acceptance: Stale marking persists through outage and clears only after successful refresh.
 - Rationale: Stale-data indication prevents decisions based on outdated information.
 
-#### HMI-REQ-030 - Essential functionality in degraded mode !!!TBV!!!
+#### HMI-REQ-030 - Essential functionality in degraded mode !!!TBV
 
 Under degraded conditions, the system SHALL preserve essential mission functions defined by operational profile.
 
@@ -382,7 +421,7 @@ Under degraded conditions, the system SHALL preserve essential mission functions
 - Acceptance: Essential function list remains operable in simulated degraded scenarios.
 - Rationale: Degraded-mode continuity preserves mission-critical operability under faults.
 
-#### HMI-REQ-031 - Fallback interaction mode !!!TBV!!!
+#### HMI-REQ-031 - Fallback interaction mode !!!TBV
 
 The system SHALL provide a fallback interaction mode usable when primary display capabilities are reduced or unavailable.
 
@@ -527,6 +566,9 @@ Traceability type legend:
 | HMI-REQ-047 | SPEC-001, SPEC-003, SPEC-013 | MIL-STD-1472H, section 5.2.1 (persistent status presentation); STANAG 4586, section 6.3.2; SCA v4.1 (waveform identity and lifecycle management) | Derived |
 | HMI-REQ-048 | SPEC-001, SPEC-002 | MIL-STD-1472H, section 5.2.1 (persistent status presentation); DEF STAN 00-250, section 6.3 (configuration state visibility) | Derived |
 | HMI-REQ-049 | SPEC-001, SPEC-002, SPEC-003 | MIL-STD-1472H, section 5.2.6 (system responsiveness and feedback); DEF STAN 00-250, section 9.2 (error detection and reporting); STANAG 4586, section 6.3 (data exchange and command interface) | Derived |
+| HMI-REQ-050 | SPEC-001, SPEC-003, SPEC-013 | MIL-STD-1472H, section 5.10 (navigation efficiency and bounded interaction depth); STANAG 4586, section 6.3 (operator command workflow); SCA v4.1 (waveform lifecycle operation and activation flow) | Derived |
+| HMI-REQ-051 | SPEC-001, SPEC-002, SPEC-010, SPEC-013 | MIL-STD-1472H, section 5.10.5 (protection for high-consequence operations); DEF STAN 00-250, section 9.4 (functional segregation and guarded operations); IEC 61511 (enforced precondition/interlock principles); SCA v4.1 (waveform deinstantiation and software lifecycle state model) | Gap |
+| HMI-REQ-052 | SPEC-001, SPEC-002, SPEC-003, SPEC-013 | MIL-STD-1472H, section 5.2.3 and 5.10 (feedback clarity and controllable workflows); DEF STAN 00-250, section 9.2 and 10.3 (transaction integrity and accountability); STANAG 4586, section 6.3 (configuration command exchange); SCA v4.1 (waveform configuration/preset lifecycle context) | Derived |
 
 ## 6. Notes on Verification Planning
 
@@ -534,23 +576,11 @@ Traceability type legend:
 - Environmental and NVIS compliance requires hardware-in-the-loop or laboratory photometric evidence.
 - For certification-oriented use, each requirement should be linked to test cases and objective evidence IDs in a separate verification plan.
 
-## 7. Implementation Guidance (Non-Normative)
-
-This section is informative and does not alter requirement compliance criteria.
-
-- Guidance A - Use a shared application state model for status, authority, and security indicators to keep cross-page behavior consistent.
-- Guidance B - Prefer deterministic interaction patterns for critical operations (explicit confirmations, clear commit points, explicit rollback feedback).
-- Guidance C - Centralize severity semantics, visual tokens, and notification policies to avoid inconsistent operator cues.
-- Guidance D - Apply resilient communication policies (timeouts, bounded retries, stale-data signaling) with explicit operator feedback.
-- Guidance E - Enforce accessibility by design (keyboard-first flows, semantic roles/states/labels, deterministic focus order).
-- Guidance F - Keep theme, contrast, and environmental display controls under a governed token system validated by objective checks.
-- Guidance G - Separate normative requirements from design choices in downstream technical design documents and test procedures.
-
-## 8. Appendix - Traceability Reference Notes (Informative)
+## 7. Appendix - Traceability Reference Notes (Informative)
 
 This appendix explains the meaning of the standards and clauses cited in Section 5. The summaries below are informative only and do not replace the official source documents.
 
-### 8.1 SPEC-001 - MIL-STD-1472H
+### 7.1 SPEC-001 - MIL-STD-1472H
 
 - Section 5.2.1: Focuses on continuous visibility of mission-relevant state. For this specification, it is interpreted as a requirement to keep core status cues (communication state, active channel, global status) persistent across pages, with stable position and coding, and without being hidden by transient overlays. Design implication: these indicators should live in dedicated persistent regions and should update from authoritative real-time state with bounded latency.
 - Section 5.2.2.4: Focuses on discriminability between control categories and information classes. In HMI terms, actionable controls, read-only values, and disabled/unavailable controls must be visually and semantically distinct (shape, iconography, label, state cues), so operators do not confuse what can be changed versus what is informational only.
@@ -566,7 +596,7 @@ This appendix explains the meaning of the standards and clauses cited in Section
 - Section 5.14.3: Focuses on traceability of significant actions/events. Mapping used here: the system should support accountable records for authentication and command-relevant changes with enough context (who, when, what target, previous/new value where applicable) to enable reconstruction and audit.
 - General principles cited without clause-level precision: In Section 5 traceability, some rows reference broader MIL-STD-1472H principles on efficiency, error prevention, state visibility, and display readability where a single narrower clause has not been fixed yet.
 
-### 8.2 SPEC-002 - DEF STAN 00-250
+### 7.2 SPEC-002 - DEF STAN 00-250
 
 - Section 6.3: Addresses operator cueing and alert semantics. In this specification it underpins a deterministic severity model (NORMAL/SUCCESS/WARNING/ERROR/CRITICAL), consistent visual coding, and clear prioritization logic so urgent conditions remain salient under high workload.
 - Section 9.2: Addresses controlled transaction behavior for operator commands. Mapping in this document: stage-then-commit interaction model, explicit Submit/Reset controls, visible pending-change indicators, and rollback/notification behavior when commit fails.
@@ -577,39 +607,39 @@ This appendix explains the meaning of the standards and clauses cited in Section
 - Section 12: Addresses linguistic coherence in operational interfaces. Applied interpretation: one active language profile at runtime, no mixed-language labels/messages within the same context, and consistent terminology for commands, statuses, and alerts.
 - General section 10 reference: Used where the traceability points to the broader security and access-control intent rather than a uniquely identified narrower clause.
 
-### 8.3 SPEC-003 - STANAG 4586
+### 7.3 SPEC-003 - STANAG 4586
 
 - Section 6.3.2: Addresses explicit indication of control authority in multi-actor operations. In this specification it is used to justify continuous display of authority mode (for example LOCAL_OPERATOR, REMOTE_OPERATOR, AUTONOMOUS), with rapid updates on authority transfer to prevent unsafe command assumptions.
 - Section 6.4: Addresses acknowledgement/confirmation discipline for consequential actions and alerts. Mapping used here: high-impact commands require deliberate confirmation flow, and critical conditions require explicit acknowledgement before dismissal so the operator performs conscious assessment.
 - Degraded/contingency operation intent: Used where the traceability refers to continuity of essential functions or fallback operation, but a narrower clause still needs confirmation.
 
-### 8.4 SPEC-004 - ARP4754A
+### 7.4 SPEC-004 - ARP4754A
 
 - Section 5.3: Addresses system-level development considerations for correctness and integrity of information used in operational decisions. In this document, it is referenced to support explicit treatment of stale/invalid data in the HMI: detect loss of freshness, mark affected values, avoid presenting stale data as nominal, and clear stale condition only after confirmed data validity restoration.
 
-### 8.5 SPEC-005 - DO-178C
+### 7.5 SPEC-005 - DO-178C
 
 - Deterministic error-handling objective: Used in traceability where software behavior must remain bounded, predictable, and testable during faults or backend failures.
 - Timing determinism objectives: Used where timeout handling must be explicit and analyzable rather than indefinite or ambiguous.
 - Robust error-recovery objectives: Used where retry and recovery behavior must remain controlled, bounded, and verifiable.
 - Note: In this document the DO-178C references are principle-level and informative unless a more precise software-level objective is allocated in a downstream certification baseline.
 
-### 8.6 SPEC-006 - MIL-L-85762
+### 7.6 SPEC-006 - MIL-L-85762
 
 - NVIS compatibility reference: Used to indicate that the display must limit emissions so as not to interfere with night-vision equipment.
 - No narrower clause is cited here because conformance depends strongly on photometric characteristics of the physical display hardware.
 
-### 8.7 SPEC-007 - MIL-STD-3009
+### 7.7 SPEC-007 - MIL-STD-3009
 
 - NVIS-compatible lighting reference: Used to support software and hardware display behavior suitable for operation with night-vision systems.
 - In this document the reference is used at standard level because final conformity depends on measured luminance and spectral characteristics.
 
-### 8.8 SPEC-008 - MIL-STD-2525
+### 7.8 SPEC-008 - MIL-STD-2525
 
 - Symbol set/profile conformance: Used to indicate that displayed tactical symbols must preserve standard meaning, identity, and consistency across views.
 - In this document the reference is profile-level rather than clause-level because the applicable symbol subset depends on the mission/system profile.
 
-### 8.9 SPEC-009 - ISO 9241-110
+### 7.9 SPEC-009 - ISO 9241-110
 
 - Feedback and responsiveness dialogue principles: Used where the system must provide timely, understandable reaction to operator actions.
 - Self-descriptiveness: Used where interface responses must clearly communicate state and effect of operator actions.
@@ -618,29 +648,29 @@ This appendix explains the meaning of the standards and clauses cited in Section
 - Efficiency of dialogue: Used where the interface must minimize unnecessary steps for frequently performed tasks.
 - Consistency principles: Used where presentation and language must remain coherent across the interface.
 
-### 8.10 SPEC-010 - IEC 61511
+### 7.10 SPEC-010 - IEC 61511
 
 - Separation/protection principles: Used where critical actions must be segregated from routine monitoring functions and protected against inadvertent activation.
 - The reference is principle-based in this document and should be refined further if a formal safety lifecycle allocation is required.
 
-### 8.11 SPEC-011 - WCAG 2.x AA
+### 7.11 SPEC-011 - WCAG 2.x AA
 
 - Keyboard accessibility criteria: Used where all functionality must remain operable without pointer-only interaction.
 - Semantic accessibility criteria: Used where controls need machine-readable names, roles, and states for assistive technology.
 
-### 8.12 SPEC-012 - STANAG 4691
+### 7.12 SPEC-012 - STANAG 4691
 
 - NATO Electronic Key Management System (EKMS) interoperability standard: Used to support the requirement that radio communication SHALL be inhibited (no Tx, no Rx) during cryptographic key loading, key fill, and key zeroization operations. COMSEC management procedures consistently require the radio to be in a non-transmitting state during key handling to prevent inadvertent key material exposure or compromise. The reference is used at standard level; specific clause-level mapping requires confirmation against the edition applicable to the target system's COMSEC baseline.
 
-### 8.13 SPEC-013 - SCA v4.1 (Software Communications Architecture)
+### 7.13 SPEC-013 - SCA v4.1 (Software Communications Architecture)
 
 - SDR device lifecycle and RF management: Used to support the requirement that radio communication SHALL be inhibited during firmware or waveform software updates. The Software Communications Architecture (SCA), published by the JTRS Joint Program Office (PEO C3T), defines the SDR device and waveform lifecycle, including an RF Standby / RF Mute state that must be asserted during software loading to prevent incomplete or undefined RF behaviour. The reference is used at standard level; specific clause-level mapping requires confirmation against the applicable SCA version and platform-specific OAL implementation.
 
-## 9. Implementation Details (Non-Normative)
+## 8. Implementation Details (Non-Normative)
 
 This section provides possible implementation approaches for selected requirements. These notes are informative and do not alter normative requirement compliance criteria. Alternative approaches may be used provided all acceptance criteria are satisfied.
 
-### 9.1 HMI-REQ-039 - Transmission inhibit during critical radio operations
+### 8.1 HMI-REQ-039 - Transmission inhibit during critical radio operations
 
 #### Apparatus signaling
 
@@ -667,7 +697,7 @@ The inhibit is automatically released when the apparatus clears the `CRITICAL_OP
 
 Each inhibit-start and inhibit-end event is recorded in the operational audit trail with at minimum: timestamp, operation type, and inhibit duration (calculated at release time). If user identity is available at the time of the event, it should also be included.
 
-### 9.2 HMI-REQ-019 - Two-step confirmation for high-impact commands
+### 8.2 HMI-REQ-019 - Two-step confirmation for high-impact commands
 
 #### Confirmation interaction pattern
 
@@ -691,7 +721,7 @@ The confirmation dialog SHALL display:
 
 Each two-step confirmation event is recorded in the operational audit trail with at minimum: timestamp, command identifier, outcome (CONFIRMED or CANCELLED/TIMEOUT), and operator identity if available.
 
-### 9.3 HMI-REQ-034 - Contrast ratio minimum
+### 8.3 HMI-REQ-034 - Contrast ratio minimum
 
 #### Background: the WCAG AA 4.5:1 standard
 
@@ -704,13 +734,14 @@ where $L_1$ is the relative luminance of the lighter colour and $L_2$ that of th
 The **AA level** requires a minimum contrast ratio of **4.5:1** for normal text (< 18 pt or < 14 pt bold) and **3:1** for large text (≥ 18 pt or ≥ 14 pt bold) and for non-text UI components (icons, input borders, status indicators). MIL-STD-1472H section 5.3.3.3 adds a stricter operational overlay: under degraded lighting or NVG conditions, the effective contrast requirement may be higher due to display luminance reduction.
 
 A contrast ratio of 4.5:1 means the lighter colour is at least 4.5 times more luminous than the darker one. For reference:
+
 - Black (`#000000`) on white (`#FFFFFF`) yields 21:1.
 - A mid-grey (`#767676`) on white yields exactly 4.54:1, passing AA for normal text.
 - A light grey (`#959595`) on white yields approximately 3:1, passing only for large text.
 
 #### Implementation guidance
 
-**1. Design-token governance**
+##### 1. Design-token governance
 
 Define all foreground/background colour pairings through a centrally governed design-token system (e.g., CSS custom properties or a token file). Each token pair SHALL have its contrast ratio recorded as metadata. This prevents ad-hoc colour choices from bypassing the requirement and makes compliance auditable.
 
@@ -722,52 +753,53 @@ Define all foreground/background colour pairings through a centrally governed de
 --color-surface-default:   #ffffff;
 ```
 
-**2. Automated contrast checking in CI**
+##### 2. Automated contrast checking in CI
 
 Integrate a contrast-ratio linting step into the build pipeline. Tools such as `axe-core`, `color-contrast-checker`, or Storybook's accessibility addon can scan rendered components and flag violations before deployment.
 
 - Run contrast checks against all theme variants (light, dark, NVG-safe) because a pair that passes in the light theme may fail in the dark theme or under a dimmed NVG palette.
 - Include status-colour tokens (NORMAL/CAUTION/ALARM) in the check scope; coloured badges and icons must also meet the 3:1 non-text threshold.
 
-**3. Theme-aware verification**
+##### 3. Theme-aware verification
 
 For each supported theme, generate a contrast-matrix report mapping every token pair to its computed ratio. Flag any pair below 4.5:1 (normal text) or 3:1 (large text / non-text) as a build warning, and treat ratios below 3:1 for any category as a build error.
 
-**4. Dynamic content considerations**
+##### 4. Dynamic content considerations
 
 User-generated or apparatus-supplied strings (parameter values, preset names, waveform identifiers) are rendered using design-token foreground/background pairs, so compliance is inherited automatically provided the token pairs are compliant. Avoid inline styles or dynamic colour assignments that could break the token contract.
 
-**5. Verification evidence**
+##### 5. Verification evidence
 
 For formal verification, produce a static contrast audit report (e.g., exported from axe-core or a dedicated tool) covering:
+
 - All text styles defined in the design system.
 - All non-text UI components (status icons, input borders, badges).
 - All theme variants.
 
 This report constitutes the objective evidence for the Inspection + Test verification method required by HMI-REQ-034.
 
-### 9.4 HMI-REQ-016 - Transmission initiation simplicity
+### 8.4 HMI-REQ-016 - Transmission initiation simplicity
 
 #### Background: the external standard and the 150 ms threshold
 
 HMI-REQ-016 traces to **MIL-STD-1472H** (Human Engineering), which establishes general principles of task efficiency, control accessibility, and response-time requirements for operator interfaces in military systems. Although MIL-STD-1472H does not mandate a single hard latency number for PTT (Push-To-Talk) initiation, the 150 ms acceptance criterion is derived from the convergence of three independent evidence bases:
 
-**1. Human reaction-time physiology**
+##### 1. Human reaction-time physiology
 
 Controlled studies of simple auditory/visual reaction time place the average human voluntary response at approximately 150–200 ms for a prepared, expected stimulus. For tactical radio communication — where the operator is already in a mission-active context and is intentionally reaching for the transmit control — the *decision* phase is near zero; the residual motor execution time is 80–130 ms. An end-to-end system latency budget of 150 ms therefore ensures that the system introduces no perceptible additional delay relative to the operator's own physical action time.
 
-**2. Voice intelligibility and conversational protocol**
+##### 2. Voice intelligibility and conversational protocol
 
 ITU-T G.114 (one-way delay) and NATO STANAG 4586 communication quality guidelines establish that delays perceivable as "system lag" degrade conversational turn-taking and may cause operators to repeat transmission start syllables. Psychoacoustic research (e.g., work cited in MIL-HDBK-46855A) identifies approximately 100–200 ms as the perceptibility boundary for feedback delay in audio-motor tasks. Staying at or below 150 ms keeps the system within the imperceptible-delay range for a trained operator.
 
-**3. MIL-STD-1472H section 5.2.6 — display update latency**
+##### 3. MIL-STD-1472H section 5.2.6 — display update latency
 
 MIL-STD-1472H section 5.2.6 recommends that visual feedback for operator actions appear within 100–200 ms to be perceived as causally coupled to the action. The 150 ms criterion positions the system at the midpoint of this range, ensuring that the visual TX-state indicator (HMI-REQ-001) transitions simultaneously with the perceived start of transmission from the operator's perspective.
 
-**Summary of the 150 ms budget decomposition**
+##### Summary of the 150 ms budget decomposition
 
 | Phase | Typical budget |
-|---|---|
+| --- | --- |
 | Input event capture (touch/key debounce) | ≤ 10 ms |
 | HMI event processing and command dispatch | ≤ 20 ms |
 | Communication round-trip to apparatus (local bus / LAN) | ≤ 50 ms |
@@ -777,11 +809,11 @@ MIL-STD-1472H section 5.2.6 recommends that visual feedback for operator actions
 
 #### Implementation guidance
 
-**Single-action constraint**
+##### Single-action constraint
 
 The transmission initiation path SHALL consist of exactly one discrete operator action (e.g., a single button press, a dedicated hardware PTT key, or a single touch on a clearly labelled on-screen control). Multi-step sequences, confirmation dialogs, or navigation steps are prohibited on this path, with the exception of the inhibit conditions mandated by HMI-REQ-039 and HMI-REQ-021.
 
-**Latency measurement and verification**
+##### Latency measurement and verification
 
 End-to-end latency SHALL be measured from the timestamp of the input event (hardware interrupt or touch event) to the timestamp of the first rendered frame showing the TX state indicator active. Tests SHALL be conducted:
 
@@ -791,17 +823,17 @@ End-to-end latency SHALL be measured from the timestamp of the input event (hard
 
 A minimum of 100 samples per test configuration SHALL be collected; the 95th-percentile latency SHALL be ≤ 150 ms.
 
-**Guard against accidental activation**
+##### Guard against accidental activation
 
 Although the path is single-action, the transmit control SHALL be positioned and sized to minimise inadvertent activation (in compliance with HMI-REQ-010 minimum touch-target requirements and HMI-REQ-020 functional segregation). Where the platform supports it, a hardware PTT key with physical travel is preferred over a purely on-screen control for high-tempo operation.
 
-### 9.5 HMI-REQ-011 - Minimum operational font size
+### 8.5 HMI-REQ-011 - Minimum operational font size
 
 #### Background: the external standard and the 16 px value
 
 HMI-REQ-011 requires that operationally relevant text be rendered at a minimum of **16 px at 96 dpi** (the CSS reference pixel grid). The value is derived from the convergence of three independent sources: human visual acuity research, MIL-STD-1472H ergonomic specifications, and web accessibility practice.
 
-**1. Visual acuity and minimum legible character subtended angle**
+##### 1. Visual acuity and minimum legible character subtended angle
 
 The International Commission on Illumination (CIE) and human-factors literature consistently identify a minimum visual angle of approximately **16–20 arc-minutes** for comfortable reading of alphanumeric characters under operational conditions (moderate ambient light, no optical aid). At a typical operator viewing distance of **50 cm** — the midpoint of the 30–70 cm range used in MIL-STD-1472H section 5.3 — the minimum character height resolves as:
 
@@ -819,7 +851,7 @@ This is the absolute physiological minimum. MIL-STD-1472H applies a **safety fac
 
 $$h_\text{operational} \approx 8.8 \times 1.8 \approx 15.8\,\text{px} \approx 16\,\text{px}$$
 
-**2. MIL-STD-1472H section 5.3.3 — character height requirements**
+##### 2. MIL-STD-1472H section 5.3.3 — character height requirements
 
 MIL-STD-1472H section 5.3.3 specifies character height as a function of viewing distance and criticality. For critical alphanumeric information at 50 cm viewing distance, the standard recommends a minimum character height of approximately **3.5–4.5 mm**. At 96 dpi this range maps to:
 
@@ -827,14 +859,14 @@ $$\frac{3.5\,\text{mm}}{0.2646\,\text{mm/px}} \approx 13.2\,\text{px} \quad \tex
 
 The 16 px value sits within this range and is rounded to the nearest even CSS pixel for alignment with font-size conventions in web-based HMI frameworks.
 
-**3. Web accessibility and browser defaults**
+##### 3. Web accessibility and browser defaults
 
 WCAG 2.x and the W3C CSS specification both define the browser default body font size as **16 px** (equivalent to 12 pt at 96 dpi). This value was originally chosen by browser vendors to match the minimum comfortable reading size on screen at typical desktop viewing distances. Using 16 px as the minimum aligns the HMI with the established accessibility baseline and avoids the documented readability degradation associated with sub-16 px font sizes observed in usability studies cited in ISO 9241-303.
 
-**Summary of the 16 px derivation**
+##### Summary of the 16 px derivation
 
 | Source | Derived minimum |
-|---|---|
+| --- | --- |
 | Visual acuity + MIL-STD-1472H operational safety factor | ≈ 15.8 px → **16 px** |
 | MIL-STD-1472H §5.3.3 character height range at 50 cm | 13–17 px → **16 px** (midpoint, rounded) |
 | WCAG / browser accessibility baseline | **16 px** |
@@ -845,7 +877,7 @@ The 16 px minimum applies to all text that is operationally relevant: parameter 
 
 #### Implementation guidance
 
-**CSS token enforcement**
+##### CSS token enforcement
 
 Define a `--font-size-min-operational` token set to `1rem` (= 16 px at browser default scale) and apply it as the baseline for all operational text styles. Avoid absolute pixel sizes smaller than 16 px in any component that renders operational data.
 
@@ -858,11 +890,11 @@ Define a `--font-size-min-operational` token set to `1rem` (= 16 px at browser d
 }
 ```
 
-**Automated verification**
+##### Automated verification
 
 Include a Storybook or axe-core accessibility check that flags any rendered text node with a computed font size below 16 px on components tagged as operational. This check SHALL run in CI for all supported themes and viewport sizes.
 
-**Viewing distance assumption**
+##### Viewing distance assumption
 
 If the target platform specifies a viewing distance other than 50 cm (e.g., a vehicle-mounted display viewed from 70 cm), the minimum font size SHALL be scaled proportionally:
 
@@ -870,7 +902,7 @@ $$h_\text{px}(d) = 16\,\text{px} \times \frac{d}{500\,\text{mm}}$$
 
 For example, at 70 cm: $16 \times 1.4 = 22.4\,\text{px}$ minimum. The platform-specific value SHALL be documented in the deployment configuration and verified against the token definitions before release.
 
-### 9.6 HMI-REQ-036 - NVG/NVIS compatibility mode: colour palette conversion
+### 8.6 HMI-REQ-036 - NVG/NVIS compatibility mode: colour palette conversion
 
 #### Background: the standard and the NVIS constraint
 
@@ -891,7 +923,7 @@ The NVIS Class B filter transmits light in the green-yellow window (~505–560 n
 
 The following process converts a standard sRGB design-token palette into an NVIS-safe green palette.
 
-**Step 1 — Linearise sRGB values**
+##### Step 1 — Linearise sRGB values
 
 For each channel $c \in \{R, G, B\}$ of the original sRGB token (8-bit, 0–255), compute the linear light value:
 
@@ -899,13 +931,13 @@ $$c_\text{lin} = \begin{cases} c_\text{sRGB}/12.92 & \text{if } c_\text{sRGB} \l
 
 where $c_\text{sRGB}$ is the normalised value in $[0,1]$.
 
-**Step 2 — Compute relative luminance**
+##### Step 2 — Compute relative luminance
 
 $$Y = 0.2126\,R_\text{lin} + 0.7152\,G_\text{lin} + 0.0722\,B_\text{lin}$$
 
 This gives the CIE 1931 luminance $Y \in [0,1]$ of the original colour, independent of hue.
 
-**Step 3 — Map luminance to the NVIS green channel**
+##### Step 3 — Map luminance to the NVIS green channel
 
 Discard hue and saturation entirely. Set the NVIS output colour to a single green hue (e.g., `#00FF00` in sRGB, or a display-specific narrow-band green if the panel supports it) and scale its intensity linearly by the original luminance $Y$:
 
@@ -915,13 +947,13 @@ where $G_\text{max}$ is the maximum green channel value that keeps the display w
 
 The NVIS output colour for every token is therefore `rgb(0, G_NVIS, 0)`.
 
-**Step 4 — Apply a global luminance scale factor**
+##### Step 4 — Apply a global luminance scale factor
 
 To ensure the maximum display white stays within the MIL-STD-3009 NVIS radiance budget, multiply all $G_\text{NVIS}$ values by a panel-specific scale factor $k \in (0, 1]$ determined during hardware calibration:
 
 $$G_\text{NVIS,\,final} = \text{round}(k \times G_\text{NVIS})$$
 
-**Step 5 — Verify contrast ratios in the NVIS palette**
+##### Step 5 — Verify contrast ratios in the NVIS palette
 
 After conversion, re-run the WCAG contrast check (see HMI-REQ-034 and section 9.3) on all token pairs using the NVIS green values. Because the conversion is luminance-preserving, contrast ratios are maintained *relative to each other*, but the absolute luminance is reduced. Confirm that at minimum the 3:1 floor is satisfied for all critical text and status elements under NVIS viewing conditions.
 
@@ -956,7 +988,7 @@ The theme is activated by toggling the `data-theme` attribute on the root elemen
 
 ---
 
-## 10. Acronyms
+## 9. Acronyms
 
 | Acronym | Definition |
 | --- | --- |
