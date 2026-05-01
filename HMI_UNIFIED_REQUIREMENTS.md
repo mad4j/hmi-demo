@@ -209,12 +209,10 @@ The system shall display encryption state using unambiguous encoding (SECURE/PLA
 
 The system shall inhibit both Tx (outgoing transmission) and Rx (incoming reception) capabilities of the controlled radio apparatus whenever the apparatus signals that a critical operation requiring radio silence is active.
 
-For the purposes of this requirement, **critical operations** include at minimum the following security function configuration operations:
+For the purposes of this requirement, **critical operations** include at minimum:
 
 - **Key loading / key fill** – loading cryptographic key material into the apparatus via direct fill device or over-the-air transfer.
-- **Key zeroization** – erasure of all cryptographic key material from the apparatus.
-- **COMSEC parameter initialization or modification** – initial configuration or change of encryption parameters, algorithm selection, or authentication credentials.
-- **Security profile activation** – activation or switching of a stored COMSEC/TRANSEC profile that governs the encryption and transmission characteristics of the apparatus.
+- **Emergency zeroization** – operator-initiated erasure of all cryptographic key material from the apparatus.
 
 > **Note:** Maintenance operations (e.g., firmware update, hardware self-test) and additional non-maintenance critical operations are outside the scope of this requirement and shall be addressed by separate dedicated requirements. See Section 9.1 for a non-normative discussion of candidate operations.
 
@@ -227,7 +225,7 @@ During the inhibit period the system shall:
 5. Record the start and end of each inhibit period in the operational audit trail.
 
 - Verification: T + I
-- Acceptance: (a) Tx/Rx commands are blocked for the full duration of any active critical operation signaled by the apparatus; (b) the inhibit notification is visible and identifies the active critical operation type; (c) no manual bypass path exists; (d) each of the minimum-set security function configuration operations (key loading/fill, key zeroization, COMSEC parameter initialization, security profile activation) is demonstrably handled as a critical operation; (e) audit records are generated for each inhibit-start and inhibit-end event.
+- Acceptance: (a) Tx/Rx commands are blocked for the full duration of any active critical operation signaled by the apparatus; (b) the inhibit notification is visible and identifies the active critical operation type; (c) no manual bypass path exists; (d) both minimum-set operations (key loading/fill and emergency zeroization) are demonstrably handled as critical operations; (e) audit records are generated for each inhibit-start and inhibit-end event.
 - Rationale: Transmission or reception during security function configuration can corrupt cryptographic state, expose key material, or produce inadvertent RF emissions that violate COMSEC and RF management procedures. Automatic inhibition with no operator override is a fundamental safety and security requirement for tactical radio systems operating under NATO COMSEC/EKMS procedures. The explicit enumeration of the minimum operation set ensures that the most security-sensitive activities are always protected regardless of apparatus implementation variance.
 
 ### 3.5 Security, Identity, and Auditability
@@ -559,9 +557,7 @@ The following security function configuration operations are the minimum set tha
 | Operation | Typical `CRITICAL_OPERATION_TYPE` value | Notes |
 |---|---|---|
 | Key loading / key fill | `KEY_FILL` | Covers both direct-fill device and OTAR procedures. |
-| Key zeroization | `KEY_ZEROIZE` | Covers partial and full key erasure. |
-| COMSEC parameter initialization or modification | `COMSEC_PARAM_INIT` | Encryption algorithm selection, authentication credential update. |
-| Security profile activation | `SEC_PROFILE_ACTIVATE` | Switching active COMSEC/TRANSEC operational profile. |
+| Emergency zeroization | `KEY_ZEROIZE_ALL` | Operator-initiated erasure of all cryptographic key material. |
 
 ##### Maintenance operations (separate requirement scope)
 
@@ -577,7 +573,9 @@ The following critical operations are not maintenance activities but have been i
 
 | Candidate operation | Rationale for separation |
 |---|---|
-| Emergency zeroization (ZEROIZE ALL) | Operator-initiated destruction of all key material; distinct workflow, access level, and confirmation procedure from key loading. |
+| Key zeroization (partial) | Partial erasure of individual key slots; distinct procedure and audit requirements from full emergency zeroization. |
+| COMSEC parameter initialization or modification | Encryption algorithm selection, authentication credential update; operational impact may differ from key loading. |
+| Security profile activation | Switching active COMSEC/TRANSEC operational profile; may not always require full RF silence. |
 | Over-the-air rekeying (OTAR) | Automated or controlled re-keying of network participants; requires additional signaling and acknowledgement semantics. |
 | Crypto net synchronization / time-of-day (TOD) load | GPS- or network-disciplined time reference provisioning required for crypto validity; may be fully automated or operator-initiated. |
 | Frequency hopping set (TRANSEC) provisioning | Loading or activation of frequency-hopping patterns or TRANSEC keys; security-sensitive but distinct from voice/data encryption key fill. |
