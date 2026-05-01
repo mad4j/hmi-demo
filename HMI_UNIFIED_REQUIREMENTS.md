@@ -207,7 +207,18 @@ The system shall display encryption state using unambiguous encoding (SECURE/PLA
 
 #### HMI-REQ-039 - Transmission inhibit during critical radio operations
 
-The system shall inhibit both Tx (outgoing transmission) and Rx (incoming reception) capabilities of the controlled radio apparatus whenever the apparatus signals that a critical operation requiring radio silence is active. During the inhibit period the system shall:
+The system shall inhibit both Tx (outgoing transmission) and Rx (incoming reception) capabilities of the controlled radio apparatus whenever the apparatus signals that a critical operation requiring radio silence is active.
+
+For the purposes of this requirement, **critical operations** include at minimum the following security function configuration operations:
+
+- **Key loading / key fill** – loading cryptographic key material into the apparatus via direct fill device or over-the-air transfer.
+- **Key zeroization** – erasure of all cryptographic key material from the apparatus.
+- **COMSEC parameter initialization or modification** – initial configuration or change of encryption parameters, algorithm selection, or authentication credentials.
+- **Security profile activation** – activation or switching of a stored COMSEC/TRANSEC profile that governs the encryption and transmission characteristics of the apparatus.
+
+> **Note:** Maintenance operations (e.g., firmware update, hardware self-test) and additional non-maintenance critical operations are outside the scope of this requirement and shall be addressed by separate dedicated requirements. See Section 9.1 for a non-normative discussion of candidate operations.
+
+During the inhibit period the system shall:
 
 1. Prevent the operator from issuing any Tx or Rx command, with a clear visual indication that the controls are inhibited.
 2. Display a persistent operator notification identifying the nature of the active critical operation and the reason for the communication inhibition.
@@ -216,8 +227,8 @@ The system shall inhibit both Tx (outgoing transmission) and Rx (incoming recept
 5. Record the start and end of each inhibit period in the operational audit trail.
 
 - Verification: T + I
-- Acceptance: (a) Tx/Rx commands are blocked for the full duration of any active critical operation signaled by the apparatus; (b) the inhibit notification is visible and identifies the active critical operation; (c) no manual bypass path exists; (d) audit records are generated for each inhibit-start and inhibit-end event.
-- Rationale: Transmission or reception during critical radio operations can corrupt system state, expose key material, or produce inadvertent RF emissions that violate COMSEC and RF management procedures. Automatic inhibition with no operator override is a fundamental safety and security requirement for tactical radio systems operating under NATO COMSEC procedures and SDR software-update lifecycles.
+- Acceptance: (a) Tx/Rx commands are blocked for the full duration of any active critical operation signaled by the apparatus; (b) the inhibit notification is visible and identifies the active critical operation type; (c) no manual bypass path exists; (d) each of the minimum-set security function configuration operations (key loading/fill, key zeroization, COMSEC parameter initialization, security profile activation) is demonstrably handled as a critical operation; (e) audit records are generated for each inhibit-start and inhibit-end event.
+- Rationale: Transmission or reception during security function configuration can corrupt cryptographic state, expose key material, or produce inadvertent RF emissions that violate COMSEC and RF management procedures. Automatic inhibition with no operator override is a fundamental safety and security requirement for tactical radio systems operating under NATO COMSEC/EKMS procedures. The explicit enumeration of the minimum operation set ensures that the most security-sensitive activities are always protected regardless of apparatus implementation variance.
 
 ### 3.5 Security, Identity, and Auditability
 
@@ -541,12 +552,38 @@ This section provides possible implementation approaches for selected requiremen
 
 A typical implementation relies on the apparatus exposing a `CRITICAL_OPERATION_ACTIVE` boolean flag and a `CRITICAL_OPERATION_TYPE` parameter (enum or string) that identifies the nature of the active critical operation. The HMI subscribes to changes in these parameters and enters the inhibit state whenever the flag is asserted.
 
-Operations that may assert the flag include, but are not limited to:
+##### Minimum guaranteed set (normative scope of HMI-REQ-039)
+
+The following security function configuration operations are the minimum set that the apparatus interface MUST be able to signal and that the HMI MUST handle as critical operations:
+
+| Operation | Typical `CRITICAL_OPERATION_TYPE` value | Notes |
+|---|---|---|
+| Key loading / key fill | `KEY_FILL` | Covers both direct-fill device and OTAR procedures. |
+| Key zeroization | `KEY_ZEROIZE` | Covers partial and full key erasure. |
+| COMSEC parameter initialization or modification | `COMSEC_PARAM_INIT` | Encryption algorithm selection, authentication credential update. |
+| Security profile activation | `SEC_PROFILE_ACTIVATE` | Switching active COMSEC/TRANSEC operational profile. |
+
+##### Maintenance operations (separate requirement scope)
+
+The following operations are out of scope for HMI-REQ-039 and shall be addressed by a dedicated maintenance-mode requirement:
 
 - Firmware or software update of the radio apparatus.
-- Cryptographic key loading, key fill, or key zeroization operations.
-- Security parameter initialization or change.
 - Hardware self-test routines that affect the RF front-end.
+- Factory calibration or hardware diagnostic procedures.
+
+##### Suggested additional non-maintenance critical operations (candidate scope for a future requirement)
+
+The following critical operations are not maintenance activities but have been intentionally excluded from the minimum set of HMI-REQ-039 to allow for a separate, focused requirement. They are listed here for reference and to guide the drafting of that future requirement:
+
+| Candidate operation | Rationale for separation |
+|---|---|
+| Emergency zeroization (ZEROIZE ALL) | Operator-initiated destruction of all key material; distinct workflow, access level, and confirmation procedure from key loading. |
+| Over-the-air rekeying (OTAR) | Automated or controlled re-keying of network participants; requires additional signaling and acknowledgement semantics. |
+| Crypto net synchronization / time-of-day (TOD) load | GPS- or network-disciplined time reference provisioning required for crypto validity; may be fully automated or operator-initiated. |
+| Frequency hopping set (TRANSEC) provisioning | Loading or activation of frequency-hopping patterns or TRANSEC keys; security-sensitive but distinct from voice/data encryption key fill. |
+| Emission control (EMCON) mode activation | Operator or command-authority-initiated RF silence order; may require a dedicated approval workflow and differs from apparatus-driven inhibit. |
+| Secure waveform parameter configuration | Loading or activating a specific SDR waveform with its associated security parameters when the operation involves key-bearing data. |
+| Secure identity / PKI credential provisioning | Loading device certificates or public-key credentials used for authentication on secure nets. |
 
 #### HMI behavior during the inhibit period
 
@@ -576,6 +613,7 @@ Each inhibit-start and inhibit-end event is recorded in the operational audit tr
 | DEF STAN | Defence Standard |
 | dpi | dots per inch |
 | EKMS | Electronic Key Management System |
+| EMCON | Emission Control |
 | FILL | Cryptographic Key Fill (loading operation) |
 | GPS | Global Positioning System |
 | HMI | Human-Machine Interface |
@@ -589,6 +627,7 @@ Each inhibit-start and inhibit-end event is recorded in the operational audit tr
 | NVIS | Night Vision Imaging System |
 | NVG | Night Vision Goggle |
 | OAL | Operating Environment Adaptation Layer |
+| OTAR | Over-The-Air Rekeying |
 | PKI | Public Key Infrastructure |
 | RBAC | Role-Based Access Control |
 | REQ | Requirement |
@@ -597,6 +636,8 @@ Each inhibit-start and inhibit-end event is recorded in the operational audit tr
 | SDR | Software Defined Radio |
 | SPEC | Specification (external standard reference, as used in this document) |
 | STANAG | NATO Standardization Agreement |
+| TOD | Time of Day |
+| TRANSEC | Transmission Security |
 | TX | Transmit |
 | UAS | Unmanned Aircraft System |
 | UI | User Interface |
