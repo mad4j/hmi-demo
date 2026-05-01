@@ -1,61 +1,186 @@
 name: HMI Demo Application
 pages:
-  - id: app-climatizzazione
-    label: Air Conditioning
-    icon: "menu"
-    parameters:
-      - id: temp_abitacolo
-        name: Temperature
-        type: number
-        unit: "°C"
-        precision: 1
-        readonly: true
-      - id: temp_impostata
-        name: Set
-        type: number
-        unit: "°C"
-        precision: 1
-      - id: umidita
-        name: Humidity
-        type: percentage
-        precision: 0
-        readonly: true
-      - id: ventilazione_attiva
-        name: Ventilation
-        type: boolean
-  - id: app-porte
-    label: Doors
-    icon: "menu"
-    parameters:
-      - id: porta_ant_sx
-        name: Front L
-        type: boolean
-      - id: porta_ant_dx
-        name: Front R
-        type: boolean
-      - id: blocco_centrale
-        name: Central Lock
-        type: boolean
-      - id: cofano
-        name: Hood
-        type: boolean
-  - id: app-stato
-    label: Status
-    icon: "menu"
-    parameters:
-      - id: test_viz_temp_motore
-        name: Engine Temp.
-        type: number
-        unit: "°C"
-        precision: 1
-        readonly: true
-      - id: test_viz_cpu_load
-        name: CPU load
-        type: percentage
-        precision: 0
-        readonly: true
-      - id: test_viz_stato_bus
-        name: Bus Status
-        type: enum
-        options: [OK, DEGRADED, OFFLINE]
-        readonly: true
+  - id: app-configurazione
+    label: Configuration
+    icon: "settings"
+    panels:
+      - label: Clima
+        parameters:
+          - id: temp_abitacolo
+            name: Temp. Abitacolo
+            type: number
+            unit: "°C"
+            precision: 1
+            readonly: true
+          - id: temp_impostata
+            name: Set Temp.
+            type: number
+            unit: "°C"
+            precision: 1
+          - id: temp_esterna
+            name: Temp. Esterna
+            type: number
+            unit: "°C"
+            precision: 1
+            readonly: true
+          - id: umidita
+            name: Umidità
+            type: percentage
+            precision: 0
+            readonly: true
+          - id: modalita_clima
+            name: Modalità
+            type: enum
+            options: [AUTO, MANUAL, ECO, SPORT]
+          - id: ventilazione_attiva
+            name: Ventilazione
+            type: boolean
+          - id: aria_ricircolo
+            name: Ricircolo
+            type: boolean
+          - id: velocita_ventola
+            name: Velocità Ventola
+            type: number
+            unit: "lv"
+            precision: 0
+      - label: Porte
+        parameters:
+          - id: porta_ant_sx
+            name: Ant. Sx
+            type: boolean
+          - id: porta_ant_dx
+            name: Ant. Dx
+            type: boolean
+          - id: porta_post_sx
+            name: Post. Sx
+            type: boolean
+          - id: porta_post_dx
+            name: Post. Dx
+            type: boolean
+          - id: blocco_centrale
+            name: Blocco Centrale
+            type: boolean
+          - id: cofano
+            name: Cofano
+            type: boolean
+          - id: portabagagli
+            name: Portabagagli
+            type: boolean
+          - id: portellone
+            name: Portellone
+            type: boolean
+      - label: Motore
+        parameters:
+          - id: test_viz_temp_motore
+            name: Temp. Motore
+            type: number
+            unit: "°C"
+            precision: 1
+            readonly: true
+          - id: test_viz_press_turbo
+            name: Press. Turbo
+            type: number
+            unit: "bar"
+            precision: 2
+            readonly: true
+          - id: test_viz_ventola_motore
+            name: Ventola Motore
+            type: number
+            unit: "rpm"
+            precision: 0
+            readonly: true
+          - id: test_viz_ventola_hmi
+            name: Ventola HMI
+            type: number
+            unit: "rpm"
+            precision: 0
+            readonly: true
+          - id: test_viz_freno_usura
+            name: Usura Freni
+            type: percentage
+            precision: 0
+            readonly: true
+          - id: test_viz_cpu_load
+            name: CPU Load
+            type: percentage
+            precision: 0
+            readonly: true
+      - label: Elettrico
+        parameters:
+          - id: tensione_batteria
+            name: Tensione Batt.
+            type: number
+            unit: "V"
+            precision: 1
+            readonly: true
+          - id: test_viz_corrente
+            name: Corrente
+            type: number
+            unit: "A"
+            precision: 1
+            readonly: true
+          - id: test_viz_tensione_aux
+            name: Tensione Aux
+            type: number
+            unit: "V"
+            precision: 1
+            readonly: true
+          - id: test_viz_memoria_libera
+            name: Memoria Libera
+            type: percentage
+            precision: 0
+            readonly: true
+      - label: Stato
+        parameters:
+          - id: test_viz_stato_bus
+            name: Stato Bus
+            type: enum
+            options: [OK, DEGRADED, OFFLINE]
+            readonly: true
+          - id: test_viz_profilo_guida
+            name: Profilo Guida
+            type: enum
+            options: [CITY, TOURING, TRACK, ECO]
+          - id: test_viz_manutenzione
+            name: Manutenzione
+            type: enum
+            options: [NONE, SOON, DUE, OVERDUE]
+            readonly: true
+          - id: test_viz_revisione_cfg
+            name: Rev. Config.
+            type: text
+            readonly: true
+          - id: test_viz_build_number
+            name: Build Number
+            type: text
+            readonly: true
+      - label: Manutenzione
+        parameters:
+          - id: test_viz_last_service
+            name: Ultimo Servizio
+            type: date
+            readonly: true
+          - id: test_viz_next_service
+            name: Prossimo Servizio
+            type: date
+          - id: test_viz_note_officina
+            name: Note Officina
+            type: text
+          - id: test_viz_codice_intervento
+            name: Codice Intervento
+            type: text
+      - label: Accesso
+        parameters:
+          - id: test_trx_username
+            name: Utente
+            type: text
+          - id: test_trx_password
+            name: Password
+            type: password
+          - id: test_trx_ruolo
+            name: Ruolo
+            type: enum
+            options: [OPERATOR, SUPERVISOR, MAINTAINER]
+          - id: test_trx_data_validita
+            name: Validità
+            type: date
