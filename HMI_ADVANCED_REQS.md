@@ -10,7 +10,7 @@ This document defines a single, consistent, and verifiable set of HMI requiremen
 ## 2. Requirement Conventions
 
 - Requirement IDs use format HMI-REQ-XXX.
-- "Shall" indicates mandatory behavior.
+- "SHALL" indicates mandatory behavior.
 - Unless otherwise specified, all pixel-based dimensions are referenced at 96 dpi (CSS pixel grid).
 - Verification methods:
   - Inspection (I)
@@ -19,13 +19,13 @@ This document defines a single, consistent, and verifiable set of HMI requiremen
   - Usability Test (UT)
   - Environmental Test (ET)
 
-## 3. Consolidated Requirements
+## 3. HMI Requirements
 
 ### 3.1 Persistent Operational Awareness
 
 #### HMI-REQ-001 - Persistent communication state
 
-The system shall continuously display communication state (TX, RX, IDLE) in a dedicated non-overlapping region visible on every screen.
+The system SHALL continuously display communication state (TX, RX, IDLE) in a dedicated non-overlapping region visible on every screen.
 
 - Verification: I + T
 - Acceptance: Update latency <= 200 ms; visible in 100% of screens.
@@ -33,33 +33,81 @@ The system shall continuously display communication state (TX, RX, IDLE) in a de
 
 #### HMI-REQ-002 - Persistent active channel indicator
 
-The system shall continuously display the active channel identifier through a persistent visual element on every screen.
+The system SHALL continuously display the active channel identifier through a persistent visual element on every screen.
 
 - Verification: T
 - Acceptance: Operator recognition <= 1 s in normal operating conditions.
 - Rationale: Immediate channel awareness reduces selection errors and communication delays.
 
+#### HMI-REQ-004 - System-under-control indicator
+
+The system SHALL continuously indicate control authority state: LOCAL_OPERATOR, REMOTE_OPERATOR, AUTONOMOUS.
+
+- Verification: I + T
+- Acceptance: Indicator is driven by real-time platform status and updates <= 500 ms from data change.
+- Rationale: Explicit control authority indication prevents unsafe actions when command ownership changes (e.g., remote takeover from an SNMP-attached control station)
+
+#### HMI-REQ-040 - Persistent cryptographic state and configuration indicator
+
+The system SHALL continuously display the active cryptographic state and configuration (e.g., algorithm identifier, key tag/ID, and operational algorithm and context, such as NATO or NATIONAL) in a dedicated persistent status region visible on every screen.
+
+- Verification: I + T
+- Acceptance: Cryptographic state indicator reflects the current hardware/software crypto engine status and updates <= 500 ms from any state change; visible on 100% of screens.
+- Rationale: Continuous visibility of the operative cryptographic configuration prevents inadvertent transmission under an incorrect or unintended security posture.
+
+#### HMI-REQ-041 - Plain-text / Cipher-text communication mode indicator
+
+The system SHALL display a persistent, unambiguous indicator that distinguishes whether the active communication link is operating in plain-text mode (PT) or cipher-text mode (CT), using distinct visual coding (e.g., dedicated icon, label, and/or color token) that cannot be confused with any other status element.
+
+- Verification: I + T
+- Acceptance: PT/CT indicator is legible at normal operator viewing distance; updates within 200 ms of mode change; a CAUTION-level alert is raised whenever the link transitions to or remains in PT mode during a mission-active state.
+- Rationale: Explicit PT/CT differentiation prevents operators from transmitting sensitive information over an unencrypted link, reducing the risk of unintended emission of classified or sensitive traffic.
+
+#### HMI-REQ-042 - Persistent system fault state indicator
+
+The system SHALL continuously display a FAULT condition indicator whenever one or more internal subsystems (RF, crypto, power, DSP) report a fault state, using a dedicated visual element distinct from general status icons.
+
+- Verification: I + T
+- Acceptance: FAULT indicator appears within 500 ms of fault detection and remains visible until the fault is cleared; the indicator is unambiguously distinguishable from CAUTION and ALARM states.
+- Rationale: An explicit FAULT indicator enables operators to immediately recognise degraded system integrity and take corrective action without having to navigate to a diagnostic page.
+
+#### HMI-REQ-043 - Persistent radio silence state indicator
+
+The system SHALL continuously display a RADIO SILENCE indicator whenever both transmission (Tx) and reception (Rx) are disabled, using a dedicated, high-salience visual element visible on every screen.
+
+- Verification: I + T
+- Acceptance: RADIO SILENCE indicator appears within 200 ms of entering the radio-silence state and is immediately distinguishable from the standard IDLE communication state; a CAUTION-level alert is raised on entry and on exit from radio-silence mode.
+- Rationale: Unambiguous radio-silence indication prevents operators from mistaking an inhibited link for a functioning idle link, reducing the risk of missed communications or unintended RF emission.
+
+#### HMI-REQ-044 - Persistent GPS connectivity indicator
+
+The system SHALL continuously display GPS connectivity status (ACQUIRED, DEGRADED, LOST) in a persistent visual element on every screen, updated from the active positioning subsystem.
+
+- Verification: I + T
+- Acceptance: GPS status indicator updates within 500 ms of a change in satellite lock or signal quality; DEGRADED and LOST states are coded with distinct visual treatment (amber and red respectively, or NVG-safe equivalents).
+- Rationale: Continuous GPS status visibility is essential for position-dependent mission functions; silent GPS loss can lead to incorrect reporting or navigation decisions.
+
+#### HMI-REQ-045 - Persistent mission time display
+
+The system SHALL continuously display mission elapsed time (MET) or mission time-of-day (TOD) in a dedicated persistent region visible on every screen, synchronized to the platform time reference.
+
+- Verification: I + T
+- Acceptance: Mission time updates at least once per second; deviation from authoritative time reference is <= 1 s under normal operating conditions; the display remains visible regardless of the active page or active modal overlay.
+- Rationale: A persistent mission time reference supports time-critical coordination, log correlation, and situational awareness without requiring navigation away from the current task.
+
 #### HMI-REQ-003 - Persistent system status icons
 
-The system shall permanently display global system status indicators using consistent iconography and three-level color semantics (NORMAL/CAUTION/ALARM mapped to green/amber/red or equivalent NVG-safe palette).
+The system SHALL permanently display global system status indicators using consistent iconography and three-level color semantics (NORMAL/CAUTION/ALARM mapped to green/amber/red or equivalent NVG-safe palette).
 
 - Verification: I + T
 - Acceptance: Status bar remains visible regardless of active page.
 - Rationale: Persistent and consistent status semantics improve recognition speed under workload.
 
-#### HMI-REQ-004 - System-under-control indicator
-
-The system shall continuously indicate control authority state: LOCAL_OPERATOR, REMOTE_OPERATOR, AUTONOMOUS.
-
-- Verification: I + T
-- Acceptance: Indicator is driven by real-time platform status and updates <= 500 ms from data change.
-- Rationale: Explicit control authority indication prevents unsafe actions when command ownership changes.
-
 ### 3.2 Feedback, Alerts, and Human Factors
 
 #### HMI-REQ-005 - Input feedback latency
 
-The system shall provide perceptible feedback for every operator input within 100 ms.
+The system SHALL provide perceptible feedback for every operator input within 100 ms.
 
 - Verification: T
 - Acceptance: >= 99% of interactions satisfy latency target.
@@ -67,7 +115,7 @@ The system shall provide perceptible feedback for every operator input within 10
 
 #### HMI-REQ-006 - Severity-classified notifications
 
-The system shall classify and render feedback messages with distinct severity levels: NORMAL, SUCCESS, WARNING, ERROR, CRITICAL.
+The system SHALL classify and render feedback messages with distinct severity levels: NORMAL, SUCCESS, WARNING, ERROR, CRITICAL.
 
 - Verification: I + T
 - Acceptance: Each severity has unique and consistent visual treatment.
@@ -75,7 +123,7 @@ The system shall classify and render feedback messages with distinct severity le
 
 #### HMI-REQ-007 - Critical alert acknowledgement
 
-Critical alerts shall be perceivable within 1 second and require explicit operator acknowledgement before dismissal.
+Critical alerts SHALL be perceivable within 1 second and require explicit operator acknowledgement before dismissal.
 
 - Verification: T
 - Acceptance: No auto-dismiss permitted for CRITICAL severity.
@@ -83,7 +131,7 @@ Critical alerts shall be perceivable within 1 second and require explicit operat
 
 #### HMI-REQ-008 - Multimodal transmission-start feedback
 
-The system shall provide at least two feedback modalities when transmission starts (e.g., visual and audible/haptic where available).
+The system SHALL provide at least two feedback modalities when transmission starts (e.g., visual and audible/haptic where available).
 
 - Verification: I + T
 - Acceptance: Event confirmation remains detectable under high workload conditions.
@@ -91,7 +139,7 @@ The system shall provide at least two feedback modalities when transmission star
 
 #### HMI-REQ-009 - Read-only field distinction
 
-The system shall clearly distinguish read-only parameters from editable controls using iconography and/or visual styling.
+The system SHALL clearly distinguish read-only parameters from editable controls using iconography and/or visual styling.
 
 - Verification: I
 - Acceptance: Read-only controls expose a non-editable affordance and cannot be mistaken for writable inputs.
@@ -99,7 +147,7 @@ The system shall clearly distinguish read-only parameters from editable controls
 
 #### HMI-REQ-010 - Minimum touch target size
 
-All interactive controls shall provide a hit area of at least 48 px x 48 px, referenced at 96 dpi.
+All interactive controls SHALL provide a hit area of at least 48 px x 48 px, referenced at 96 dpi.
 
 - Verification: I + T
 - Acceptance: 100% of actionable controls meet minimum size.
@@ -107,7 +155,7 @@ All interactive controls shall provide a hit area of at least 48 px x 48 px, ref
 
 #### HMI-REQ-011 - Minimum operational font size
 
-Operationally relevant text shall use a minimum rendered size of 16 px equivalent, referenced at 96 dpi.
+Operationally relevant text SHALL use a minimum rendered size of 16 px equivalent, referenced at 96 dpi.
 
 - Verification: I
 - Acceptance: Parameter labels, navigation labels, counters, and status text meet minimum size.
@@ -117,7 +165,7 @@ Operationally relevant text shall use a minimum rendered size of 16 px equivalen
 
 #### HMI-REQ-012 - Navigation depth limit
 
-Mission-critical functions shall be reachable within a maximum of 3 navigation levels.
+Mission-critical functions SHALL be reachable within a maximum of 3 navigation levels.
 
 - Verification: A + T
 - Acceptance: No critical workflow exceeds depth 3.
@@ -125,7 +173,7 @@ Mission-critical functions shall be reachable within a maximum of 3 navigation l
 
 #### HMI-REQ-013 - Persistent navigation context and controls
 
-The system shall always show current navigation context and provide persistent Home and Back controls.
+The system SHALL always show current navigation context and provide persistent Home and Back controls.
 
 - Verification: I + T
 - Acceptance: Home available in all screens; Back valid except at root.
@@ -133,7 +181,7 @@ The system shall always show current navigation context and provide persistent H
 
 #### HMI-REQ-014 - Consistent navigation patterns
 
-Navigation behavior, labels, and transitions shall be consistent across all menus and pages.
+Navigation behavior, labels, and transitions SHALL be consistent across all menus and pages.
 
 - Verification: I
 - Acceptance: No conflicting interaction patterns for equivalent actions.
@@ -141,7 +189,7 @@ Navigation behavior, labels, and transitions shall be consistent across all menu
 
 #### HMI-REQ-015 - Channel switch interaction budget
 
-The system shall permit channel switching in no more than 2 discrete user actions.
+The system SHALL permit channel switching in no more than 2 discrete user actions.
 
 - Verification: UT + T
 - Acceptance: >= 95% users complete channel switch <= 3 s.
@@ -149,7 +197,7 @@ The system shall permit channel switching in no more than 2 discrete user action
 
 #### HMI-REQ-016 - Transmission initiation simplicity
 
-The system shall permit transmission initiation through a single operator action.
+The system SHALL permit transmission initiation through a single operator action.
 
 - Verification: T
 - Acceptance: Command-to-feedback latency <= 150 ms.
@@ -159,7 +207,7 @@ The system shall permit transmission initiation through a single operator action
 
 #### HMI-REQ-017 - Transaction draft model
 
-Command-capable pages shall implement local draft state, visible pending-change highlighting, explicit Reset (discard), and explicit Submit actions.
+Command-capable pages SHALL implement local draft state, visible pending-change highlighting, explicit Reset (discard), and explicit Submit actions.
 
 - Verification: I + T
 - Acceptance: Draft changes are not committed until Submit.
@@ -167,7 +215,7 @@ Command-capable pages shall implement local draft state, visible pending-change 
 
 #### HMI-REQ-018 - Rollback on backend failure
 
-If command submission fails, the system shall automatically roll back affected values to last committed state and notify the operator.
+If command submission fails, the system SHALL automatically roll back affected values to last committed state and notify the operator.
 
 - Verification: T
 - Acceptance: No partial committed state remains visible after failure.
@@ -175,7 +223,7 @@ If command submission fails, the system shall automatically roll back affected v
 
 #### HMI-REQ-019 - Two-step confirmation for high-impact commands
 
-Irreversible or high-impact commands (e.g., RESET_ALARMS, GPS_RESET, REBOOT) shall require two-step operator confirmation before dispatch.
+Irreversible or high-impact commands (e.g., RESET_ALARMS, GPS_RESET, REBOOT) SHALL require two-step operator confirmation before dispatch.
 
 - Verification: I + T
 - Acceptance: Command dispatch blocked until confirmation sequence is complete.
@@ -183,7 +231,7 @@ Irreversible or high-impact commands (e.g., RESET_ALARMS, GPS_RESET, REBOOT) sha
 
 #### HMI-REQ-020 - Functional segregation of critical controls
 
-Command/write controls shall be physically or logically segregated from monitoring/read-only information, and critical actions shall require explicit navigation and suitable privilege level.
+Command/write controls SHALL be physically or logically segregated from monitoring/read-only information, and critical actions SHALL require explicit navigation and suitable privilege level.
 
 - Verification: I + A
 - Acceptance: Critical actions are not colocated at equivalent prominence with passive monitoring controls.
@@ -191,7 +239,7 @@ Command/write controls shall be physically or logically segregated from monitori
 
 #### HMI-REQ-021 - Transmission inhibit when encryption required
 
-The system shall inhibit transmission whenever mission policy requires encryption and encryption is not active.
+The system SHALL inhibit transmission whenever mission policy requires encryption and encryption is not active.
 
 - Verification: T
 - Acceptance: TX action blocked in all such states.
@@ -199,7 +247,7 @@ The system shall inhibit transmission whenever mission policy requires encryptio
 
 #### HMI-REQ-022 - Explicit encryption state indicator
 
-The system shall display encryption state using unambiguous encoding (SECURE/PLAIN) continuously during operation.
+The system SHALL display encryption state using unambiguous encoding (SECURE/PLAIN) continuously during operation.
 
 - Verification: T
 - Acceptance: State visible and readable in all operational screens.
@@ -207,7 +255,7 @@ The system shall display encryption state using unambiguous encoding (SECURE/PLA
 
 #### HMI-REQ-039 - Transmission inhibit during critical radio operations
 
-The system shall inhibit both Tx (outgoing transmission) and Rx (incoming reception) capabilities of the controlled radio apparatus whenever the apparatus signals that a critical operation requiring radio silence is active. During the inhibit period the system shall:
+The system SHALL inhibit both Tx (outgoing transmission) and Rx (incoming reception) capabilities of the controlled radio apparatus whenever the apparatus signals that a critical operation requiring radio silence is active. During the inhibit period the system SHALL:
 
 1. Prevent the operator from issuing any Tx or Rx command, with a clear visual indication that the controls are inhibited.
 2. Display a persistent operator notification identifying the nature of the active critical operation and the reason for the communication inhibition.
@@ -223,7 +271,7 @@ The system shall inhibit both Tx (outgoing transmission) and Rx (incoming recept
 
 #### HMI-REQ-023 - Authentication and role-based access control
 
-The system shall enforce authentication and role-based visibility/authorization for pages and actions (minimum roles: OPERATOR, SUPERVISOR, MAINTAINER).
+The system SHALL enforce authentication and role-based visibility/authorization for pages and actions (minimum roles: OPERATOR, SUPERVISOR, MAINTAINER).
 
 - Verification: I + T
 - Acceptance: Unauthorized actions/pages are inaccessible in UI and rejected on invocation.
@@ -231,7 +279,7 @@ The system shall enforce authentication and role-based visibility/authorization 
 
 #### HMI-REQ-024 - Session timeout
 
-The system shall enforce configurable inactivity timeout with automatic session termination.
+The system SHALL enforce configurable inactivity timeout with automatic session termination.
 
 - Verification: T
 - Acceptance: Session closes after configured inactivity threshold.
@@ -239,7 +287,7 @@ The system shall enforce configurable inactivity timeout with automatic session 
 
 #### HMI-REQ-025 - Access and action audit trail
 
-The system shall record authentication events, command executions, and parameter changes with timestamp, user identity, target, previous value, and new value where applicable.
+The system SHALL record authentication events, command executions, and parameter changes with timestamp, user identity, target, previous value, and new value where applicable.
 
 - Verification: I + T
 - Acceptance: Audit records are append-only for operators.
@@ -247,7 +295,7 @@ The system shall record authentication events, command executions, and parameter
 
 #### HMI-REQ-026 - No hardcoded credentials
 
-No production credential or authentication secret shall be hardcoded in source files, frontend scripts, or service workers.
+No production credential or authentication secret SHALL be hardcoded in source files, frontend scripts, or service workers.
 
 - Verification: I + A
 - Acceptance: Production build contains no embedded static credentials.
@@ -257,7 +305,7 @@ No production credential or authentication secret shall be hardcoded in source f
 
 #### HMI-REQ-027 - Configurable network timeout and cancellation
 
-All network operations shall enforce configurable timeout and cancel requests that exceed threshold.
+All network operations SHALL enforce configurable timeout and cancel requests that exceed threshold.
 
 - Verification: T
 - Acceptance: Timeout event generates operator-visible notification.
@@ -265,7 +313,7 @@ All network operations shall enforce configurable timeout and cancel requests th
 
 #### HMI-REQ-028 - Bounded retry with backoff
 
-The communication layer shall apply bounded retry attempts with deterministic backoff under degraded links.
+The communication layer SHALL apply bounded retry attempts with deterministic backoff under degraded links.
 
 - Verification: T
 - Acceptance: Retry count and backoff profile are configurable and capped.
@@ -273,7 +321,7 @@ The communication layer shall apply bounded retry attempts with deterministic ba
 
 #### HMI-REQ-029 - Stale data marking
 
-When link to the controlled apparatus is interrupted, all displayed live parameters shall be marked as stale until fresh data is received.
+When link to the controlled apparatus is interrupted, all displayed live parameters SHALL be marked as stale until fresh data is received.
 
 - Verification: T
 - Acceptance: Stale marking persists through outage and clears only after successful refresh.
@@ -281,7 +329,7 @@ When link to the controlled apparatus is interrupted, all displayed live paramet
 
 #### HMI-REQ-030 - Essential functionality in degraded mode
 
-Under degraded conditions, the system shall preserve essential mission functions defined by operational profile.
+Under degraded conditions, the system SHALL preserve essential mission functions defined by operational profile.
 
 - Verification: T
 - Acceptance: Essential function list remains operable in simulated degraded scenarios.
@@ -289,7 +337,7 @@ Under degraded conditions, the system shall preserve essential mission functions
 
 #### HMI-REQ-031 - Fallback interaction mode
 
-The system shall provide a fallback interaction mode usable when primary display capabilities are reduced or unavailable.
+The system SHALL provide a fallback interaction mode usable when primary display capabilities are reduced or unavailable.
 
 - Verification: T
 - Acceptance: Minimum command and status workflow remains executable.
@@ -299,7 +347,7 @@ The system shall provide a fallback interaction mode usable when primary display
 
 #### HMI-REQ-032 - Keyboard and screen-reader accessibility
 
-All interactive controls shall be keyboard operable and expose correct ARIA roles, states, and labels; focus order shall be deterministic.
+All interactive controls SHALL be keyboard operable and expose correct ARIA roles, states, and labels; focus order SHALL be deterministic.
 
 - Verification: I + T
 - Acceptance: All actions operable via keyboard only; screen-reader announces control purpose/state.
@@ -307,7 +355,7 @@ All interactive controls shall be keyboard operable and expose correct ARIA role
 
 #### HMI-REQ-033 - Dark theme as operational default
 
-The default theme shall be dark and optimized for low ambient light operation.
+The default theme SHALL be dark and optimized for low ambient light operation.
 
 - Verification: I
 - Acceptance: Default startup theme is dark.
@@ -315,7 +363,7 @@ The default theme shall be dark and optimized for low ambient light operation.
 
 #### HMI-REQ-034 - Contrast ratio minimum
 
-Primary text contrast shall meet WCAG AA minimum ratio of 4.5:1.
+Primary text contrast SHALL meet WCAG AA minimum ratio of 4.5:1.
 
 - Verification: I + T
 - Acceptance: All primary text meets or exceeds threshold.
@@ -323,7 +371,7 @@ Primary text contrast shall meet WCAG AA minimum ratio of 4.5:1.
 
 #### HMI-REQ-035 - Daylight readability envelope
 
-Display content shall remain readable at 50 cm across 0.1-10,000 lux operational envelope.
+Display content SHALL remain readable at 50 cm across 0.1-10,000 lux operational envelope.
 
 - Verification: ET
 - Acceptance: Operator can correctly read required status and commands within envelope.
@@ -331,7 +379,7 @@ Display content shall remain readable at 50 cm across 0.1-10,000 lux operational
 
 #### HMI-REQ-036 - NVG/NVIS compatibility mode
 
-The system shall provide dedicated NVG/NVIS mode limiting emission according to MIL-STD-3009 / MIL-L-85762 constraints.
+The system SHALL provide dedicated NVG/NVIS mode limiting emission according to MIL-STD-3009 / MIL-L-85762 constraints.
 
 - Verification: T + ET
 - Acceptance: Software mode available; hardware compliance confirmed by photometric test evidence.
@@ -341,7 +389,7 @@ The system shall provide dedicated NVG/NVIS mode limiting emission according to 
 
 #### HMI-REQ-037 - Language consistency
 
-The UI shall use one consistent language per configured runtime profile; mixed-language presentation is not permitted.
+The UI SHALL use one consistent language per configured runtime profile; mixed-language presentation is not permitted.
 
 - Verification: I
 - Acceptance: No mixed-language labels/messages in same runtime profile.
@@ -349,7 +397,7 @@ The UI shall use one consistent language per configured runtime profile; mixed-l
 
 #### HMI-REQ-038 - Tactical symbology consistency
 
-Where tactical symbols are displayed, symbology shall conform to configured MIL-STD-2525 profile and remain consistent across views.
+Where tactical symbols are displayed, symbology SHALL conform to configured MIL-STD-2525 profile and remain consistent across views.
 
 - Verification: I + T
 - Acceptance: Symbol identity and meaning are preserved across all screens.
@@ -422,6 +470,12 @@ Traceability type legend:
 | HMI-REQ-037 | SPEC-002, SPEC-009 | DEF STAN 00-250, section 12; ISO 9241-110 (consistency principles) | Direct |
 | HMI-REQ-038 | SPEC-008 | MIL-STD-2525 (symbol set/profile conformance) | Derived |
 | HMI-REQ-039 | SPEC-001, SPEC-002, SPEC-010, SPEC-012, SPEC-013 | MIL-STD-1472H §5.10.5 (protection for dangerous operations); DEF STAN 00-250 §9.4 (functional segregation of critical operations); IEC 61511 (automatic inhibit as safety function); STANAG 4691 (EKMS key management – RF silence during key fill); SCA v4.1 (RF Standby/RF Mute during SDR software update) | Gap |
+| HMI-REQ-040 | SPEC-001, SPEC-003, SPEC-012 | MIL-STD-1472H, section 5.2.1 (persistent status presentation principle); STANAG 4586, section 6.3.2; STANAG 4691 (EKMS key management and crypto state visibility) | Derived |
+| HMI-REQ-041 | SPEC-001, SPEC-002, SPEC-012 | MIL-STD-1472H, section 5.2.1 (state coding and visibility); DEF STAN 00-250, section 6.3 (safety-relevant state indication); STANAG 4691 (PT/CT mode control and indication) | Derived |
+| HMI-REQ-042 | SPEC-001, SPEC-002 | MIL-STD-1472H, section 5.2.1 (persistent status presentation); DEF STAN 00-250, section 9.2 (error and fault state indication) | Derived |
+| HMI-REQ-043 | SPEC-001, SPEC-002, SPEC-010, SPEC-012 | MIL-STD-1472H, section 5.2.1; DEF STAN 00-250, section 9.4 (functional segregation of critical operations); STANAG 4691 (RF silence during key fill / EMCON procedures) | Derived |
+| HMI-REQ-044 | SPEC-001, SPEC-003 | MIL-STD-1472H, section 5.2.1 (persistent status presentation); STANAG 4586, section 6.3.2 (platform navigation state awareness) | Derived |
+| HMI-REQ-045 | SPEC-001, SPEC-003 | MIL-STD-1472H, section 5.2.1 (persistent status presentation); STANAG 4586, section 6.3 (mission management and time reference) | Derived |
 
 ## 6. Notes on Verification Planning
 
@@ -525,11 +579,11 @@ This appendix explains the meaning of the standards and clauses cited in Section
 
 ### 8.12 SPEC-012 - STANAG 4691
 
-- NATO Electronic Key Management System (EKMS) interoperability standard: Used to support the requirement that radio communication shall be inhibited (no Tx, no Rx) during cryptographic key loading, key fill, and key zeroization operations. COMSEC management procedures consistently require the radio to be in a non-transmitting state during key handling to prevent inadvertent key material exposure or compromise. The reference is used at standard level; specific clause-level mapping requires confirmation against the edition applicable to the target system's COMSEC baseline.
+- NATO Electronic Key Management System (EKMS) interoperability standard: Used to support the requirement that radio communication SHALL be inhibited (no Tx, no Rx) during cryptographic key loading, key fill, and key zeroization operations. COMSEC management procedures consistently require the radio to be in a non-transmitting state during key handling to prevent inadvertent key material exposure or compromise. The reference is used at standard level; specific clause-level mapping requires confirmation against the edition applicable to the target system's COMSEC baseline.
 
 ### 8.13 SPEC-013 - SCA v4.1 (Software Communications Architecture)
 
-- SDR device lifecycle and RF management: Used to support the requirement that radio communication shall be inhibited during firmware or waveform software updates. The Software Communications Architecture (SCA), published by the JTRS Joint Program Office (PEO C3T), defines the SDR device and waveform lifecycle, including an RF Standby / RF Mute state that must be asserted during software loading to prevent incomplete or undefined RF behaviour. The reference is used at standard level; specific clause-level mapping requires confirmation against the applicable SCA version and platform-specific OAL implementation.
+- SDR device lifecycle and RF management: Used to support the requirement that radio communication SHALL be inhibited during firmware or waveform software updates. The Software Communications Architecture (SCA), published by the JTRS Joint Program Office (PEO C3T), defines the SDR device and waveform lifecycle, including an RF Standby / RF Mute state that must be asserted during software loading to prevent incomplete or undefined RF behaviour. The reference is used at standard level; specific clause-level mapping requires confirmation against the applicable SCA version and platform-specific OAL implementation.
 
 ## 9. Implementation Details (Non-Normative)
 
@@ -552,7 +606,7 @@ Operations that may assert the flag include, but are not limited to:
 
 - All operator-accessible Tx and Rx command controls are disabled and visually marked as inhibited (e.g., greyed out with a lock or warning badge).
 - A persistent notification of at minimum WARNING severity is displayed within 200 ms of flag assertion. The notification should identify the active operation type (from `CRITICAL_OPERATION_TYPE`) and explain the reason for the communication inhibition.
-- No mechanism (button, gesture, keyboard shortcut, or programmatic path) shall allow the operator to bypass the inhibit state.
+- No mechanism (button, gesture, keyboard shortcut, or programmatic path) SHALL allow the operator to bypass the inhibit state.
 
 #### Inhibit release
 
