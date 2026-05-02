@@ -244,6 +244,7 @@ const buildConfig = () => {
           ? sourceConfig.title
           : fallbackConfig.title,
       statusIcons: normalizeStatusIcons(sourceConfig.statusIcons),
+      headerParams: Array.isArray(sourceConfig.headerParams) ? sourceConfig.headerParams : [],
       pages: normalizedPages,
     }
   } catch {

@@ -33,6 +33,7 @@ const parameterValues = reactive(
   Object.fromEntries([
     ...uniqueParameters.map((p) => [p.id, getParameterDefaultValue(p)]),
     ...menuConfig.statusIcons.map((ic) => [ic.parameterId, 'off']),
+    ...(menuConfig.headerParams ?? []).map((p) => [p.id, null]),
   ]),
 )
 
@@ -46,15 +47,34 @@ const { getParameters, setParameters, sendCommand, notifyParameters } = useEquip
 const allParameterIds = [
   ...uniqueParameters.map((p) => p.id),
   ...menuConfig.statusIcons.map((ic) => ic.parameterId),
+  ...(menuConfig.headerParams ?? []).map((p) => p.id),
 ]
 
-// Initial state request – fetch all managed parameter IDs
-getParameters(allParameterIds).then((result) => {
-  if (!result.ok) return
-  Object.entries(result.values).forEach(([id, value]) => {
-    if (id in parameterValues) parameterValues[id] = value
+// Initial state request – fetch all managed parameter IDs.
+// On the very first page load the Service Worker may not yet be controlling
+// the page (it installs/activates and then calls clients.claim()). We wait
+// for the SW to become the controller before issuing the fetch so that the
+// /api/parameters request is actually intercepted by the simulator.
+const doInitialFetch = () => {
+  getParameters(allParameterIds).then((result) => {
+    if (!result.ok) return
+    Object.entries(result.values).forEach(([id, value]) => {
+      if (id in parameterValues) parameterValues[id] = value
+    })
   })
-})
+}
+
+if ('serviceWorker' in navigator) {
+  if (navigator.serviceWorker.controller) {
+    // SW is already controlling this page (subsequent loads)
+    doInitialFetch()
+  } else {
+    // First load: wait for the SW to claim the page, then fetch
+    navigator.serviceWorker.addEventListener('controllerchange', doInitialFetch, { once: true })
+  }
+} else {
+  doInitialFetch()
+}
 
 // Subscribe to apparatus push notifications
 notifyParameters((updates) => {

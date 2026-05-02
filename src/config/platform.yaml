@@ -5,3 +5,4 @@ includes:
   - platform-pages-allarmi.yaml
   - platform-pages-info.yaml
   - platform-pages-impostazioni.yaml
+  - platform-pages-waveform.yaml

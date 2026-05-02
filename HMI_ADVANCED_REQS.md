@@ -226,7 +226,7 @@ The system SHALL permit switching the active waveform through an explicit operat
 - Acceptance: >= 95% users complete waveform switch <= 10 s in nominal conditions; waveform switch progress is shown within 200 ms of command acceptance; the persistent active waveform indicator (HMI-REQ-047) updates <= 500 ms after apparatus confirmation.
 - Rationale: Operators must be able to intentionally change waveform under mission tempo while preserving control, predictability, and immediate state awareness.
 
-#### HMI-REQ-016 - Transmission initiation simplicity
+#### HMI-REQ-016 - Transmission initiation simplicity  !!!TBV
 
 The system SHALL permit transmission initiation through a single operator action.
 
@@ -317,7 +317,7 @@ During this precondition the system SHALL:
 - Acceptance: (a) administrative operation dispatch is rejected whenever an active waveform instance exists; (b) operation dispatch succeeds only after confirmed deinstantiation; (c) Tx/Rx remain inhibited throughout the operation; (d) audit entries are generated for each operation with all mandatory fields.
 - Rationale: Enforcing waveform deinstantiation prior to software-administration activities prevents undefined runtime behavior, RF emissions in inconsistent states, and lifecycle violations under SCA-governed SDR operation.
 
-#### HMI-REQ-052 - Waveform preset lifecycle management
+#### HMI-REQ-052 - Waveform preset lifecycle management !!!TBV
 
 The system SHALL provide managed lifecycle operations for waveform presets, including create, validate, save, load/apply, rename, duplicate, delete, import, and export, under role-based authorization.
 
@@ -342,6 +342,22 @@ The system SHALL enforce authentication and role-based visibility/authorization 
 - Verification: I + T
 - Acceptance: Unauthorized actions/pages are inaccessible in UI and rejected on invocation.
 - Rationale: RBAC limits exposure of privileged functions and reduces misuse risk.
+
+#### HMI-REQ-053 - Communication operations available without login
+
+The system SHALL keep communication operations available to the operator even when no user session is active, and SHALL NOT require prior login to access or execute communication functions necessary for radio use.
+
+- Verification: I + T
+- Acceptance: In the logged-out state, communication functions remain visible and executable, while privileged non-communication functions remain subject to HMI-REQ-023.
+- Rationale: Basic communication capability must remain immediately available in operational contexts where authentication delay would reduce mission effectiveness.
+
+#### HMI-REQ-054 - Emergency zeroization available without login
+
+The system SHALL permit execution of the emergency zeroization operation even when no user session is active, and SHALL NOT require prior login to trigger emergency zeroization.
+
+- Verification: I + T
+- Acceptance: In the logged-out state, the operator can invoke emergency zeroization and the system starts the zeroization sequence without requiring authentication.
+- Rationale: Emergency zeroization is a time-critical protective action and must remain immediately available under compromise or capture risk conditions.
 
 #### HMI-REQ-024 - Session timeout
 
@@ -540,6 +556,8 @@ Traceability type legend:
 | HMI-REQ-021 | SPEC-001 | MIL-STD-1472H (error prevention and safety-oriented interaction principles) | Gap |
 | HMI-REQ-022 | SPEC-001 | MIL-STD-1472H (state visibility and coding clarity principles) | Gap |
 | HMI-REQ-023 | SPEC-001, SPEC-002 | MIL-STD-1472H, section 5.14; DEF STAN 00-250, section 10.1 | Direct |
+| HMI-REQ-053 | SPEC-001, SPEC-002, SPEC-013 | DEF STAN 00-250, section 10.1; STANAG 4586, section 6.3; MIL-STD-1472H, section 5.2.6 | Derived |
+| HMI-REQ-054 | SPEC-002, SPEC-013 | DEF STAN 00-250, section 10.1; IEC 61508 / IEC 61511 emergency protective action principles | Derived |
 | HMI-REQ-024 | SPEC-001, SPEC-002 | MIL-STD-1472H, section 5.14; DEF STAN 00-250, section 10.1 | Direct |
 | HMI-REQ-025 | SPEC-001, SPEC-002 | MIL-STD-1472H, section 5.14.3; DEF STAN 00-250, section 10.3 | Direct |
 | HMI-REQ-026 | SPEC-002 | DEF STAN 00-250, section 10 (security and access control context) | Gap |

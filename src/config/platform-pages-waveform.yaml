@@ -1,0 +1,42 @@
+pages:
+  - id: waveform
+    label: Waveform
+    icon: "channel"
+    parameters: []
+    submenus:
+      - id: waveform-attiva
+        label: Active Waveform
+        icon: "channel"
+        parameters:
+          - id: active_waveform_name
+            name: Waveform
+            type: enum
+            options: [SATURN-V, HAVEQUICK, SINCGARS, LINK-16, VHF-AM, VHF-FM]
+            readonly: false
+          - id: waveform_stato
+            name: Status
+            type: enum
+            options: [RUNNING, STOPPED, ERROR]
+            readonly: true
+          - id: waveform_versione
+            name: Version
+            type: text
+            readonly: true
+      - id: waveform-preset
+        label: Preset
+        icon: "settings"
+        parameters:
+          - id: active_preset_name
+            name: Active Preset
+            type: enum
+            options: [NATO-BASELINE, NAZ-OPS, TRAINING, EMERGENCY, CUSTOM-1, CUSTOM-2]
+            readonly: false
+          - id: preset_stato
+            name: State
+            type: enum
+            options: [SAVED, MODIFIED, UNSAVED]
+            readonly: true
+          - id: preset_descrizione
+            name: Description
+            type: text
+            readonly: true

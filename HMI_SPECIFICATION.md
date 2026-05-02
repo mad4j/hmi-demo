@@ -19,10 +19,12 @@ The HMI occupies the full viewport. It is rendered by the `HmiShell` component u
 ```
 ┌──────────────────────────────────────────────────────────────────┐
 │  AREA 1 – HEADER                                    (3.5 rem)    │
-│  ┌──────────────────────────┐  ┌──────────────────────────────┐  │
-│  │  Application Name        │  │  Status Icon Bar             │  │
-│  │  (left-aligned, bold)    │  │  [Fault][Channel][GPS][Login]│  │
-│  └──────────────────────────┘  └──────────────────────────────┘  │
+│  ┌──────────────────┐  ┌──────────────┐  ┌────────────────────┐  │
+│  │  Zone 1 Identity │  │  Zone 2      │  │  Zone 3 Comm +     │  │
+│  │  SATURN-V        │  │  AES-256     │  │  [CommIcon]        │  │
+│  │  NATO-BASELINE   │  │  NET-04      │  │  [Fault][GPS]...   │  │
+│  │                  │  │  [NATO]      │  │                    │  │
+│  └──────────────────┘  └──────────────┘  └────────────────────┘  │
 ├──────────────────────────────────────────────────────────────────┤
 │  AREA 2 – NOTIFICATION BAR                          (auto)       │
 │  ┌──────────────────────────────────────────────────────────┐    │
@@ -79,26 +81,43 @@ The HMI occupies the full viewport. It is rendered by the `HmiShell` component u
 | Background  | `--bg-bar` (theme-dependent)       |
 | Border      | Bottom border `--border`           |
 
-**Content:**
+**Content – three persistent zones (CSS grid: `1fr auto 1fr`):**
 
-- **Left – Application name**: Displays the `name` field from `application.yaml` (`HMI Demo Application`). Serves as a persistent application identity marker.
-- **Right – Status Icon Bar** (`StatusIconBar.vue`): Renders up to four icon buttons driven by `platform-status-icons.yaml`. Each icon reflects the real-time state of a dedicated status parameter:
+**Zone 1 – Identity (left)**
+- Application label (`application.yaml → name`): persistent identifier, 0.75 rem, secondary colour.
+- Active waveform name (`active_waveform_name`): 1 rem (16 px – HMI-REQ-011 compliant), primary colour, bold. Updated within 500 ms of waveform switch (HMI-REQ-047).
+- Active preset name (`active_preset_name`): 0.875 rem (~14 px – minor deviation documented, space-constrained header), accent colour. Shows unsaved-changes marker when running config differs from saved preset (HMI-REQ-048).
+
+**Zone 2 – Crypto (centre, monospace)**
+- `crypto_algorithm`: cipher name (e.g. `AES-256`), 0.875 rem, bold, primary colour.
+- `crypto_key_id`: key tag (e.g. `NET-04`), 0.875 rem, secondary colour.
+- `crypto_context`: operational context badge (`NATO` blue / `NAZ` green), 0.875 rem.
+Updated within 500 ms of any crypto state change (HMI-REQ-040).
+
+**Zone 3 – Communication + Status Icons (right)**
+- **Communication icon** (`IconCommState.vue`): single synthesised icon derived from `comm_state`, `comm_mode`, `comm_radio_silence`. Five variants with distinct colour coding:
+
+  | Variant         | Trigger condition                        | Colour token                  |
+  |-----------------|------------------------------------------|-------------------------------|
+  | `idle-ct`       | IDLE + CT (cipher-text)                  | `--text-green` / ok bg        |
+  | `idle-pt`       | IDLE + PT (plain-text) – ⚠ caution       | `--status-warning-color`      |
+  | `rx`            | comm_state = RX                          | `--text-green` / active bg    |
+  | `tx`            | comm_state = TX                          | `--text-blue` / active bg     |
+  | `radio-silence` | comm_radio_silence = true – highest pri. | `--status-critical-color` + blink |
+
+  Icon carries `aria-label` and `title` with full human-readable state text. Touch target: 3.2 rem × 3 rem (≥ 48 × 48 px – HMI-REQ-010 compliant).
+
+- **Status Icon Bar** (`StatusIconBar.vue`): unchanged, four icon buttons driven by `platform-status-icons.yaml`:
 
   | Icon    | Parameter ID     | Targets page on click               |
   |---------|------------------|-------------------------------------|
   | Fault   | `status_fault`   | `allarmi` (Alarms)                  |
   | Channel | `status_channel` | `info` (System Info)                |
   | GPS     | `status_gps`     | `gps` (GPS settings)                |
-  | Login   | `status_login`   | `login` (logged out) / `logout` (logged in) |
+  | Login   | `status_login`   | `login` / `logout`                  |
 
-  Each icon is colour-coded according to three severity levels:
-
-  | State     | CSS class      | Colour token                 | Meaning         |
-  |-----------|----------------|------------------------------|-----------------|
-  | `ok`      | `si--ok`       | `--text-green`               | Normal / active |
-  | `warning` | `si--warning`  | `--status-warning-color`     | Caution         |
-  | `error`   | `si--error`    | `--status-critical-color`    | Fault / alarm   |
-  | `off`     | `si--off`      | `--text-secondary`           | Inactive        |
+**Font-size compliance note (HMI-REQ-011):**
+The waveform name is rendered at 1 rem = 16 px (fully compliant). Preset name and crypto rows are rendered at 0.875 rem ≈ 14 px. This is a minor deviation from the 16 px minimum, accepted as a design constraint due to the three-row density within a fixed-height header. Both values exceed the 3:1 large-text contrast threshold and remain readable at 50 cm in normal illumination conditions.
 
 ---
 

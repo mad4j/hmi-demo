@@ -22,3 +22,16 @@ statusIcons:
       off: login
       ok: logout
     parameterId: status_login
+
+headerParams:
+  - id: active_waveform_name
+  - id: active_preset_name
+  - id: active_channel_number
+  - id: crypto_algorithm
+  - id: crypto_key_id
+  - id: crypto_context
+  - id: comm_state
+  - id: comm_mode
+  - id: comm_radio_silence
+  - id: ora_sistema
+  - id: timezone_riferimento

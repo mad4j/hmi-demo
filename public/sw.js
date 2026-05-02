@@ -68,6 +68,7 @@ const apparatusState = {
   temperatura_cpu:   48,
   data_sistema:   '23/04/2026',
   ora_sistema:    '17:30',
+  timezone_riferimento: 'UTC+01:00',
   // GPS
   gps_stato:        'LOCKED',
   gps_satelliti:    9,
@@ -85,6 +86,21 @@ const apparatusState = {
   // Login (never stored after validation)
   login_name:     '',
   login_password: '',
+  // Tactical radio – header zone parameters
+  active_waveform_name: 'SATURN-V',
+  active_preset_name:   'NATO-BASELINE',
+  active_channel_number: 3,
+  crypto_algorithm:     'AES-256',
+  crypto_key_id:        'NET-04',
+  crypto_context:       'NATO',
+  comm_state:           'IDLE',
+  comm_mode:            'CT',
+  comm_radio_silence:   false,
+  // Waveform management page parameters
+  waveform_stato:       'RUNNING',
+  waveform_versione:    '3.2.1',
+  preset_stato:         'SAVED',
+  preset_descrizione:   'Standard NATO interoperability profile',
 }
 
 const VALID_LOGIN_NAME     = 'admin'
@@ -189,6 +205,14 @@ const generateTick = () => {
     const newFuel = Math.max(0, apparatusState.livello_carburante - 1)
     setIfChanged('livello_carburante', newFuel)
     setIfChanged('allarme_carburante', newFuel < 20)
+  }
+
+  // Comm state simulation: rotate IDLE→RX→IDLE→TX every few ticks
+  if (!apparatusState.comm_radio_silence) {
+    if (Math.random() < 0.25) {
+      const states = ['IDLE', 'IDLE', 'IDLE', 'RX', 'TX']
+      setIfChanged('comm_state', states[Math.floor(Math.random() * states.length)])
+    }
   }
 
   return updates
