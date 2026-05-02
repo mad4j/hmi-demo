@@ -1,22 +1,27 @@
 <script setup>
 import StatusIconBar from './StatusIconBar.vue'
 import IconCommState from './icons/IconCommState.vue'
+import AppIcon from './AppIcon.vue'
 import { useHeaderState } from '../composables/useHeaderState.js'
 import { useMenuNavigation } from '../composables/useMenuNavigation.js'
+import { useEquipmentGateway } from '../composables/useEquipmentGateway.js'
 
 const {
   activeWaveformName,
   activePresetName,
   activeChannelLabel,
   cryptoAlgorithm,
-  cryptoKeyId,
   cryptoContext,
   commIconVariant,
   missionTimeTod,
-  missionTimeZone,
 } = useHeaderState()
 
 const { navigateToPage } = useMenuNavigation()
+const { sendCommand } = useEquipmentGateway()
+
+const triggerEmergencyZeroization = async () => {
+  await sendCommand('KEY_ZEROIZE')
+}
 
 const commLabel = {
   'tx':            'TX – Transmitting',
@@ -40,8 +45,12 @@ const commLabel = {
       @click="navigateToPage('waveform-attiva')"
     >
       <IconCommState :variant="commIconVariant" :size="24" />
-      <span class="comm-channel-value">{{ activeChannelLabel }}</span>
     </button>
+
+    <!-- Zone 0b: Dedicated channel area -->
+    <div class="zone zone-channel" aria-label="Active channel">
+      <span class="channel-value">{{ activeChannelLabel }}</span>
+    </div>
 
     <!-- Zone 1: Active waveform/preset (button fills remaining space) -->
     <div class="zone zone-identity-wrap">
@@ -53,15 +62,24 @@ const commLabel = {
 
     
 
-    <!-- Zone 2: Crypto info (2 rows: algo·key / ctx badge) -->
+    <!-- Zone 2: Crypto info (2 rows: algo / ctx badge) -->
     <div class="zone zone-crypto" aria-label="Crypto state">
       <div class="crypto-main-row">
         <span class="crypto-algo">{{ cryptoAlgorithm }}</span>
-        <span class="crypto-sep">·</span>
-        <span class="crypto-key">{{ cryptoKeyId }}</span>
       </div>
       <span class="crypto-ctx" :class="`ctx--${(cryptoContext ?? '').toLowerCase()}`">{{ cryptoContext }}</span>
     </div>
+
+    <!-- Zone 2b: Emergency zeroization -->
+    <button
+      class="zone zone-zeroize si-btn si--error"
+      type="button"
+      title="Emergency zeroization"
+      aria-label="Emergency zeroization"
+      @click="triggerEmergencyZeroization"
+    >
+      <AppIcon name="reset" :size="22" />
+    </button>
 
     <!-- Zone 3: Status icons -->
     <div class="zone zone-status">
@@ -70,7 +88,6 @@ const commLabel = {
 
     <!-- Zone 4: Mission time – far right -->
     <div class="zone zone-time" aria-label="Mission time">
-      
       <span class="time-value">{{ missionTimeTod }}</span>
     </div>
 
@@ -80,7 +97,7 @@ const commLabel = {
 <style scoped>
 .bar {
   display: grid;
-  grid-template-columns: auto 1fr auto auto auto;
+  grid-template-columns: auto auto 1fr auto auto auto auto;
   align-items: center;
   gap: 0;
   padding: 0 0.5rem 0 0;
@@ -96,6 +113,7 @@ const commLabel = {
   display: flex;
   align-items: center;
   min-width: 0;
+  height: 100%;
 }
 
 /* ── Zone 1: Identity (button, reset styles) ── */
@@ -160,14 +178,14 @@ const commLabel = {
   justify-content: center;
   gap: 0;
   line-height: 1.2;
-  padding: 0 0.75rem;
+  padding: 0 0.65rem;
   border-right: 1px solid var(--border);
 }
 
 .crypto-main-row {
   display: flex;
   align-items: baseline;
-  gap: 0.3rem;
+  gap: 0.18rem;
   font-size: 0.875rem;
   font-family: ui-monospace, 'Cascadia Code', monospace;
   letter-spacing: 0.04em;
@@ -179,13 +197,58 @@ const commLabel = {
   color: var(--text-primary);
 }
 
-.crypto-sep {
-  color: var(--text-secondary);
-  font-size: 0.75rem;
+.zone-zeroize {
+  padding: 0;
+  margin: 0 0.12rem;
 }
 
-.crypto-key {
-  color: var(--text-secondary);
+.si-btn {
+  width: 3rem;
+  height: 3rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.35rem;
+  border: 1px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
+}
+
+.si-btn:active {
+  background: var(--btn-active-bg);
+}
+
+.si--error {
+  color: var(--status-critical-color);
+  border-color: var(--status-critical-border);
+  background: var(--status-critical-bg);
+}
+
+.zone-channel {
+  justify-content: center;
+  height: 100%;
+  min-width: 3.2rem;
+  padding: 0 0.4rem;
+  border-right: 1px solid var(--border);
+}
+
+.channel-value {
+  font-weight: 700;
+  font-size: 1.0rem;
+  font-family: ui-monospace, 'Cascadia Code', monospace;
+  color: var(--text-primary);
+  white-space: nowrap;
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+
+.zone-zeroize:hover {
+  background: var(--btn-active-bg);
+}
+
+.zone-zeroize:active {
+  opacity: 0.82;
 }
 
 .crypto-ctx {
@@ -263,27 +326,16 @@ const commLabel = {
 /* ── Comm icon button – far left ── */
 .comm-icon-wrap {
   display: inline-flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: 0.1rem;
-  width: 4.2rem;
+  width: 3rem;
   height: 100%;
   border-radius: 0;
   border: none;
   border-right: 1px solid var(--border);
   cursor: pointer;
   transition: background 0.12s, color 0.12s;
-}
-
-.comm-channel-value {
-  font-weight: 700;
-  font-size: 0.78rem;
-  font-family: ui-monospace, 'Cascadia Code', monospace;
-  color: currentColor;
-  white-space: nowrap;
-  letter-spacing: 0.04em;
-  line-height: 1;
 }
 
 /* Comm state colours */
