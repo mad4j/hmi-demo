@@ -19,12 +19,11 @@ The HMI occupies the full viewport. It is rendered by the `HmiShell` component u
 ```
 ┌──────────────────────────────────────────────────────────────────┐
 │  AREA 1 – HEADER                                    (3.5 rem)    │
-│  ┌──────────────────┐  ┌──────────────┐  ┌────────────────────┐  │
-│  │  Zone 1 Identity │  │  Zone 2      │  │  Zone 3 Comm +     │  │
-│  │  SATURN-V        │  │  AES-256     │  │  [CommIcon]        │  │
-│  │  NATO-BASELINE   │  │  NET-04      │  │  [Fault][GPS]...   │  │
-│  │                  │  │  [NATO]      │  │                    │  │
-│  └──────────────────┘  └──────────────┘  └────────────────────┘  │
+│  ┌─────┐ ┌──────┐ ┌───────────────┐ ┌─────────┐ ┌───┐ ┌───────┐ │  │
+│  │Comm │ │ CH12 │ │ Zone 1 Identity│ │ Zone 2  │ │EZ │ │Status │ │  │
+│  │Icon │ │Area  │ │ SATURN-V       │ │ AES-256 │ │ X │ │Icons  │ │  │
+│  │     │ │      │ │ NATO-BASELINE  │ │ [NATO]  │ │   │ │ |14:32│ │  │
+│  └─────┘ └──────┘ └───────────────┘ └─────────┘ └───┘ └───────┘ │  │
 ├──────────────────────────────────────────────────────────────────┤
 │  AREA 2 – NOTIFICATION BAR                          (auto)       │
 │  ┌──────────────────────────────────────────────────────────┐    │
@@ -81,7 +80,15 @@ The HMI occupies the full viewport. It is rendered by the `HmiShell` component u
 | Background  | `--bg-bar` (theme-dependent)       |
 | Border      | Bottom border `--border`           |
 
-**Content – three persistent zones (CSS grid: `1fr auto 1fr`):**
+**Content – persistent zones (left to right):**
+
+- Communication status button (icon only)
+- Dedicated channel area (`CHxx`)
+- Zone 1 Identity
+- Zone 2 Crypto
+- Emergency zeroization button
+- Status icon bar
+- Mission time
 
 **Zone 1 – Identity (left)**
 - Application label (`application.yaml → name`): persistent identifier, 0.75 rem, secondary colour.
@@ -90,11 +97,10 @@ The HMI occupies the full viewport. It is rendered by the `HmiShell` component u
 
 **Zone 2 – Crypto (centre, monospace)**
 - `crypto_algorithm`: cipher name (e.g. `AES-256`), 0.875 rem, bold, primary colour.
-- `crypto_key_id`: key tag (e.g. `NET-04`), 0.875 rem, secondary colour.
 - `crypto_context`: operational context badge (`NATO` blue / `NAZ` green), 0.875 rem.
 Updated within 500 ms of any crypto state change (HMI-REQ-040).
 
-**Zone 3 – Communication + Status Icons (right)**
+**Communication button (left edge)**
 - **Communication icon** (`IconCommState.vue`): single synthesised icon derived from `comm_state`, `comm_mode`, `comm_radio_silence`. Five variants with distinct colour coding:
 
   | Variant         | Trigger condition                        | Colour token                  |
@@ -105,7 +111,17 @@ Updated within 500 ms of any crypto state change (HMI-REQ-040).
   | `tx`            | comm_state = TX                          | `--text-blue` / active bg     |
   | `radio-silence` | comm_radio_silence = true – highest pri. | `--status-critical-color` + blink |
 
-  Icon carries `aria-label` and `title` with full human-readable state text. Touch target: 3.2 rem × 3 rem (≥ 48 × 48 px – HMI-REQ-010 compliant).
+  Icon carries `aria-label` and `title` with full human-readable state text.
+
+- **Active channel label** (`active_channel_number`), formatted as `CHxx`, is shown in a dedicated adjacent header area to keep comm-state indication and channel readability visually separated.
+
+**Emergency zeroization control (between crypto and status)**
+- Dedicated emergency button with high-salience critical styling and reset/cross icon.
+- Uses the same icon-button implementation and size as `StatusIconBar` buttons (3 rem × 3 rem) to guarantee visual consistency.
+- Triggers `KEY_ZEROIZE` command through the equipment gateway.
+- Always visible in header to support immediate execution semantics.
+
+**Zone 3 – Status icons (right)**
 
 - **Status Icon Bar** (`StatusIconBar.vue`): unchanged, four icon buttons driven by `platform-status-icons.yaml`:
 
@@ -115,6 +131,9 @@ Updated within 500 ms of any crypto state change (HMI-REQ-040).
   | Channel | `status_channel` | `info` (System Info)                |
   | GPS     | `status_gps`     | `gps` (GPS settings)                |
   | Login   | `status_login`   | `login` / `logout`                  |
+
+**Mission time divider note**
+- The separator between status icons and mission time is rendered as a full-height vertical divider.
 
 **Font-size compliance note (HMI-REQ-011):**
 The waveform name is rendered at 1 rem = 16 px (fully compliant). Preset name and crypto rows are rendered at 0.875 rem ≈ 14 px. This is a minor deviation from the 16 px minimum, accepted as a design constraint due to the three-row density within a fixed-height header. Both values exceed the 3:1 large-text contrast threshold and remain readable at 50 cm in normal illumination conditions.
@@ -320,7 +339,7 @@ All colour values are expressed as CSS custom properties (`--bg-main`, `--text-p
 | Component / Composable              | Area     | Responsibility                                      |
 |-------------------------------------|----------|-----------------------------------------------------|
 | `HmiShell.vue`                      | Shell    | CSS grid layout; applies `data-theme` attribute     |
-| `HmiHeader.vue`                     | Area 1   | Application name + status icon bar                  |
+| `HmiHeader.vue`                     | Area 1   | Comm state + identity + crypto + zeroize + status + time |
 | `StatusIconBar.vue`                 | Area 1   | Real-time status icons; navigate on click           |
 | `HmiNotificationBar.vue`            | Area 2   | Priority-ordered feedback messages                  |
 | `PageParametersView.vue`            | Area 3   | Parameter grid; panel navigation; transaction actions |
