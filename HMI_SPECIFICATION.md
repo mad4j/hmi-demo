@@ -23,7 +23,7 @@ The HMI occupies the full viewport. It is rendered by the `HmiShell` component u
 │  │Comm  │ │ CH3  │ │ SATURN-V              │ │ AES-256  │ │🔄│ │Icons │ │14:32 │ │
 │  │[icon]│ │      │ │ NATO-BASELINE         │ │ [NATO]   │ │  │ │      │ │      │ │
 │  └──────┘ └──────┘ └───────────────────────┘ └──────────┘ └──┘ └──────┘ └──────┘ │
-│  CommIcon  Channel     Identity (1fr)           Crypto    Zero  Status   Time    │
+│  Zone 0   Zone 1      Zone 2 (1fr)             Zone 3   Zone 4 Zone 5  Zone 6  │
 ├────────────────────────────────────────────────────────────────────────────┤
 │  AREA 2 – NOTIFICATION BAR                                    (auto)       │
 │  ┌────────────────────────────────────────────────────────────────────┐    │
@@ -50,7 +50,7 @@ The HMI occupies the full viewport. It is rendered by the `HmiShell` component u
 │  │  └──────────────┘  └──────────────┘                               │   │
 │  └────────────────────────────────────────────────────────────────────┘   │
 │                                                                            │
-│  ┌ Settings page (tema) ──────────────────────────────────────────────┐   │
+│  ┌ Settings page (`tema`) ──────────────────────────────────────────────┐   │
 │  │  ┌──────────────────────────────┐                                  │   │
 │  │  │ Theme: DARK / LIGHT / NVIS   │   (enum selector widget)         │   │
 │  │  └──────────────────────────────┘                                  │   │
@@ -82,7 +82,7 @@ The HMI occupies the full viewport. It is rendered by the `HmiShell` component u
 
 **Content – seven zones (CSS grid: `auto auto 1fr auto auto auto auto`):**
 
-The header is laid out as a horizontal row of seven zones from left to right:
+The header is laid out as a horizontal row of seven zones (0–6) from left to right:
 
 ---
 
@@ -104,14 +104,14 @@ The header is laid out as a horizontal row of seven zones from left to right:
 
 ---
 
-**Zone 0b – Channel Indicator**
+**Zone 1 – Channel Indicator**
 - Shows the active channel number as `CHx` (e.g. `CH3`), derived from `active_channel_number`.
 - Min-width: 3.2 rem; monospace font, 1 rem, bold.
 - Right border `--border`; right-aligned inside the zone.
 
 ---
 
-**Zone 1 – Identity (waveform + preset)**
+**Zone 2 – Identity (waveform + preset)**
 - Fills the remaining horizontal space (`flex: 1fr`).
 - Rendered as a clickable button; navigates to `waveform-attiva` on click.
 - Right border `--border` separates it from the crypto zone.
@@ -121,7 +121,7 @@ The header is laid out as a horizontal row of seven zones from left to right:
 
 ---
 
-**Zone 2 – Crypto State (monospace, centred)**
+**Zone 3 – Crypto State (monospace, centred)**
 - Right border `--border`.
 - Two stacked rows:
   - **Algorithm** (`crypto_algorithm`): e.g. `AES-256`, 0.875 rem, bold, primary colour, monospace.
@@ -129,14 +129,14 @@ The header is laid out as a horizontal row of seven zones from left to right:
 
 ---
 
-**Zone 2b – Emergency Zeroization Button**
+**Zone 4 – Emergency Zeroization Button**
 - A compact icon button (3 rem × 3 rem) styled in `--status-critical-color` with critical background.
 - Executes the named command `KEY_ZEROIZE` via `sendCommand()` on click.
 - `title` and `aria-label`: `"Emergency zeroization"`.
 
 ---
 
-**Zone 3 – Status Icon Bar**
+**Zone 5 – Status Icon Bar**
 - Contains `StatusIconBar.vue` – four icon buttons driven by `platform-status-icons.yaml`.
 
   | Icon    | Parameter ID     | Default target page on click | State-dependent target          |
@@ -148,7 +148,7 @@ The header is laid out as a horizontal row of seven zones from left to right:
 
 ---
 
-**Zone 4 – Mission Time (far right)**
+**Zone 6 – Mission Time (far right)**
 - Left border `--border`; aligned to the right edge.
 - Displays `missionTimeTod` (HH:MM format) derived from the apparatus parameter `ora_sistema`.
 - The clock is kept live by a 1-second local interval; it re-synchronises with the apparatus every 60 seconds.
@@ -257,7 +257,7 @@ Implemented by `PageParametersView.vue`. Contains:
   
   The `goOnApply` page property controls post-submit navigation: `STAY_HERE` (default), `GO_HOME`, or `GO_BACK`.
 
-#### 3.3.3 Settings Page (Theme Selector)
+#### 3.3.3 Settings Page (Theme Selector, page ID: `tema`)
 
 Shown when the current page ID is `tema`.
 
