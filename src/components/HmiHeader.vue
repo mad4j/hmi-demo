@@ -1,7 +1,6 @@
 <script setup>
 import StatusIconBar from './StatusIconBar.vue'
 import IconCommState from './icons/IconCommState.vue'
-import AppIcon from './AppIcon.vue'
 import { useHeaderState } from '../composables/useHeaderState.js'
 import { useMenuNavigation } from '../composables/useMenuNavigation.js'
 import { useEquipmentGateway } from '../composables/useEquipmentGateway.js'
@@ -44,7 +43,7 @@ const commLabel = {
       type="button"
       @click="navigateToPage('waveform-attiva')"
     >
-      <IconCommState :variant="commIconVariant" :size="24" />
+      <IconCommState :variant="commIconVariant" :size="30" />
     </button>
 
     <!-- Zone 0b: Dedicated channel area -->
@@ -70,16 +69,18 @@ const commLabel = {
       <span class="crypto-ctx" :class="`ctx--${(cryptoContext ?? '').toLowerCase()}`">{{ cryptoContext }}</span>
     </div>
 
-    <!-- Zone 2b: Emergency zeroization -->
-    <button
-      class="zone zone-zeroize si-btn si--error"
-      type="button"
-      title="Emergency zeroization"
-      aria-label="Emergency zeroization"
-      @click="triggerEmergencyZeroization"
-    >
-      <AppIcon name="reset" :size="22" />
-    </button>
+    <!-- Zone 2b: Emergency zeroization (dedicated area) -->
+    <div class="zone zone-zeroize-area" aria-label="Zeroization area">
+      <button
+        class="zone-zeroize si-btn si--error"
+        type="button"
+        title="Emergency zeroization"
+        aria-label="Emergency zeroization"
+        @click="triggerEmergencyZeroization"
+      >
+        <span class="zeroize-symbol" aria-hidden="true">Z</span>
+      </button>
+    </div>
 
     <!-- Zone 3: Status icons -->
     <div class="zone zone-status">
@@ -199,12 +200,18 @@ const commLabel = {
 
 .zone-zeroize {
   padding: 0;
-  margin: 0 0.12rem;
+}
+
+.zone-zeroize-area {
+  justify-content: center;
+  padding: 0 1.0rem;
+  border-right: 1px solid var(--border);
 }
 
 .si-btn {
-  width: 3rem;
-  height: 3rem;
+  min-width: 3.25rem;
+  height: 2.4rem;
+  padding: 0 1rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -223,6 +230,12 @@ const commLabel = {
   color: var(--status-critical-color);
   border-color: var(--status-critical-border);
   background: var(--status-critical-bg);
+}
+
+.zeroize-symbol {
+  font-weight: 800;
+  font-size: 1.05rem;
+  line-height: 1;
 }
 
 .zone-channel {
@@ -275,7 +288,7 @@ const commLabel = {
 /* ── Zone 3: Status icons ── */
 .zone-status {
   justify-content: flex-end;
-  padding-left: 0;
+  padding: 0 0.4rem 0 0.35rem;
 }
 
 /* ── Zone 4: Mission time (TOD) ── */
@@ -283,7 +296,7 @@ const commLabel = {
   flex-direction: column;
   align-items: flex-end;
   justify-content: center;
-  padding: 0 0.4rem 0 0.35rem;
+  padding: 0 0.4rem;
   border-left: 1px solid var(--border);
   font-family: ui-monospace, 'Cascadia Code', monospace;
 }
@@ -329,13 +342,20 @@ const commLabel = {
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  width: 3rem;
+  width: 3.25rem;
   height: 100%;
   border-radius: 0;
   border: none;
   border-right: 1px solid var(--border);
   cursor: pointer;
   transition: background 0.12s, color 0.12s;
+}
+
+.comm-icon-wrap :deep(svg) {
+  width: 100%;
+  height: 100%;
+  padding: 0.2rem;
+  box-sizing: border-box;
 }
 
 /* Comm state colours */
