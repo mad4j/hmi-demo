@@ -152,6 +152,14 @@ Critical alerts SHALL require explicit operator acknowledgement before dismissal
 - Acceptance: No auto-dismiss permitted for CRITICAL severity.
 - Rationale: Mandatory acknowledgment ensures critical events are consciously assessed before continuation.
 
+#### HMI-REQ-055 - Non-blocking presentation of informational notifications
+
+Notifications of NORMAL or INFO severity SHALL be presented in a non-blocking, non-modal manner that does not interrupt the operator's current interaction flow, does not require explicit acknowledgement, and auto-dismisses after a configurable display period.
+
+- Verification: I + T
+- Acceptance: NORMAL/INFO notifications do not open a modal overlay; operator can continue interacting with any control while the notification is visible; notification auto-dismisses within a configurable timeout (default: 5 s); no confirmation action is required from the operator.
+- Rationale: Blocking an operator for informational feedback imposes unnecessary workflow interruption and increases task completion time. Non-blocking presentation ensures that low-priority status updates reach the operator without preempting ongoing mission-critical interactions, consistent with the graduated urgency model established by HMI-REQ-006 and HMI-REQ-007.
+
 #### HMI-REQ-008 - Multimodal transmission-start feedback !!!TBV
 
 The system SHALL provide at least two feedback modalities when transmission starts (e.g., visual and audible/haptic where available).
@@ -540,6 +548,7 @@ Traceability type legend:
 | HMI-REQ-005 | SPEC-001, SPEC-009 | ISO 9241-110 (feedback and responsiveness dialogue principles) | Derived |
 | HMI-REQ-006 | SPEC-001, SPEC-002 | MIL-STD-1472H, section 5.2.3; DEF STAN 00-250, section 6.3 | Direct |
 | HMI-REQ-007 | SPEC-001, SPEC-003 | STANAG 4586, section 6.4 (operator confirmation/acknowledgement intent) | Direct |
+| HMI-REQ-055 | SPEC-001, SPEC-002, SPEC-009 | MIL-STD-1472H, section 5.2.3 (information coding and graduated urgency); DEF STAN 00-250, section 6.3 (alarm and notification classification); ISO 9241-110 (controllability and non-interruptive feedback dialogue principles) | Derived |
 | HMI-REQ-008 | SPEC-001, SPEC-009 | ISO 9241-110 (self-descriptiveness and feedback principles) | Derived |
 | HMI-REQ-009 | SPEC-001 | MIL-STD-1472H, section 5.2.2.4 | Direct |
 | HMI-REQ-010 | SPEC-001 | MIL-STD-1472H, section 5.8.6 | Direct |
