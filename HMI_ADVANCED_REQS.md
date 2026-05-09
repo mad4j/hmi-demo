@@ -38,7 +38,7 @@ The system SHALL continuously display the active channel identifier through a pe
 - Acceptance: Operator recognition <= 1 s in normal operating conditions.
 - Rationale: Immediate channel awareness reduces selection errors and communication delays.
 
-#### HMI-REQ-047 - Persistent active waveform indicator
+#### HMI-REQ-003 - Persistent active waveform indicator
 
 The system SHALL continuously display the name or identifier of the waveform (or communication application) currently loaded and operative, in a dedicated persistent visual element visible on every screen.
 
@@ -46,7 +46,7 @@ The system SHALL continuously display the name or identifier of the waveform (or
 - Acceptance: Waveform name updates within 500 ms of a waveform load or switch event; the displayed label matches the canonical waveform identifier reported by the SDR runtime; visible on 100% of screens.
 - Rationale: Continuous waveform identification prevents operators from issuing channel or configuration commands that are incompatible with the active air interface, reducing misconfiguration risk during dynamic mission phases.
 
-#### HMI-REQ-048 - Persistent active configuration preset indicator
+#### HMI-REQ-004 - Persistent active configuration preset indicator
 
 The system SHALL continuously display the name or identifier of the configuration preset currently operative, in a dedicated persistent visual element visible on every screen.
 
@@ -54,7 +54,7 @@ The system SHALL continuously display the name or identifier of the configuratio
 - Acceptance: Preset name updates within 500 ms of a preset load or change event; a visual distinction (e.g., modified marker) is shown when the running configuration has been altered relative to the saved preset state; visible on 100% of screens.
 - Rationale: Explicit preset identification allows operators to verify at a glance that the intended configuration is active, and to detect unsaved modifications that could affect interoperability or mission compliance.
 
-#### HMI-REQ-004 - System-under-control indicator
+#### HMI-REQ-005 - System-under-control indicator
 
 The system SHALL continuously indicate control authority state: LOCAL_OPERATOR, REMOTE_OPERATOR, AUTONOMOUS.
 
@@ -62,7 +62,7 @@ The system SHALL continuously indicate control authority state: LOCAL_OPERATOR, 
 - Acceptance: Indicator is driven by real-time platform status and updates <= 500 ms from data change.
 - Rationale: Explicit control authority indication prevents unsafe actions when command ownership changes (e.g., remote takeover from an SNMP-attached control station)
 
-#### HMI-REQ-040 - Persistent cryptographic state and configuration indicator
+#### HMI-REQ-006 - Persistent cryptographic state and configuration indicator
 
 The system SHALL continuously display the active cryptographic state and configuration (e.g., algorithm identifier, key tag/ID, and operational context, such as NATO or NATIONAL) in a dedicated persistent status region visible on every screen.
 
@@ -70,7 +70,7 @@ The system SHALL continuously display the active cryptographic state and configu
 - Acceptance: Cryptographic state indicator reflects the current hardware/software crypto engine status and updates <= 500 ms from any state change; visible on 100% of screens.
 - Rationale: Continuous visibility of the operative cryptographic configuration prevents inadvertent transmission under an incorrect or unintended security posture.
 
-#### HMI-REQ-041 - Plain-text / Cipher-text communication mode indicator
+#### HMI-REQ-007 - Plain-text / Cipher-text communication mode indicator
 
 The system SHALL display a persistent, unambiguous indicator that distinguishes whether the active communication link is operating in plain-text mode (PT) or cipher-text mode (CT), using distinct visual coding (e.g., dedicated icon, label, and/or color token) that cannot be confused with any other status element.
 
@@ -78,7 +78,7 @@ The system SHALL display a persistent, unambiguous indicator that distinguishes 
 - Acceptance: PT/CT indicator is legible at normal operator viewing distance; updates within 200 ms of mode change; a CAUTION-level alert is raised whenever the link transitions to or remains in PT mode during a mission-active state.
 - Rationale: Explicit PT/CT differentiation prevents operators from transmitting sensitive information over an unencrypted link, reducing the risk of unintended emission of classified or sensitive traffic.
 
-#### HMI-REQ-042 - Persistent system fault state indicator
+#### HMI-REQ-008 - Persistent system fault state indicator
 
 The system SHALL continuously display a FAULT condition indicator whenever one or more internal subsystems (RF, crypto, power, DSP) report a fault state, using a dedicated visual element distinct from general status icons.
 
@@ -86,7 +86,7 @@ The system SHALL continuously display a FAULT condition indicator whenever one o
 - Acceptance: FAULT indicator appears within 500 ms of fault detection and remains visible until the fault is cleared; the indicator is unambiguously distinguishable from CAUTION and ALARM states.
 - Rationale: An explicit FAULT indicator enables operators to immediately recognise degraded system integrity and take corrective action without having to navigate to a diagnostic page.
 
-#### HMI-REQ-043 - Persistent radio silence state indicator
+#### HMI-REQ-009 - Persistent radio silence state indicator
 
 The system SHALL continuously display a RADIO SILENCE indicator whenever both transmission (Tx) and reception (Rx) are disabled, using a dedicated, high-salience visual element visible on every screen.
 
@@ -94,7 +94,7 @@ The system SHALL continuously display a RADIO SILENCE indicator whenever both tr
 - Acceptance: RADIO SILENCE indicator appears within 200 ms of entering the radio-silence state and is immediately distinguishable from the standard IDLE communication state; a CAUTION-level alert is raised on entry and on exit from radio-silence mode.
 - Rationale: Unambiguous radio-silence indication prevents operators from mistaking an inhibited link for a functioning idle link, reducing the risk of missed communications or unintended RF emission.
 
-#### HMI-REQ-044 - Persistent GPS connectivity indicator
+#### HMI-REQ-010 - Persistent GPS connectivity indicator
 
 The system SHALL continuously display GPS connectivity status (ACQUIRED, DEGRADED, LOST) in a persistent visual element on every screen, updated from the active positioning subsystem.
 
@@ -102,7 +102,7 @@ The system SHALL continuously display GPS connectivity status (ACQUIRED, DEGRADE
 - Acceptance: GPS status indicator updates within 500 ms of a change in satellite lock or signal quality; DEGRADED and LOST states are coded with distinct visual treatment (amber and red respectively, or NVG-safe equivalents).
 - Rationale: Continuous GPS status visibility is essential for position-dependent mission functions; silent GPS loss can lead to incorrect reporting or navigation decisions.
 
-#### HMI-REQ-045 - Persistent mission time display
+#### HMI-REQ-011 - Persistent mission time display
 
 The system SHALL continuously display mission elapsed time (MET) or mission time-of-day (TOD) in a dedicated persistent region visible on every screen, synchronized to the platform time reference.
 
@@ -110,7 +110,7 @@ The system SHALL continuously display mission elapsed time (MET) or mission time
 - Acceptance: Mission time updates at least once per second; deviation from authoritative time reference is <= 1 s under normal operating conditions; the display remains visible regardless of the active page or active modal overlay.
 - Rationale: A persistent mission time reference supports time-critical coordination, log correlation, and situational awareness without requiring navigation away from the current task.
 
-#### HMI-REQ-046 - Persistent power supply and battery state indicator
+#### HMI-REQ-012 - Persistent power supply and battery state indicator
 
 The system SHALL continuously display the current power supply source (EXTERNAL / BATTERY) and, when operating on battery, the estimated remaining charge level (expressed as a percentage or discrete step scale) in a dedicated persistent visual element visible on every screen.
 
@@ -118,7 +118,7 @@ The system SHALL continuously display the current power supply source (EXTERNAL 
 - Acceptance: Power source and charge level indicators update within 1 s of a change in supply source or a >= 1% change in charge level; a CAUTION-level alert is raised when battery charge falls below 20%; a CRITICAL-level alert is raised when battery charge falls below 10%.
 - Rationale: Continuous power status visibility enables operators to anticipate mission endurance limits and take preventive action (e.g., switch to external power or terminate non-essential functions) before a forced shutdown interrupts communications.
 
-#### HMI-REQ-003 - Persistent system status icons
+#### HMI-REQ-013 - Persistent system status icons
 
 The system SHALL permanently display global system status indicators using consistent iconography and three-level color semantics (NORMAL/CAUTION/ALARM mapped to green/amber/red or equivalent NVG-safe palette).
 
@@ -128,7 +128,7 @@ The system SHALL permanently display global system status indicators using consi
 
 ### 3.2 Feedback, Alerts, and Human Factors
 
-#### HMI-REQ-005 - Input feedback latency
+#### HMI-REQ-014 - Input feedback latency
 
 The system SHALL provide perceptible feedback for every operator input within 100 ms.
 
@@ -136,7 +136,7 @@ The system SHALL provide perceptible feedback for every operator input within 10
 - Acceptance: >= 99% of interactions satisfy latency target.
 - Rationale: Fast feedback confirms command reception and lowers repeated input risk. Time consuming operations (e.g., waveform switch, configuration changes) should provide immediate feedback of command acceptance followed by progress indication until completion.
 
-#### HMI-REQ-006 - Severity-classified notifications
+#### HMI-REQ-015 - Severity-classified notifications
 
 The system SHALL classify and render feedback messages with distinct severity levels: NORMAL, SUCCESS, WARNING, ERROR, CRITICAL.
 
@@ -144,7 +144,7 @@ The system SHALL classify and render feedback messages with distinct severity le
 - Acceptance: Each severity has unique and consistent visual treatment. Operator recognition <= 1 s in normal operating conditions.
 - Rationale: Severity differentiation helps operators prioritize attention and response.
 
-#### HMI-REQ-007 - Critical alert acknowledgement
+#### HMI-REQ-016 - Critical alert acknowledgement
 
 Critical alerts SHALL require explicit operator acknowledgement before dismissal.
 
@@ -152,15 +152,15 @@ Critical alerts SHALL require explicit operator acknowledgement before dismissal
 - Acceptance: No auto-dismiss permitted for CRITICAL severity.
 - Rationale: Mandatory acknowledgment ensures critical events are consciously assessed before continuation.
 
-#### HMI-REQ-055 - Non-blocking presentation of informational notifications
+#### HMI-REQ-017 - Non-blocking presentation of informational notifications
 
 Notifications of NORMAL or INFO severity SHALL be presented in a non-blocking, non-modal manner that does not interrupt the operator's current interaction flow, does not require explicit acknowledgement, and auto-dismisses after a configurable display period.
 
 - Verification: I + T
 - Acceptance: NORMAL/INFO notifications do not open a modal overlay; operator can continue interacting with any control while the notification is visible; notification auto-dismisses within a configurable timeout (default: 5 s); no confirmation action is required from the operator.
-- Rationale: Blocking an operator for informational feedback imposes unnecessary workflow interruption and increases task completion time. Non-blocking presentation ensures that low-priority status updates reach the operator without preempting ongoing mission-critical interactions, consistent with the graduated urgency model established by HMI-REQ-006 and HMI-REQ-007.
+- Rationale: Blocking an operator for informational feedback imposes unnecessary workflow interruption and increases task completion time. Non-blocking presentation ensures that low-priority status updates reach the operator without preempting ongoing mission-critical interactions, consistent with the graduated urgency model established by HMI-REQ-015 and HMI-REQ-016.
 
-#### HMI-REQ-008 - Multimodal transmission-start feedback !!!TBV
+#### HMI-REQ-018 - Multimodal transmission-start feedback !!!TBV
 
 The system SHALL provide at least two feedback modalities when transmission starts (e.g., visual and audible/haptic where available).
 
@@ -168,7 +168,7 @@ The system SHALL provide at least two feedback modalities when transmission star
 - Acceptance: Event confirmation remains detectable under high workload conditions.
 - Rationale: Multimodal confirmation improves detectability in noisy, vibrating, or visually saturated environments.
 
-#### HMI-REQ-009 - Read-only field distinction
+#### HMI-REQ-019 - Read-only field distinction
 
 The system SHALL clearly distinguish read-only parameters from editable controls using iconography and/or visual styling.
 
@@ -176,7 +176,7 @@ The system SHALL clearly distinguish read-only parameters from editable controls
 - Acceptance: Read-only controls expose a non-editable affordance and cannot be mistaken for writable inputs.
 - Rationale: Clear read-only affordances prevent unintended modification attempts.
 
-#### HMI-REQ-010 - Minimum touch target size
+#### HMI-REQ-020 - Minimum touch target size
 
 All interactive controls SHALL provide a hit area of at least 48 px x 48 px, referenced at 96 dpi.
 
@@ -184,7 +184,7 @@ All interactive controls SHALL provide a hit area of at least 48 px x 48 px, ref
 - Acceptance: 100% of actionable controls meet minimum size.
 - Rationale: Minimum hit areas reduce input errors during motion, stress, or gloved operation.
 
-#### HMI-REQ-011 - Minimum operational font size
+#### HMI-REQ-021 - Minimum operational font size
 
 Operationally relevant text SHALL use a minimum rendered size of 16 px equivalent, referenced at 96 dpi.
 
@@ -194,7 +194,7 @@ Operationally relevant text SHALL use a minimum rendered size of 16 px equivalen
 
 ### 3.3 Navigation and Interaction Efficiency
 
-#### HMI-REQ-012 - Navigation depth limit
+#### HMI-REQ-022 - Navigation depth limit
 
 Mission-critical functions SHALL be reachable within a maximum of 3 navigation levels.
 
@@ -202,7 +202,7 @@ Mission-critical functions SHALL be reachable within a maximum of 3 navigation l
 - Acceptance: No critical workflow exceeds depth 3.
 - Rationale: Bounded depth reduces cognitive load and shortens access time to critical functions.
 
-#### HMI-REQ-013 - Persistent navigation context and controls
+#### HMI-REQ-023 - Persistent navigation context and controls
 
 The system SHALL always show current navigation context and provide persistent Home and Back controls.
 
@@ -210,7 +210,7 @@ The system SHALL always show current navigation context and provide persistent H
 - Acceptance: Home available in all screens; Back valid except at root.
 - Rationale: Persistent context and recovery controls improve orientation and error recovery.
 
-#### HMI-REQ-014 - Consistent navigation patterns
+#### HMI-REQ-024 - Consistent navigation patterns
 
 Navigation behavior, labels, and transitions SHALL be consistent across all menus and pages.
 
@@ -218,7 +218,7 @@ Navigation behavior, labels, and transitions SHALL be consistent across all menu
 - Acceptance: No conflicting interaction patterns for equivalent actions.
 - Rationale: Consistent interaction patterns reduce training time and mode confusion.
 
-#### HMI-REQ-015 - Channel switch interaction budget
+#### HMI-REQ-025 - Channel switch interaction budget
 
 In case of multi-channel radio equipments, the system SHALL permit channel switching in no more than 2 discrete user actions.
 
@@ -226,15 +226,15 @@ In case of multi-channel radio equipments, the system SHALL permit channel switc
 - Acceptance: >= 95% users complete channel switch <= 3 s.
 - Rationale: Reduced interaction steps improve operational tempo and reduce mis-selections.
 
-#### HMI-REQ-050 - Active waveform switch capability and interaction budget
+#### HMI-REQ-026 - Active waveform switch capability and interaction budget
 
 The system SHALL permit switching the active waveform through an explicit operator workflow that is reachable within a maximum of 3 navigation levels and completable in no more than 3 discrete user actions from the waveform management entry point.
 
 - Verification: UT + T
-- Acceptance: >= 95% users complete waveform switch <= 10 s in nominal conditions; waveform switch progress is shown within 200 ms of command acceptance; the persistent active waveform indicator (HMI-REQ-047) updates <= 500 ms after apparatus confirmation.
+- Acceptance: >= 95% users complete waveform switch <= 10 s in nominal conditions; waveform switch progress is shown within 200 ms of command acceptance; the persistent active waveform indicator (HMI-REQ-003) updates <= 500 ms after apparatus confirmation.
 - Rationale: Operators must be able to intentionally change waveform under mission tempo while preserving control, predictability, and immediate state awareness.
 
-#### HMI-REQ-016 - Transmission initiation simplicity  !!!TBV
+#### HMI-REQ-027 - Transmission initiation simplicity  !!!TBV
 
 The system SHALL permit transmission initiation through a single operator action.
 
@@ -244,7 +244,7 @@ The system SHALL permit transmission initiation through a single operator action
 
 ### 3.4 Transaction Safety and Command Governance
 
-#### HMI-REQ-017 - Transaction draft model
+#### HMI-REQ-028 - Transaction draft model
 
 Command-capable pages SHALL implement local draft state, visible pending-change highlighting, explicit Reset (discard), and explicit Submit actions.
 
@@ -252,7 +252,7 @@ Command-capable pages SHALL implement local draft state, visible pending-change 
 - Acceptance: Draft changes are not committed until Submit.
 - Rationale: Draft semantics prevent unintended live changes and support deliberate commit behavior.
 
-#### HMI-REQ-018 - Rollback on backend failure
+#### HMI-REQ-029 - Rollback on backend failure
 
 If command submission fails, the system SHALL automatically roll back affected values to last committed state and notify the operator.
 
@@ -260,7 +260,7 @@ If command submission fails, the system SHALL automatically roll back affected v
 - Acceptance: No partial committed state remains visible after failure.
 - Rationale: Rollback preserves consistency and operator trust after failed transactions.
 
-#### HMI-REQ-019 - Two-step confirmation for high-impact commands
+#### HMI-REQ-030 - Two-step confirmation for high-impact commands
 
 Irreversible or high-impact commands SHALL require two-step operator confirmation before dispatch. Examples of commands that fall within this category include, but are not limited to:
 
@@ -271,7 +271,7 @@ Irreversible or high-impact commands SHALL require two-step operator confirmatio
 - Acceptance: Command dispatch blocked until confirmation sequence is complete.
 - Rationale: Two-step confirmation mitigates accidental activation of irreversible actions.
 
-#### HMI-REQ-020 - Functional segregation of critical controls
+#### HMI-REQ-031 - Functional segregation of critical controls
 
 Command/write controls SHALL be physically or logically segregated from monitoring/read-only information, and critical actions SHALL require explicit navigation and suitable privilege level.
 
@@ -279,7 +279,7 @@ Command/write controls SHALL be physically or logically segregated from monitori
 - Acceptance: Critical actions are not colocated at equivalent prominence with passive monitoring controls.
 - Rationale: Functional separation lowers inadvertent activation risk and supports defense-in-depth.
 
-#### HMI-REQ-021 - Transmission inhibit when encryption required !!!TBV
+#### HMI-REQ-032 - Transmission inhibit when encryption required !!!TBV
 
 The system SHALL inhibit transmission whenever mission policy requires encryption and encryption is not active.
 
@@ -287,7 +287,7 @@ The system SHALL inhibit transmission whenever mission policy requires encryptio
 - Acceptance: TX action blocked in all such states.
 - Rationale: Transmission inhibition enforces communication security policy in constrained scenarios.
 
-#### HMI-REQ-022 - Explicit encryption state indicator !!!RED
+#### HMI-REQ-033 - Explicit encryption state indicator !!!RED
 
 The system SHALL display encryption state using unambiguous encoding (SECURE/PLAIN) continuously during operation.
 
@@ -295,7 +295,7 @@ The system SHALL display encryption state using unambiguous encoding (SECURE/PLA
 - Acceptance: State visible and readable in all operational screens.
 - Rationale: Explicit crypto-state visibility supports correct tactical communication decisions.
 
-#### HMI-REQ-039 - Transmission inhibit during critical radio operations
+#### HMI-REQ-034 - Transmission inhibit during critical radio operations
 
 The system SHALL inhibit both Tx (outgoing transmission) and Rx (incoming reception) capabilities of the controlled radio apparatus whenever the apparatus signals that a critical operation requiring radio silence is active. During the inhibit period the system SHALL:
 
@@ -309,7 +309,7 @@ The system SHALL inhibit both Tx (outgoing transmission) and Rx (incoming recept
 - Acceptance: (a) Tx/Rx commands are blocked for the full duration of any active critical operation signaled by the apparatus; (b) the inhibit notification is visible and identifies the active critical operation; (c) no manual bypass path exists; (d) audit records are generated for each inhibit-start and inhibit-end event.
 - Rationale: Transmission or reception during critical radio operations can corrupt system state, expose key material, or produce inadvertent RF emissions that violate COMSEC and RF management procedures. Automatic inhibition with no operator override is a fundamental safety and security requirement for tactical radio systems operating under NATO COMSEC procedures and SDR software-update lifecycles.
 
-#### HMI-REQ-051 - Waveform deinstantiation precondition for administrative operations
+#### HMI-REQ-035 - Waveform deinstantiation precondition for administrative operations
 
 For administrative operations that modify executable radio software state (including, but not limited to, firmware update, platform software update, waveform software load/update/remove), the system SHALL enforce waveform deinstantiation (no active waveform instance) before operation start, consistent with SCA lifecycle constraints.
 
@@ -325,25 +325,25 @@ During this precondition the system SHALL:
 - Acceptance: (a) administrative operation dispatch is rejected whenever an active waveform instance exists; (b) operation dispatch succeeds only after confirmed deinstantiation; (c) Tx/Rx remain inhibited throughout the operation; (d) audit entries are generated for each operation with all mandatory fields.
 - Rationale: Enforcing waveform deinstantiation prior to software-administration activities prevents undefined runtime behavior, RF emissions in inconsistent states, and lifecycle violations under SCA-governed SDR operation.
 
-#### HMI-REQ-052 - Waveform preset lifecycle management !!!TBV
+#### HMI-REQ-036 - Waveform preset lifecycle management !!!TBV
 
 The system SHALL provide managed lifecycle operations for waveform presets, including create, validate, save, load/apply, rename, duplicate, delete, import, and export, under role-based authorization.
 
 The preset workflow SHALL:
 
-1. Use draft semantics for editable preset data, with explicit Submit and Reset actions consistent with HMI-REQ-017.
+1. Use draft semantics for editable preset data, with explicit Submit and Reset actions consistent with HMI-REQ-028.
 2. Validate preset schema and mission policy constraints before save or apply, returning field-level errors for invalid data.
 3. Require explicit confirmation before deleting a preset or applying a preset that changes security-relevant parameters.
-4. Clearly indicate whether the running configuration exactly matches a saved preset or contains unsaved changes, consistent with HMI-REQ-048.
+4. Clearly indicate whether the running configuration exactly matches a saved preset or contains unsaved changes, consistent with HMI-REQ-004.
 5. Record all preset lifecycle operations in the audit trail, including actor, target preset identifier, operation type, and outcome.
 
 - Verification: T + I + UT
-- Acceptance: (a) invalid presets cannot be saved or applied; (b) applying a valid preset updates apparatus parameters through the bidirectional contract defined in HMI-REQ-049 and reports completion outcome; (c) preset state indicator updates <= 500 ms after apply completion; (d) authorized users can complete create-save-apply workflow <= 20 s in nominal conditions.
+- Acceptance: (a) invalid presets cannot be saved or applied; (b) applying a valid preset updates apparatus parameters through the bidirectional contract defined in HMI-REQ-043 and reports completion outcome; (c) preset state indicator updates <= 500 ms after apply completion; (d) authorized users can complete create-save-apply workflow <= 20 s in nominal conditions.
 - Rationale: Structured waveform preset management reduces setup time, improves repeatability between missions, and limits configuration errors for complex waveform parameter sets.
 
 ### 3.5 Security, Identity, and Auditability
 
-#### HMI-REQ-023 - Authentication and role-based access control
+#### HMI-REQ-037 - Authentication and role-based access control
 
 The system SHALL enforce authentication and role-based visibility/authorization for pages and actions (minimum roles: OPERATOR, SUPERVISOR, MAINTAINER).
 
@@ -351,15 +351,15 @@ The system SHALL enforce authentication and role-based visibility/authorization 
 - Acceptance: Unauthorized actions/pages are inaccessible in UI and rejected on invocation.
 - Rationale: RBAC limits exposure of privileged functions and reduces misuse risk.
 
-#### HMI-REQ-053 - Communication operations available without login
+#### HMI-REQ-038 - Communication operations available without login
 
 The system SHALL keep communication operations available to the operator even when no user session is active, and SHALL NOT require prior login to access or execute communication functions necessary for radio use.
 
 - Verification: I + T
-- Acceptance: In the logged-out state, communication functions remain visible and executable, while privileged non-communication functions remain subject to HMI-REQ-023.
+- Acceptance: In the logged-out state, communication functions remain visible and executable, while privileged non-communication functions remain subject to HMI-REQ-037.
 - Rationale: Basic communication capability must remain immediately available in operational contexts where authentication delay would reduce mission effectiveness.
 
-#### HMI-REQ-054 - Emergency zeroization available without login
+#### HMI-REQ-039 - Emergency zeroization available without login
 
 The system SHALL permit execution of the emergency zeroization operation even when no user session is active, and SHALL NOT require prior login to trigger emergency zeroization.
 
@@ -367,7 +367,7 @@ The system SHALL permit execution of the emergency zeroization operation even wh
 - Acceptance: In the logged-out state, the operator can invoke emergency zeroization and the system starts the zeroization sequence without requiring authentication.
 - Rationale: Emergency zeroization is a time-critical protective action and must remain immediately available under compromise or capture risk conditions.
 
-#### HMI-REQ-024 - Session timeout
+#### HMI-REQ-040 - Session timeout
 
 The system SHALL enforce configurable inactivity timeout with automatic session termination.
 
@@ -375,7 +375,7 @@ The system SHALL enforce configurable inactivity timeout with automatic session 
 - Acceptance: Session closes after configured inactivity threshold.
 - Rationale: Session timeout reduces unauthorized use after operator absence.
 
-#### HMI-REQ-025 - Access and action audit trail !!!TBV
+#### HMI-REQ-041 - Access and action audit trail !!!TBV
 
 The system SHALL record authentication events, command executions, and parameter changes with timestamp, user identity, target, previous value, and new value where applicable.
 
@@ -383,7 +383,7 @@ The system SHALL record authentication events, command executions, and parameter
 - Acceptance: Audit records are append-only for operators.
 - Rationale: Tamper-resistant auditability supports accountability and post-event reconstruction.
 
-#### HMI-REQ-026 - No hardcoded credentials
+#### HMI-REQ-042 - No hardcoded credentials
 
 No production credential or authentication secret SHALL be hardcoded in source files, frontend scripts, or service workers.
 
@@ -393,7 +393,7 @@ No production credential or authentication secret SHALL be hardcoded in source f
 
 ### 3.6 Communications Resilience and Degraded Operation
 
-#### HMI-REQ-049 - HMI–apparatus bidirectional communication capability
+#### HMI-REQ-043 - HMI–apparatus bidirectional communication capability
 
 The communication interface SHALL support the following interaction primitives in both directions:
 
@@ -413,7 +413,7 @@ The communication interface SHALL support the following interaction primitives i
 - Acceptance: Synchronous request–response round-trips complete within a configurable timeout (default: 5 s for reads and writes; immediate acceptance within 1 s for commands); asynchronous notifications are delivered to the HMI and reflected in the UI within 500 ms of the originating apparatus event; timeout and error responses are distinguishable from each other and surfaced to the operator with at minimum WARNING severity; all primitive types are covered by integration tests against a representative apparatus interface or simulator.
 - Rationale: A bidirectional communication contract is required to support both operator-driven interactions and apparatus-driven state propagation. For time-consuming operations, the synchronous request returns an immediate acceptance or rejection, decoupling command submission from execution; execution progress and outcome are then delivered asynchronously, preventing the HMI from blocking or appearing unresponsive during long-running operations. Explicit asynchronous primitives for state changes, parameter updates, and command progress eliminate the need for polling, reduce latency, and provide a deterministic, auditable event model.
 
-#### HMI-REQ-027 - Configurable network timeout and cancellation
+#### HMI-REQ-044 - Configurable network timeout and cancellation
 
 All network operations SHALL enforce configurable timeout and cancel requests that exceed threshold.
 
@@ -421,7 +421,7 @@ All network operations SHALL enforce configurable timeout and cancel requests th
 - Acceptance: Timeout event generates operator-visible notification.
 - Rationale: Deterministic timeout behavior prevents indefinite waits and hidden failures.
 
-#### HMI-REQ-028 - Bounded retry with backoff
+#### HMI-REQ-045 - Bounded retry with backoff
 
 The communication layer SHALL apply bounded retry attempts with deterministic backoff under degraded links.
 
@@ -429,7 +429,7 @@ The communication layer SHALL apply bounded retry attempts with deterministic ba
 - Acceptance: Retry count and backoff profile are configurable and capped.
 - Rationale: Bounded retries improve resilience without causing uncontrolled traffic amplification.
 
-#### HMI-REQ-029 - Stale data marking
+#### HMI-REQ-046 - Stale data marking
 
 When link to the controlled apparatus is interrupted, all displayed live parameters SHALL be marked as stale until fresh data is received.
 
@@ -437,7 +437,7 @@ When link to the controlled apparatus is interrupted, all displayed live paramet
 - Acceptance: Stale marking persists through outage and clears only after successful refresh.
 - Rationale: Stale-data indication prevents decisions based on outdated information.
 
-#### HMI-REQ-030 - Essential functionality in degraded mode !!!TBV
+#### HMI-REQ-047 - Essential functionality in degraded mode !!!TBV
 
 Under degraded conditions, the system SHALL preserve essential mission functions defined by operational profile.
 
@@ -445,7 +445,7 @@ Under degraded conditions, the system SHALL preserve essential mission functions
 - Acceptance: Essential function list remains operable in simulated degraded scenarios.
 - Rationale: Degraded-mode continuity preserves mission-critical operability under faults.
 
-#### HMI-REQ-031 - Fallback interaction mode !!!TBV
+#### HMI-REQ-048 - Fallback interaction mode !!!TBV
 
 The system SHALL provide a fallback interaction mode usable when primary display capabilities are reduced or unavailable.
 
@@ -455,7 +455,7 @@ The system SHALL provide a fallback interaction mode usable when primary display
 
 ### 3.7 Accessibility, Visual Ergonomics, and Environmental Compatibility
 
-#### HMI-REQ-032 - Keyboard and screen-reader accessibility
+#### HMI-REQ-049 - Keyboard and screen-reader accessibility
 
 All interactive controls SHALL be keyboard operable and expose correct ARIA roles, states, and labels; focus order SHALL be deterministic.
 
@@ -463,7 +463,7 @@ All interactive controls SHALL be keyboard operable and expose correct ARIA role
 - Acceptance: All actions operable via keyboard only; screen-reader announces control purpose/state.
 - Rationale: Accessibility requirements ensure equivalent control for keyboard and assistive technology users.
 
-#### HMI-REQ-033 - Dark theme as operational default
+#### HMI-REQ-050 - Dark theme as operational default
 
 The default theme SHALL be dark and optimized for low ambient light operation.
 
@@ -471,7 +471,7 @@ The default theme SHALL be dark and optimized for low ambient light operation.
 - Acceptance: Default startup theme is dark.
 - Rationale: Dark-default presentation supports low-ambient operational conditions and reduces glare.
 
-#### HMI-REQ-034 - Contrast ratio minimum
+#### HMI-REQ-051 - Contrast ratio minimum
 
 Primary text contrast SHALL meet WCAG AA minimum ratio of 4.5:1.
 
@@ -479,7 +479,7 @@ Primary text contrast SHALL meet WCAG AA minimum ratio of 4.5:1.
 - Acceptance: All primary text meets or exceeds threshold.
 - Rationale: Contrast compliance improves legibility and lowers interpretation errors.
 
-#### HMI-REQ-035 - Daylight readability envelope
+#### HMI-REQ-052 - Daylight readability envelope
 
 Display content SHALL remain readable at 50 cm across 0.1-10,000 lux operational envelope.
 
@@ -487,7 +487,7 @@ Display content SHALL remain readable at 50 cm across 0.1-10,000 lux operational
 - Acceptance: Operator can correctly read required status and commands within envelope.
 - Rationale: Readability across illuminance envelope ensures usable operation in field lighting extremes.
 
-#### HMI-REQ-036 - NVG/NVIS compatibility mode
+#### HMI-REQ-053 - NVG/NVIS compatibility mode
 
 The system SHALL provide dedicated NVG/NVIS mode limiting emission according to MIL-STD-3009 / MIL-L-85762 constraints.
 
@@ -497,7 +497,7 @@ The system SHALL provide dedicated NVG/NVIS mode limiting emission according to 
 
 ### 3.8 Localization and Symbol Standards
 
-#### HMI-REQ-037 - Language consistency
+#### HMI-REQ-054 - Language consistency
 
 The UI SHALL use one consistent language per configured runtime profile; mixed-language presentation is not permitted.
 
@@ -505,7 +505,7 @@ The UI SHALL use one consistent language per configured runtime profile; mixed-l
 - Acceptance: No mixed-language labels/messages in same runtime profile.
 - Rationale: Language consistency prevents ambiguity and comprehension delay.
 
-#### HMI-REQ-038 - Tactical symbology consistency
+#### HMI-REQ-055 - Tactical symbology consistency
 
 Where tactical symbols are displayed, symbology SHALL conform to configured MIL-STD-2525 profile and remain consistent across views.
 
@@ -543,59 +543,59 @@ Traceability type legend:
 | --- | --- | --- | --- |
 | HMI-REQ-001 | SPEC-001 | MIL-STD-1472H, section 5.2.1 (persistent status presentation principle) | Direct |
 | HMI-REQ-002 | SPEC-001 | MIL-STD-1472H, section 5.2.1 (persistent status presentation principle) | Direct |
-| HMI-REQ-003 | SPEC-001, SPEC-002 | MIL-STD-1472H, section 5.2.1; DEF STAN 00-250, section 6.3 | Direct |
-| HMI-REQ-004 | SPEC-003 | STANAG 4586, section 6.3.2 | Direct |
-| HMI-REQ-005 | SPEC-001, SPEC-009 | ISO 9241-110 (feedback and responsiveness dialogue principles) | Derived |
-| HMI-REQ-006 | SPEC-001, SPEC-002 | MIL-STD-1472H, section 5.2.3; DEF STAN 00-250, section 6.3 | Direct |
-| HMI-REQ-007 | SPEC-001, SPEC-003 | STANAG 4586, section 6.4 (operator confirmation/acknowledgement intent) | Direct |
-| HMI-REQ-055 | SPEC-001, SPEC-002, SPEC-009 | MIL-STD-1472H, section 5.2.3 (information coding and graduated urgency); DEF STAN 00-250, section 6.3 (alarm and notification classification); ISO 9241-110 (controllability and non-interruptive feedback dialogue principles) | Derived |
-| HMI-REQ-008 | SPEC-001, SPEC-009 | ISO 9241-110 (self-descriptiveness and feedback principles) | Derived |
-| HMI-REQ-009 | SPEC-001 | MIL-STD-1472H, section 5.2.2.4 | Direct |
-| HMI-REQ-010 | SPEC-001 | MIL-STD-1472H, section 5.8.6 | Direct |
-| HMI-REQ-011 | SPEC-001 | MIL-STD-1472H, section 5.3.1.3 | Direct |
-| HMI-REQ-012 | SPEC-001, SPEC-009 | MIL-STD-1472H, section 5.10; ISO 9241-110 (controllability/navigation consistency) | Direct |
-| HMI-REQ-013 | SPEC-001 | MIL-STD-1472H, section 5.10 | Direct |
-| HMI-REQ-014 | SPEC-009 | ISO 9241-110 (conformity with user expectations, consistency) | Derived |
-| HMI-REQ-015 | SPEC-001, SPEC-009 | ISO 9241-110 (efficiency of dialogue) | Derived |
-| HMI-REQ-016 | SPEC-001 | MIL-STD-1472H (task efficiency and control accessibility principles) | Gap |
-| HMI-REQ-017 | SPEC-002 | DEF STAN 00-250, section 9.2 | Direct |
-| HMI-REQ-018 | SPEC-002, SPEC-005 | DEF STAN 00-250, section 9.2; DO-178C (deterministic error handling objective) | Derived |
-| HMI-REQ-019 | SPEC-001, SPEC-003 | MIL-STD-1472H, section 5.10.5; STANAG 4586, section 6.4 | Direct |
-| HMI-REQ-020 | SPEC-002, SPEC-010 | DEF STAN 00-250, section 9.4; IEC 61511 (separation/protection principles) | Derived |
-| HMI-REQ-021 | SPEC-001 | MIL-STD-1472H (error prevention and safety-oriented interaction principles) | Gap |
-| HMI-REQ-022 | SPEC-001 | MIL-STD-1472H (state visibility and coding clarity principles) | Gap |
-| HMI-REQ-023 | SPEC-001, SPEC-002 | MIL-STD-1472H, section 5.14; DEF STAN 00-250, section 10.1 | Direct |
-| HMI-REQ-053 | SPEC-001, SPEC-002, SPEC-013 | DEF STAN 00-250, section 10.1; STANAG 4586, section 6.3; MIL-STD-1472H, section 5.2.6 | Derived |
-| HMI-REQ-054 | SPEC-002, SPEC-013 | DEF STAN 00-250, section 10.1; IEC 61508 / IEC 61511 emergency protective action principles | Derived |
-| HMI-REQ-024 | SPEC-001, SPEC-002 | MIL-STD-1472H, section 5.14; DEF STAN 00-250, section 10.1 | Direct |
-| HMI-REQ-025 | SPEC-001, SPEC-002 | MIL-STD-1472H, section 5.14.3; DEF STAN 00-250, section 10.3 | Direct |
-| HMI-REQ-026 | SPEC-002 | DEF STAN 00-250, section 10 (security and access control context) | Gap |
-| HMI-REQ-027 | SPEC-001, SPEC-005 | MIL-STD-1472H, section 5.2.6; DO-178C (timing determinism objectives) | Derived |
-| HMI-REQ-028 | SPEC-001, SPEC-005 | MIL-STD-1472H, section 5.2.6; DO-178C (robust error recovery objectives) | Derived |
-| HMI-REQ-029 | SPEC-001, SPEC-004 | MIL-STD-1472H, section 5.2.7; ARP4754A, section 5.3 | Direct |
-| HMI-REQ-030 | SPEC-001, SPEC-003 | STANAG 4586 (degraded/contingency operation intent) | Gap |
-| HMI-REQ-031 | SPEC-003 | STANAG 4586 (fallback operation intent) | Gap |
-| HMI-REQ-032 | SPEC-002, SPEC-011 | DEF STAN 00-250, section 11; WCAG 2.x AA (keyboard and semantic accessibility criteria) | Direct |
-| HMI-REQ-033 | SPEC-001 | MIL-STD-1472H, section 5.3.3.3 | Direct |
-| HMI-REQ-034 | SPEC-001, SPEC-011 | MIL-STD-1472H, section 5.3.3.3; WCAG 2.x AA (contrast >= 4.5:1) | Direct |
-| HMI-REQ-035 | SPEC-001 | MIL-STD-1472H (display readability under operational conditions) | Gap |
-| HMI-REQ-036 | SPEC-006, SPEC-007 | MIL-L-85762; MIL-STD-3009 | Gap |
-| HMI-REQ-037 | SPEC-002, SPEC-009 | DEF STAN 00-250, section 12; ISO 9241-110 (consistency principles) | Direct |
-| HMI-REQ-038 | SPEC-008 | MIL-STD-2525 (symbol set/profile conformance) | Derived |
-| HMI-REQ-039 | SPEC-001, SPEC-002, SPEC-010, SPEC-012, SPEC-013 | MIL-STD-1472H §5.10.5 (protection for dangerous operations); DEF STAN 00-250 §9.4 (functional segregation of critical operations); IEC 61511 (automatic inhibit as safety function); STANAG 4691 (EKMS key management – RF silence during key fill); SCA v4.1 (RF Standby/RF Mute during SDR software update) | Gap |
-| HMI-REQ-040 | SPEC-001, SPEC-003, SPEC-012 | MIL-STD-1472H, section 5.2.1 (persistent status presentation principle); STANAG 4586, section 6.3.2; STANAG 4691 (EKMS key management and crypto state visibility) | Derived |
-| HMI-REQ-041 | SPEC-001, SPEC-002, SPEC-012 | MIL-STD-1472H, section 5.2.1 (state coding and visibility); DEF STAN 00-250, section 6.3 (safety-relevant state indication); STANAG 4691 (PT/CT mode control and indication) | Derived |
-| HMI-REQ-042 | SPEC-001, SPEC-002 | MIL-STD-1472H, section 5.2.1 (persistent status presentation); DEF STAN 00-250, section 9.2 (error and fault state indication) | Derived |
-| HMI-REQ-043 | SPEC-001, SPEC-002, SPEC-010, SPEC-012 | MIL-STD-1472H, section 5.2.1; DEF STAN 00-250, section 9.4 (functional segregation of critical operations); STANAG 4691 (RF silence during key fill / EMCON procedures) | Derived |
-| HMI-REQ-044 | SPEC-001, SPEC-003 | MIL-STD-1472H, section 5.2.1 (persistent status presentation); STANAG 4586, section 6.3.2 (platform navigation state awareness) | Derived |
-| HMI-REQ-045 | SPEC-001, SPEC-003 | MIL-STD-1472H, section 5.2.1 (persistent status presentation); STANAG 4586, section 6.3 (mission management and time reference) | Derived |
-| HMI-REQ-046 | SPEC-001, SPEC-002 | MIL-STD-1472H, section 5.2.1 (persistent status presentation); DEF STAN 00-250, section 9.2 (power state and system health indication) | Derived |
-| HMI-REQ-047 | SPEC-001, SPEC-003, SPEC-013 | MIL-STD-1472H, section 5.2.1 (persistent status presentation); STANAG 4586, section 6.3.2; SCA v4.1 (waveform identity and lifecycle management) | Derived |
-| HMI-REQ-048 | SPEC-001, SPEC-002 | MIL-STD-1472H, section 5.2.1 (persistent status presentation); DEF STAN 00-250, section 6.3 (configuration state visibility) | Derived |
-| HMI-REQ-049 | SPEC-001, SPEC-002, SPEC-003 | MIL-STD-1472H, section 5.2.6 (system responsiveness and feedback); DEF STAN 00-250, section 9.2 (error detection and reporting); STANAG 4586, section 6.3 (data exchange and command interface) | Derived |
-| HMI-REQ-050 | SPEC-001, SPEC-003, SPEC-013 | MIL-STD-1472H, section 5.10 (navigation efficiency and bounded interaction depth); STANAG 4586, section 6.3 (operator command workflow); SCA v4.1 (waveform lifecycle operation and activation flow) | Derived |
-| HMI-REQ-051 | SPEC-001, SPEC-002, SPEC-010, SPEC-013 | MIL-STD-1472H, section 5.10.5 (protection for high-consequence operations); DEF STAN 00-250, section 9.4 (functional segregation and guarded operations); IEC 61511 (enforced precondition/interlock principles); SCA v4.1 (waveform deinstantiation and software lifecycle state model) | Gap |
-| HMI-REQ-052 | SPEC-001, SPEC-002, SPEC-003, SPEC-013 | MIL-STD-1472H, section 5.2.3 and 5.10 (feedback clarity and controllable workflows); DEF STAN 00-250, section 9.2 and 10.3 (transaction integrity and accountability); STANAG 4586, section 6.3 (configuration command exchange); SCA v4.1 (waveform configuration/preset lifecycle context) | Derived |
+| HMI-REQ-013 | SPEC-001, SPEC-002 | MIL-STD-1472H, section 5.2.1; DEF STAN 00-250, section 6.3 | Direct |
+| HMI-REQ-005 | SPEC-003 | STANAG 4586, section 6.3.2 | Direct |
+| HMI-REQ-014 | SPEC-001, SPEC-009 | ISO 9241-110 (feedback and responsiveness dialogue principles) | Derived |
+| HMI-REQ-015 | SPEC-001, SPEC-002 | MIL-STD-1472H, section 5.2.3; DEF STAN 00-250, section 6.3 | Direct |
+| HMI-REQ-016 | SPEC-001, SPEC-003 | STANAG 4586, section 6.4 (operator confirmation/acknowledgement intent) | Direct |
+| HMI-REQ-017 | SPEC-001, SPEC-002, SPEC-009 | MIL-STD-1472H, section 5.2.3 (information coding and graduated urgency); DEF STAN 00-250, section 6.3 (alarm and notification classification); ISO 9241-110 (controllability and non-interruptive feedback dialogue principles) | Derived |
+| HMI-REQ-018 | SPEC-001, SPEC-009 | ISO 9241-110 (self-descriptiveness and feedback principles) | Derived |
+| HMI-REQ-019 | SPEC-001 | MIL-STD-1472H, section 5.2.2.4 | Direct |
+| HMI-REQ-020 | SPEC-001 | MIL-STD-1472H, section 5.8.6 | Direct |
+| HMI-REQ-021 | SPEC-001 | MIL-STD-1472H, section 5.3.1.3 | Direct |
+| HMI-REQ-022 | SPEC-001, SPEC-009 | MIL-STD-1472H, section 5.10; ISO 9241-110 (controllability/navigation consistency) | Direct |
+| HMI-REQ-023 | SPEC-001 | MIL-STD-1472H, section 5.10 | Direct |
+| HMI-REQ-024 | SPEC-009 | ISO 9241-110 (conformity with user expectations, consistency) | Derived |
+| HMI-REQ-025 | SPEC-001, SPEC-009 | ISO 9241-110 (efficiency of dialogue) | Derived |
+| HMI-REQ-027 | SPEC-001 | MIL-STD-1472H (task efficiency and control accessibility principles) | Gap |
+| HMI-REQ-028 | SPEC-002 | DEF STAN 00-250, section 9.2 | Direct |
+| HMI-REQ-029 | SPEC-002, SPEC-005 | DEF STAN 00-250, section 9.2; DO-178C (deterministic error handling objective) | Derived |
+| HMI-REQ-030 | SPEC-001, SPEC-003 | MIL-STD-1472H, section 5.10.5; STANAG 4586, section 6.4 | Direct |
+| HMI-REQ-031 | SPEC-002, SPEC-010 | DEF STAN 00-250, section 9.4; IEC 61511 (separation/protection principles) | Derived |
+| HMI-REQ-032 | SPEC-001 | MIL-STD-1472H (error prevention and safety-oriented interaction principles) | Gap |
+| HMI-REQ-033 | SPEC-001 | MIL-STD-1472H (state visibility and coding clarity principles) | Gap |
+| HMI-REQ-037 | SPEC-001, SPEC-002 | MIL-STD-1472H, section 5.14; DEF STAN 00-250, section 10.1 | Direct |
+| HMI-REQ-038 | SPEC-001, SPEC-002, SPEC-013 | DEF STAN 00-250, section 10.1; STANAG 4586, section 6.3; MIL-STD-1472H, section 5.2.6 | Derived |
+| HMI-REQ-039 | SPEC-002, SPEC-013 | DEF STAN 00-250, section 10.1; IEC 61508 / IEC 61511 emergency protective action principles | Derived |
+| HMI-REQ-040 | SPEC-001, SPEC-002 | MIL-STD-1472H, section 5.14; DEF STAN 00-250, section 10.1 | Direct |
+| HMI-REQ-041 | SPEC-001, SPEC-002 | MIL-STD-1472H, section 5.14.3; DEF STAN 00-250, section 10.3 | Direct |
+| HMI-REQ-042 | SPEC-002 | DEF STAN 00-250, section 10 (security and access control context) | Gap |
+| HMI-REQ-044 | SPEC-001, SPEC-005 | MIL-STD-1472H, section 5.2.6; DO-178C (timing determinism objectives) | Derived |
+| HMI-REQ-045 | SPEC-001, SPEC-005 | MIL-STD-1472H, section 5.2.6; DO-178C (robust error recovery objectives) | Derived |
+| HMI-REQ-046 | SPEC-001, SPEC-004 | MIL-STD-1472H, section 5.2.7; ARP4754A, section 5.3 | Direct |
+| HMI-REQ-047 | SPEC-001, SPEC-003 | STANAG 4586 (degraded/contingency operation intent) | Gap |
+| HMI-REQ-048 | SPEC-003 | STANAG 4586 (fallback operation intent) | Gap |
+| HMI-REQ-049 | SPEC-002, SPEC-011 | DEF STAN 00-250, section 11; WCAG 2.x AA (keyboard and semantic accessibility criteria) | Direct |
+| HMI-REQ-050 | SPEC-001 | MIL-STD-1472H, section 5.3.3.3 | Direct |
+| HMI-REQ-051 | SPEC-001, SPEC-011 | MIL-STD-1472H, section 5.3.3.3; WCAG 2.x AA (contrast >= 4.5:1) | Direct |
+| HMI-REQ-052 | SPEC-001 | MIL-STD-1472H (display readability under operational conditions) | Gap |
+| HMI-REQ-053 | SPEC-006, SPEC-007 | MIL-L-85762; MIL-STD-3009 | Gap |
+| HMI-REQ-054 | SPEC-002, SPEC-009 | DEF STAN 00-250, section 12; ISO 9241-110 (consistency principles) | Direct |
+| HMI-REQ-055 | SPEC-008 | MIL-STD-2525 (symbol set/profile conformance) | Derived |
+| HMI-REQ-034 | SPEC-001, SPEC-002, SPEC-010, SPEC-012, SPEC-013 | MIL-STD-1472H §5.10.5 (protection for dangerous operations); DEF STAN 00-250 §9.4 (functional segregation of critical operations); IEC 61511 (automatic inhibit as safety function); STANAG 4691 (EKMS key management – RF silence during key fill); SCA v4.1 (RF Standby/RF Mute during SDR software update) | Gap |
+| HMI-REQ-006 | SPEC-001, SPEC-003, SPEC-012 | MIL-STD-1472H, section 5.2.1 (persistent status presentation principle); STANAG 4586, section 6.3.2; STANAG 4691 (EKMS key management and crypto state visibility) | Derived |
+| HMI-REQ-007 | SPEC-001, SPEC-002, SPEC-012 | MIL-STD-1472H, section 5.2.1 (state coding and visibility); DEF STAN 00-250, section 6.3 (safety-relevant state indication); STANAG 4691 (PT/CT mode control and indication) | Derived |
+| HMI-REQ-008 | SPEC-001, SPEC-002 | MIL-STD-1472H, section 5.2.1 (persistent status presentation); DEF STAN 00-250, section 9.2 (error and fault state indication) | Derived |
+| HMI-REQ-009 | SPEC-001, SPEC-002, SPEC-010, SPEC-012 | MIL-STD-1472H, section 5.2.1; DEF STAN 00-250, section 9.4 (functional segregation of critical operations); STANAG 4691 (RF silence during key fill / EMCON procedures) | Derived |
+| HMI-REQ-010 | SPEC-001, SPEC-003 | MIL-STD-1472H, section 5.2.1 (persistent status presentation); STANAG 4586, section 6.3.2 (platform navigation state awareness) | Derived |
+| HMI-REQ-011 | SPEC-001, SPEC-003 | MIL-STD-1472H, section 5.2.1 (persistent status presentation); STANAG 4586, section 6.3 (mission management and time reference) | Derived |
+| HMI-REQ-012 | SPEC-001, SPEC-002 | MIL-STD-1472H, section 5.2.1 (persistent status presentation); DEF STAN 00-250, section 9.2 (power state and system health indication) | Derived |
+| HMI-REQ-003 | SPEC-001, SPEC-003, SPEC-013 | MIL-STD-1472H, section 5.2.1 (persistent status presentation); STANAG 4586, section 6.3.2; SCA v4.1 (waveform identity and lifecycle management) | Derived |
+| HMI-REQ-004 | SPEC-001, SPEC-002 | MIL-STD-1472H, section 5.2.1 (persistent status presentation); DEF STAN 00-250, section 6.3 (configuration state visibility) | Derived |
+| HMI-REQ-043 | SPEC-001, SPEC-002, SPEC-003 | MIL-STD-1472H, section 5.2.6 (system responsiveness and feedback); DEF STAN 00-250, section 9.2 (error detection and reporting); STANAG 4586, section 6.3 (data exchange and command interface) | Derived |
+| HMI-REQ-026 | SPEC-001, SPEC-003, SPEC-013 | MIL-STD-1472H, section 5.10 (navigation efficiency and bounded interaction depth); STANAG 4586, section 6.3 (operator command workflow); SCA v4.1 (waveform lifecycle operation and activation flow) | Derived |
+| HMI-REQ-035 | SPEC-001, SPEC-002, SPEC-010, SPEC-013 | MIL-STD-1472H, section 5.10.5 (protection for high-consequence operations); DEF STAN 00-250, section 9.4 (functional segregation and guarded operations); IEC 61511 (enforced precondition/interlock principles); SCA v4.1 (waveform deinstantiation and software lifecycle state model) | Gap |
+| HMI-REQ-036 | SPEC-001, SPEC-002, SPEC-003, SPEC-013 | MIL-STD-1472H, section 5.2.3 and 5.10 (feedback clarity and controllable workflows); DEF STAN 00-250, section 9.2 and 10.3 (transaction integrity and accountability); STANAG 4586, section 6.3 (configuration command exchange); SCA v4.1 (waveform configuration/preset lifecycle context) | Derived |
 
 ## 6. Notes on Verification Planning
 
@@ -697,7 +697,7 @@ This appendix explains the meaning of the standards and clauses cited in Section
 
 This section provides possible implementation approaches for selected requirements. These notes are informative and do not alter normative requirement compliance criteria. Alternative approaches may be used provided all acceptance criteria are satisfied.
 
-### 8.1 HMI-REQ-039 - Transmission inhibit during critical radio operations
+### 8.1 HMI-REQ-034 - Transmission inhibit during critical radio operations
 
 #### Apparatus signaling
 
@@ -724,7 +724,7 @@ The inhibit is automatically released when the apparatus clears the `CRITICAL_OP
 
 Each inhibit-start and inhibit-end event is recorded in the operational audit trail with at minimum: timestamp, operation type, and inhibit duration (calculated at release time). If user identity is available at the time of the event, it should also be included.
 
-### 8.2 HMI-REQ-019 - Two-step confirmation for high-impact commands
+### 8.2 HMI-REQ-030 - Two-step confirmation for high-impact commands
 
 #### Confirmation interaction pattern
 
@@ -748,7 +748,7 @@ The confirmation dialog SHALL display:
 
 Each two-step confirmation event is recorded in the operational audit trail with at minimum: timestamp, command identifier, outcome (CONFIRMED or CANCELLED/TIMEOUT), and operator identity if available.
 
-### 8.3 HMI-REQ-034 - Contrast ratio minimum
+### 8.3 HMI-REQ-051 - Contrast ratio minimum
 
 #### Background: the WCAG AA 4.5:1 standard
 
@@ -803,13 +803,13 @@ For formal verification, produce a static contrast audit report (e.g., exported 
 - All non-text UI components (status icons, input borders, badges).
 - All theme variants.
 
-This report constitutes the objective evidence for the Inspection + Test verification method required by HMI-REQ-034.
+This report constitutes the objective evidence for the Inspection + Test verification method required by HMI-REQ-051.
 
-### 8.4 HMI-REQ-016 - Transmission initiation simplicity
+### 8.4 HMI-REQ-027 - Transmission initiation simplicity
 
 #### Background: the external standard and the 150 ms threshold
 
-HMI-REQ-016 traces to **MIL-STD-1472H** (Human Engineering), which establishes general principles of task efficiency, control accessibility, and response-time requirements for operator interfaces in military systems. Although MIL-STD-1472H does not mandate a single hard latency number for PTT (Push-To-Talk) initiation, the 150 ms acceptance criterion is derived from the convergence of three independent evidence bases:
+HMI-REQ-027 traces to **MIL-STD-1472H** (Human Engineering), which establishes general principles of task efficiency, control accessibility, and response-time requirements for operator interfaces in military systems. Although MIL-STD-1472H does not mandate a single hard latency number for PTT (Push-To-Talk) initiation, the 150 ms acceptance criterion is derived from the convergence of three independent evidence bases:
 
 ##### 1. Human reaction-time physiology
 
@@ -838,7 +838,7 @@ MIL-STD-1472H section 5.2.6 recommends that visual feedback for operator actions
 
 ##### Single-action constraint
 
-The transmission initiation path SHALL consist of exactly one discrete operator action (e.g., a single button press, a dedicated hardware PTT key, or a single touch on a clearly labelled on-screen control). Multi-step sequences, confirmation dialogs, or navigation steps are prohibited on this path, with the exception of the inhibit conditions mandated by HMI-REQ-039 and HMI-REQ-021.
+The transmission initiation path SHALL consist of exactly one discrete operator action (e.g., a single button press, a dedicated hardware PTT key, or a single touch on a clearly labelled on-screen control). Multi-step sequences, confirmation dialogs, or navigation steps are prohibited on this path, with the exception of the inhibit conditions mandated by HMI-REQ-034 and HMI-REQ-032.
 
 ##### Latency measurement and verification
 
@@ -852,13 +852,13 @@ A minimum of 100 samples per test configuration SHALL be collected; the 95th-per
 
 ##### Guard against accidental activation
 
-Although the path is single-action, the transmit control SHALL be positioned and sized to minimise inadvertent activation (in compliance with HMI-REQ-010 minimum touch-target requirements and HMI-REQ-020 functional segregation). Where the platform supports it, a hardware PTT key with physical travel is preferred over a purely on-screen control for high-tempo operation.
+Although the path is single-action, the transmit control SHALL be positioned and sized to minimise inadvertent activation (in compliance with HMI-REQ-020 minimum touch-target requirements and HMI-REQ-031 functional segregation). Where the platform supports it, a hardware PTT key with physical travel is preferred over a purely on-screen control for high-tempo operation.
 
-### 8.5 HMI-REQ-011 - Minimum operational font size
+### 8.5 HMI-REQ-021 - Minimum operational font size
 
 #### Background: the external standard and the 16 px value
 
-HMI-REQ-011 requires that operationally relevant text be rendered at a minimum of **16 px at 96 dpi** (the CSS reference pixel grid). The value is derived from the convergence of three independent sources: human visual acuity research, MIL-STD-1472H ergonomic specifications, and web accessibility practice.
+HMI-REQ-021 requires that operationally relevant text be rendered at a minimum of **16 px at 96 dpi** (the CSS reference pixel grid). The value is derived from the convergence of three independent sources: human visual acuity research, MIL-STD-1472H ergonomic specifications, and web accessibility practice.
 
 ##### 1. Visual acuity and minimum legible character subtended angle
 
@@ -929,7 +929,7 @@ $$h_\text{px}(d) = 16\,\text{px} \times \frac{d}{500\,\text{mm}}$$
 
 For example, at 70 cm: $16 \times 1.4 = 22.4\,\text{px}$ minimum. The platform-specific value SHALL be documented in the deployment configuration and verified against the token definitions before release.
 
-### 8.6 HMI-REQ-036 - NVG/NVIS compatibility mode: colour palette conversion
+### 8.6 HMI-REQ-053 - NVG/NVIS compatibility mode: colour palette conversion
 
 #### Background: the standard and the NVIS constraint
 
@@ -982,7 +982,7 @@ $$G_\text{NVIS,\,final} = \text{round}(k \times G_\text{NVIS})$$
 
 ##### Step 5 — Verify contrast ratios in the NVIS palette
 
-After conversion, re-run the WCAG contrast check (see HMI-REQ-034 and section 9.3) on all token pairs using the NVIS green values. Because the conversion is luminance-preserving, contrast ratios are maintained *relative to each other*, but the absolute luminance is reduced. Confirm that at minimum the 3:1 floor is satisfied for all critical text and status elements under NVIS viewing conditions.
+After conversion, re-run the WCAG contrast check (see HMI-REQ-051 and section 9.3) on all token pairs using the NVIS green values. Because the conversion is luminance-preserving, contrast ratios are maintained *relative to each other*, but the absolute luminance is reduced. Confirm that at minimum the 3:1 floor is satisfied for all critical text and status elements under NVIS viewing conditions.
 
 #### Implementation in CSS / design tokens
 
@@ -1011,7 +1011,7 @@ The theme is activated by toggling the `data-theme` attribute on the root elemen
 #### Limitations and hardware dependency
 
 - The software palette conversion eliminates NIR contribution from the *colour encoding*, but NIR compliance ultimately depends on the panel's physical spectral output. Software alone cannot guarantee MIL-STD-3009 compliance; photometric hardware testing is mandatory.
-- Colour-coding semantics (e.g., ALARM = red, CAUTION = amber) are lost in the NVIS palette; the HMI must rely on *luminance contrast* and *shape/icon differentiation* to convey severity under NVIS mode. Ensure all status conditions remain distinguishable by luminance level or icon shape alone, as required by HMI-REQ-003.
+- Colour-coding semantics (e.g., ALARM = red, CAUTION = amber) are lost in the NVIS palette; the HMI must rely on *luminance contrast* and *shape/icon differentiation* to convey severity under NVIS mode. Ensure all status conditions remain distinguishable by luminance level or icon shape alone, as required by HMI-REQ-013.
 
 ---
 

@@ -138,13 +138,13 @@ The HMI occupies the full viewport. It is rendered by the `HmiShell` component u
 
 **Zone 1 – Identity (left)**
 - Application label (`application.yaml → name`): persistent identifier, 0.75 rem, secondary colour.
-- Active waveform name (`active_waveform_name`): 1 rem (16 px – HMI-REQ-011 compliant), primary colour, bold. Updated within 500 ms of waveform switch (HMI-REQ-047).
-- Active preset name (`active_preset_name`): 0.875 rem (~14 px – minor deviation documented, space-constrained header), accent colour. Shows unsaved-changes marker when running config differs from saved preset (HMI-REQ-048).
+- Active waveform name (`active_waveform_name`): 1 rem (16 px – HMI-REQ-021 compliant), primary colour, bold. Updated within 500 ms of waveform switch (HMI-REQ-003).
+- Active preset name (`active_preset_name`): 0.875 rem (~14 px – minor deviation documented, space-constrained header), accent colour. Shows unsaved-changes marker when running config differs from saved preset (HMI-REQ-004).
 
 **Zone 2 – Crypto (centre, monospace)**
 - `crypto_algorithm`: cipher name (e.g. `AES-256`), 0.875 rem, bold, primary colour.
 - `crypto_context`: operational context badge (`NATO` blue / `NAZ` green), 0.875 rem.
-Updated within 500 ms of any crypto state change (HMI-REQ-040).
+Updated within 500 ms of any crypto state change (HMI-REQ-006).
 
 **Communication button (left edge)**
 - **Communication icon** (`IconCommState.vue`): single synthesised icon derived from `comm_state`, `comm_mode`, `comm_radio_silence`. Five variants with distinct colour coding:
@@ -181,7 +181,7 @@ Updated within 500 ms of any crypto state change (HMI-REQ-040).
 **Mission time divider note**
 - The separator between status icons and mission time is rendered as a full-height vertical divider.
 
-**Font-size compliance note (HMI-REQ-011):**
+**Font-size compliance note (HMI-REQ-021):**
 The waveform name and mission time are rendered at 1 rem = 16 px (fully compliant). Preset name and crypto rows are rendered at 0.875 rem ≈ 14 px. This is a minor deviation from the 16 px minimum, accepted as a design constraint within a fixed-height header. Both values exceed the 3:1 large-text contrast threshold and remain readable at 50 cm in normal illumination conditions.
 
 ---
