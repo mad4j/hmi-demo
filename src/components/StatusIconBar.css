@@ -1,0 +1,48 @@
+.status-icon-bar {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.si-btn {
+  width: 3rem;
+  height: 3rem;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.35rem;
+  border: 1px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
+}
+
+.si-btn:active {
+  background: var(--btn-active-bg);
+}
+
+/* State colours */
+.si--ok {
+  color: var(--text-green);
+  border-color: var(--status-ok-border);
+  background: var(--status-ok-bg);
+}
+
+.si--warning {
+  color: var(--status-warning-color);
+  border-color: var(--status-warning-border);
+  background: var(--status-warning-bg);
+}
+
+.si--error {
+  color: var(--status-critical-color);
+  border-color: var(--status-critical-border);
+  background: var(--status-critical-bg);
+}
+
+.si--off {
+  color: var(--text-secondary);
+  border-color: transparent;
+  background: transparent;
+}
