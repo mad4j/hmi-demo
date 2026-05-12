@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useRef } from 'react'
 import './PercentageEditorModal.css'
 
 const TICK_INTERVAL = 5
@@ -19,13 +19,13 @@ export default function PercentageEditorModal({ name, value, min = 0, max = 100,
     })
   }
 
-  let lastVibratedAt = null
+  const lastVibratedAtRef = useRef(null)
   const handleSliderInput = (e) => {
     const v = Number(e.target.value)
     setLocalValue(v)
-    if ('vibrate' in navigator && v % TICK_INTERVAL === 0 && v !== lastVibratedAt) {
+    if ('vibrate' in navigator && v % TICK_INTERVAL === 0 && v !== lastVibratedAtRef.current) {
       navigator.vibrate(10)
-      lastVibratedAt = v
+      lastVibratedAtRef.current = v
     }
   }
 

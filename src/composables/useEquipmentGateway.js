@@ -25,8 +25,8 @@ const logDeviceTraffic = (direction, action, payload) => {
 }
 
 // Plain (non-reactive) connection state; no components render these directly.
-export let isConnected = false
-export let isLoading = false
+let isConnected = false
+let isLoading = false
 
 export const useEquipmentGateway = () => {
   const getParameters = async (ids) => {
@@ -100,5 +100,5 @@ export const useEquipmentGateway = () => {
     })
   }
 
-  return { getParameters, setParameters, sendCommand, notifyParameters, isConnected, isLoading }
+  return { getParameters, setParameters, sendCommand, notifyParameters }
 }

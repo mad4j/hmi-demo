@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import './App.css'
 import HmiShell from './components/HmiShell.jsx'
 import HmiHeader from './components/HmiHeader.jsx'
@@ -127,12 +127,11 @@ export default function App() {
   const isHomeTabActive = isAtHome || (autoOpenedHomePageId !== null && currentPage?.id === autoOpenedHomePageId)
   const activeLevel1IdForFooter = isHomeTabActive ? null : activeLevel1Id
 
-  // Auto-navigate to only home page
-  const didAutoNavigateRef = useRef(false)
+  // Auto-navigate when home screen has exactly one page
   useEffect(() => {
     if (!isAtHome || !autoOpenedHomePageId) return
     navigateToPage(autoOpenedHomePageId)
-  }) // runs every render, same as watchEffect
+  }, [isAtHome, autoOpenedHomePageId]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useCurrentPageParameterRefresh({ currentPage, pageParameters, refreshParameters })
 
