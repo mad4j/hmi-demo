@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react'
+import { useState, useRef, useEffect } from 'react'
 
 export const useLogoutPageAction = ({
   currentPage,
@@ -12,6 +12,7 @@ export const useLogoutPageAction = ({
   usernameParameterId = 'login_name',
   passwordParameterId = 'login_password',
 }) => {
+  const [logoutInProgress, setLogoutInProgress] = useState(false)
   const logoutInProgressRef = useRef(false)
 
   const applyLogoutNavigation = () => {
@@ -27,6 +28,7 @@ export const useLogoutPageAction = ({
 
     const wasLoggedIn = parameterValues.status_login === 'ok'
     logoutInProgressRef.current = true
+    setLogoutInProgress(true)
     setNotification('WARNING', 'Logging out...')
 
     ;(async () => {
@@ -46,10 +48,11 @@ export const useLogoutPageAction = ({
         applyLogoutNavigation()
       } finally {
         logoutInProgressRef.current = false
+        setLogoutInProgress(false)
       }
     })()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage?.id])
 
-  return { logoutInProgress: logoutInProgressRef.current }
+  return { logoutInProgress }
 }

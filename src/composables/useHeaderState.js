@@ -1,4 +1,4 @@
-import { useSyncExternalStore } from 'react'
+import { useSyncExternalStore, useEffect } from 'react'
 import { useParameterStore } from './useParameterStore.js'
 import { useEquipmentGateway } from './useEquipmentGateway.js'
 
@@ -79,6 +79,16 @@ export const useHeaderState = () => {
   // Subscribe to header clock changes
   useSyncExternalStore(_subscribeHeader, _getHeaderSnapshot)
 
+  // React to live parameter updates for mission time (handles late-arriving values)
+  const timeParamValue = parameterValues[APPARATUS_TIME_PARAM_ID]
+  const zoneParamValue = parameterValues[APPARATUS_TIMEZONE_PARAM_ID]
+  useEffect(() => {
+    if (timeParamValue !== undefined && syncMissionTimeFromValue(timeParamValue)) _notifyHeader()
+  }, [timeParamValue])
+  useEffect(() => {
+    if (zoneParamValue !== undefined && syncMissionTimeZoneFromValue(zoneParamValue)) _notifyHeader()
+  }, [zoneParamValue])
+
   if (!_missionClockStarted) {
     _missionClockStarted = true
 
@@ -93,9 +103,11 @@ export const useHeaderState = () => {
       if (changed) _notifyHeader()
     }
 
-    // Initial sync from parameterValues
-    syncMissionTimeFromValue(parameterValues[APPARATUS_TIME_PARAM_ID])
-    syncMissionTimeZoneFromValue(parameterValues[APPARATUS_TIMEZONE_PARAM_ID])
+    // Initial sync from parameterValues (may be empty on first render)
+    let changed = false
+    if (syncMissionTimeFromValue(parameterValues[APPARATUS_TIME_PARAM_ID])) changed = true
+    if (syncMissionTimeZoneFromValue(parameterValues[APPARATUS_TIMEZONE_PARAM_ID])) changed = true
+    if (changed) _notifyHeader()
 
     setInterval(updateMissionTimeTick, LOCAL_TICK_INTERVAL_MS)
     setInterval(() => { void syncMissionTimeFromApparatus() }, APPARATUS_SYNC_INTERVAL_MS)
