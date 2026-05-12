@@ -1,0 +1,115 @@
+/* ── Backdrop ────────────────────────────────────────────── */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.55);
+  padding: 1rem;
+}
+
+/* ── Modal panel ─────────────────────────────────────────── */
+.modal {
+  display: flex;
+  flex-direction: column;
+  width: min(22rem, 100%);
+  max-height: 80vh;
+  border: 1px solid var(--border);
+  border-radius: 0.6rem;
+  background: var(--bg-main);
+  color: var(--text-primary);
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+}
+
+/* ── Header ──────────────────────────────────────────────── */
+.modal-header {
+  flex-shrink: 0;
+  padding: 0.55rem 1rem;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-bar);
+}
+
+/* ── Option list ─────────────────────────────────────────── */
+.option-list {
+  list-style: none;
+  margin: 0;
+  padding: 0.35rem 0;
+  overflow-y: auto;
+  flex: 1 1 auto;
+  outline: none;
+}
+
+.option-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.8rem 1.1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  border-left: 3px solid transparent;
+  transition: background 0.1s, border-color 0.1s, color 0.1s;
+  min-height: 3rem;
+  touch-action: manipulation;
+  user-select: none;
+}
+
+.option-item:hover,
+.option-item:focus-visible {
+  background: var(--btn-active-bg);
+  outline: none;
+}
+
+.option-item--selected {
+  border-left-color: var(--btn-active-border);
+  color: var(--text-blue);
+}
+
+.option-check {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-blue);
+  flex-shrink: 0;
+}
+
+/* ── Footer ──────────────────────────────────────────────── */
+.modal-footer {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: flex-end;
+  padding: 0.75rem 1rem;
+  border-top: 1px solid var(--border);
+  background: var(--bg-bar);
+}
+
+.btn {
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 0.4rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: var(--bg-btn);
+  color: var(--text-secondary);
+  transition: background 0.12s, border-color 0.12s;
+  touch-action: manipulation;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.btn-cancel:active {
+  background: var(--btn-active-bg);
+  border-color: var(--btn-active-border);
+}

@@ -1,3 +1,4 @@
+import { useRef } from 'react'
 import { applyTransactionGoOnApply } from './transactionNavigation.js'
 
 export const useTransactionSubmitFlow = ({
@@ -7,10 +8,14 @@ export const useTransactionSubmitFlow = ({
   navigation,
   pagePolicies,
 }) => {
+  // Keep a ref to always access the latest currentPage in the async handler
+  const currentPageRef = useRef(currentPage)
+  currentPageRef.current = currentPage
+
   const getPolicyForPage = (pageId) => (pageId ? pagePolicies?.[pageId] : null)
 
   const handleSubmitTransaction = async () => {
-    const page = currentPage.value
+    const page = currentPageRef.current
     if (!page || page.mode !== 'transaction') return
 
     const pagePolicy = getPolicyForPage(page.id)
@@ -44,7 +49,5 @@ export const useTransactionSubmitFlow = ({
     applyTransactionGoOnApply(page, navigation)
   }
 
-  return {
-    handleSubmitTransaction,
-  }
+  return { handleSubmitTransaction }
 }

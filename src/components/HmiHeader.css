@@ -1,0 +1,292 @@
+.bar {
+  display: grid;
+  grid-template-columns: auto auto 1fr auto auto auto auto;
+  align-items: center;
+  gap: 0;
+  padding: 0 0.5rem 0 0;
+  height: 3.5rem;
+  box-sizing: border-box;
+  background: var(--bg-bar);
+  border-bottom: 1px solid var(--border);
+  transition: background 0.25s, border-color 0.25s;
+}
+
+/* ── Zone shared ── */
+.zone {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  height: 100%;
+}
+
+/* ── Zone 1: Identity (button, reset styles) ── */
+.zone-identity-wrap {
+  display: flex;
+  align-items: stretch;
+  min-width: 0;
+  height: 100%;
+  border-right: 1px solid var(--border);
+}
+
+.zone-identity {
+  flex: 1 1 auto;
+  min-width: 0;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0;
+  line-height: 1.2;
+  padding: 0 0.6rem;
+  height: 100%;
+  /* button reset */
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.12s;
+}
+
+.zone-identity:hover {
+  background: var(--btn-active-bg);
+}
+
+.zone-identity:active {
+  background: var(--btn-active-bg);
+  opacity: 0.8;
+}
+
+.waveform-name {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 14rem;
+}
+
+.preset-name {
+  font-size: 0.875rem;
+  color: var(--text-blue);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 14rem;
+}
+
+/* ── Zone 2: Crypto ── */
+.zone-crypto {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  line-height: 1.2;
+  padding: 0 0.65rem;
+  border-right: 1px solid var(--border);
+}
+
+.crypto-main-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.18rem;
+  font-size: 0.875rem;
+  font-family: ui-monospace, 'Cascadia Code', monospace;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.crypto-algo {
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.zone-zeroize {
+  padding: 0;
+}
+
+.zone-zeroize-area {
+  justify-content: center;
+  padding: 0 1.0rem;
+  border-right: 1px solid var(--border);
+}
+
+.si-btn {
+  min-width: 3.25rem;
+  height: 2.4rem;
+  padding: 0 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.35rem;
+  border: 1px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
+}
+
+.si-btn:active {
+  background: var(--btn-active-bg);
+}
+
+.si--error {
+  color: var(--status-critical-color);
+  border-color: var(--status-critical-border);
+  background: var(--status-critical-bg);
+}
+
+.zeroize-symbol {
+  font-weight: 800;
+  font-size: 1.05rem;
+  line-height: 1;
+}
+
+.zone-channel {
+  justify-content: center;
+  height: 100%;
+  min-width: 3.2rem;
+  padding: 0 0.4rem;
+  border-right: 1px solid var(--border);
+}
+
+.channel-value {
+  font-weight: 700;
+  font-size: 1.0rem;
+  font-family: ui-monospace, 'Cascadia Code', monospace;
+  color: var(--text-primary);
+  white-space: nowrap;
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+
+.zone-zeroize:hover {
+  background: var(--btn-active-bg);
+}
+
+.zone-zeroize:active {
+  opacity: 0.82;
+}
+
+.crypto-ctx {
+  font-weight: 700;
+  font-size: 0.875rem;
+  font-family: ui-monospace, 'Cascadia Code', monospace;
+  border-radius: 0.2rem;
+  padding: 0 0.3rem;
+  line-height: 1.5;
+}
+
+.ctx--nato {
+  background: rgba(56, 139, 253, 0.15);
+  color: var(--text-blue);
+  border: 1px solid rgba(56, 139, 253, 0.3);
+}
+
+.ctx--naz {
+  background: rgba(63, 185, 80, 0.12);
+  color: var(--text-green);
+  border: 1px solid rgba(63, 185, 80, 0.3);
+}
+
+/* ── Zone 3: Status icons ── */
+.zone-status {
+  justify-content: flex-end;
+  padding: 0 0.4rem 0 0.35rem;
+}
+
+/* ── Zone 4: Mission time (TOD) ── */
+.zone-time {
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0 0.4rem;
+  border-left: 1px solid var(--border);
+  font-family: ui-monospace, 'Cascadia Code', monospace;
+}
+
+.time-main-row {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.3rem;
+  line-height: 1;
+}
+
+.time-value {
+  color: var(--text-primary);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.time-zone {
+  color: var(--text-secondary);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+.time-label {
+  margin-top: 0.08rem;
+  color: var(--text-secondary);
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  line-height: 1;
+  align-self: center;
+  text-align: center;
+}
+
+/* ── Comm icon button – far left ── */
+.comm-icon-wrap {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 3.25rem;
+  height: 100%;
+  border-radius: 0;
+  border: none;
+  border-right: 1px solid var(--border);
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+}
+
+.comm-icon-wrap svg {
+  width: 100%;
+  height: 100%;
+  padding: 0.2rem;
+  box-sizing: border-box;
+}
+
+/* Comm state colours */
+.comm--idle-ct {
+  color: var(--text-green);
+  background: var(--status-ok-bg);
+}
+
+.comm--idle-pt {
+  color: var(--status-warning-color);
+  background: var(--status-warning-bg);
+}
+
+.comm--tx {
+  color: var(--text-blue);
+  background: var(--btn-active-bg);
+}
+
+.comm--rx {
+  color: var(--text-green);
+  background: var(--active-name-bg);
+}
+
+.comm--radio-silence {
+  color: var(--status-critical-color);
+  background: var(--status-critical-bg);
+  animation: blink-bg 1s step-start infinite;
+}
+
+@keyframes blink-bg {
+  50% { background: transparent; }
+}

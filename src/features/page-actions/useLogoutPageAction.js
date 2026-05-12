@@ -1,4 +1,4 @@
-import { ref, watch } from 'vue'
+import { useState, useRef, useEffect } from 'react'
 
 export const useLogoutPageAction = ({
   currentPage,
@@ -12,31 +12,27 @@ export const useLogoutPageAction = ({
   usernameParameterId = 'login_name',
   passwordParameterId = 'login_password',
 }) => {
-  const logoutInProgress = ref(false)
+  const [logoutInProgress, setLogoutInProgress] = useState(false)
+  const logoutInProgressRef = useRef(false)
 
   const applyLogoutNavigation = () => {
-    if (logoutPageGoOnApply === 'GO_HOME') {
-      goHome()
-      return
-    }
-
+    if (logoutPageGoOnApply === 'GO_HOME') { goHome(); return }
     if (logoutPageGoOnApply === 'GO_BACK' || logoutPageGoOnApply === 'STAY_HERE') {
       goToPreviousPage()
     }
   }
 
-  watch(
-    () => currentPage.value?.id,
-    async (pageId) => {
-      if (pageId !== logoutPageId || logoutInProgress.value) return
+  useEffect(() => {
+    const pageId = currentPage?.id
+    if (pageId !== logoutPageId || logoutInProgressRef.current) return
 
-      const wasLoggedIn = parameterValues.status_login === 'ok'
-      logoutInProgress.value = true
-      setNotification('WARNING', 'Logging out...')
+    const wasLoggedIn = parameterValues.status_login === 'ok'
+    logoutInProgressRef.current = true
+    setLogoutInProgress(true)
+    setNotification('WARNING', 'Logging out...')
 
+    ;(async () => {
       try {
-        // Always send both credentials reset commands: local values can already
-        // be empty due to clearOnApply, while remote state may still be logged in.
         const nameResult = await setParameterValue(usernameParameterId, '')
         const passwordResult = await setParameterValue(passwordParameterId, '')
 
@@ -49,15 +45,14 @@ export const useLogoutPageAction = ({
         } else {
           setNotification('WARNING', 'No active session: user already logged out.')
         }
-
         applyLogoutNavigation()
       } finally {
-        logoutInProgress.value = false
+        logoutInProgressRef.current = false
+        setLogoutInProgress(false)
       }
-    },
-  )
+    })()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage?.id])
 
-  return {
-    logoutInProgress,
-  }
+  return { logoutInProgress }
 }

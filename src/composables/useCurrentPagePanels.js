@@ -1,35 +1,37 @@
-import { computed, ref, watch } from 'vue'
+import { useState, useEffect, useMemo } from 'react'
 
 export const useCurrentPagePanels = ({ currentPage }) => {
-  const currentPanelIndex = ref(0)
+  const [currentPanelIndex, setCurrentPanelIndex] = useState(0)
 
-  const currentPagePanels = computed(() =>
-    Array.isArray(currentPage.value?.panels) && currentPage.value.panels.length > 0
-      ? currentPage.value.panels
-      : null,
+  // Reset panel index when page changes
+  useEffect(() => {
+    setCurrentPanelIndex(0)
+  }, [currentPage?.id])
+
+  const currentPagePanels = useMemo(
+    () =>
+      Array.isArray(currentPage?.panels) && currentPage.panels.length > 0
+        ? currentPage.panels
+        : null,
+    [currentPage],
   )
 
-  const pageParameters = computed(() =>
-    currentPagePanels.value
-      ? currentPagePanels.value.flatMap((panel) => panel.parameters ?? [])
-      : (currentPage.value?.parameters ?? []),
+  const pageParameters = useMemo(
+    () =>
+      currentPagePanels
+        ? currentPagePanels.flatMap((panel) => panel.parameters ?? [])
+        : (currentPage?.parameters ?? []),
+    [currentPagePanels, currentPage],
   )
 
-  const currentPanelLabel = computed(() => {
-    if (!currentPagePanels.value) return ''
-    const panel = currentPagePanels.value[currentPanelIndex.value]
+  const currentPanelLabel = useMemo(() => {
+    if (!currentPagePanels) return ''
+    const panel = currentPagePanels[currentPanelIndex]
     return typeof panel?.label === 'string' ? panel.label.trim() : ''
-  })
-
-  watch(
-    () => currentPage.value?.id,
-    () => {
-      currentPanelIndex.value = 0
-    },
-  )
+  }, [currentPagePanels, currentPanelIndex])
 
   const handlePanelChange = (index) => {
-    currentPanelIndex.value = Number.isInteger(index) && index >= 0 ? index : 0
+    setCurrentPanelIndex(Number.isInteger(index) && index >= 0 ? index : 0)
   }
 
   return {

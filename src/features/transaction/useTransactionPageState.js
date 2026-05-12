@@ -1,5 +1,3 @@
-import { computed } from 'vue'
-
 export const useTransactionPageState = ({
   currentPage,
   parameterValues,
@@ -7,22 +5,19 @@ export const useTransactionPageState = ({
   getTransactionModifiedIds,
   hasTransactionChanges,
 }) => {
-  const isTransactionPage = computed(() => currentPage.value?.mode === 'transaction')
+  const isTransactionPage = currentPage?.mode === 'transaction'
 
-  const currentPageValues = computed(() => {
-    if (!isTransactionPage.value) return parameterValues
-    return getTransactionDisplayValues(currentPage.value.id)
-  })
+  const currentPageValues = isTransactionPage
+    ? getTransactionDisplayValues(currentPage.id)
+    : parameterValues
 
-  const currentPageModifiedIds = computed(() => {
-    if (!isTransactionPage.value) return []
-    return getTransactionModifiedIds(currentPage.value.id)
-  })
+  const currentPageModifiedIds = isTransactionPage
+    ? getTransactionModifiedIds(currentPage.id)
+    : []
 
-  const canSubmitTransaction = computed(() => {
-    if (!isTransactionPage.value) return false
-    return hasTransactionChanges(currentPage.value.id)
-  })
+  const canSubmitTransaction = isTransactionPage
+    ? hasTransactionChanges(currentPage.id)
+    : false
 
   return {
     isTransactionPage,
