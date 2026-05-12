@@ -89,7 +89,9 @@ export const useHeaderState = () => {
     if (zoneParamValue !== undefined && syncMissionTimeZoneFromValue(zoneParamValue)) _notifyHeader()
   }, [zoneParamValue])
 
-  if (!_missionClockStarted) {
+  // Clock initialization — runs once globally after first mount (StrictMode safe via module flag)
+  useEffect(() => {
+    if (_missionClockStarted) return
     _missionClockStarted = true
 
     const syncMissionTimeFromApparatus = async () => {
@@ -112,7 +114,7 @@ export const useHeaderState = () => {
     setInterval(updateMissionTimeTick, LOCAL_TICK_INTERVAL_MS)
     setInterval(() => { void syncMissionTimeFromApparatus() }, APPARATUS_SYNC_INTERVAL_MS)
     void syncMissionTimeFromApparatus()
-  }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const activeWaveformName = parameterValues.active_waveform_name ?? '—'
   const activePresetName   = parameterValues.active_preset_name   ?? '—'

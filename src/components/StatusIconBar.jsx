@@ -1,6 +1,6 @@
 import './StatusIconBar.css'
 import AppIcon from './AppIcon.jsx'
-import { menuConfig } from '../composables/useMenuConfig.js'
+import { menuConfig } from '../composables/menuConfig.js'
 import { useParameterStore } from '../composables/useParameterStore.js'
 import { useMenuNavigation } from '../composables/useMenuNavigation.js'
 

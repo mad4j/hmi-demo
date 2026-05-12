@@ -36,6 +36,7 @@ export const useCurrentPagePanels = ({ currentPage }) => {
 
   return {
     currentPagePanels,
+    currentPanelIndex,
     pageParameters,
     currentPanelLabel,
     handlePanelChange,

@@ -1,5 +1,5 @@
 import { useSyncExternalStore } from 'react'
-import { flattenSelectablePages, menuConfig } from './useMenuConfig.js'
+import { flattenSelectablePages, menuConfig } from './menuConfig.js'
 import { useEquipmentGateway } from './useEquipmentGateway.js'
 
 // ── Singleton state ───────────────────────────────────────
