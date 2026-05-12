@@ -1,31 +1,32 @@
-import { ref, onMounted } from 'vue'
+import { useSyncExternalStore } from 'react'
 
-// ── Singleton state ───────────────────────────────────────
-// Supported themes: 'light' | 'dark' | 'nvis'
-// 'nvis' is a Night Vision Imaging System-safe low-luminance red palette
-// (MIL-L-85762 / MIL-STD-1472H §5.3.5). Hardware photometric validation
-// is still required for full MIL-L-85762 certification.
 export const VALID_THEMES = ['light', 'dark', 'nvis']
 const STORAGE_KEY = 'hmi-theme'
 
 const _stored = typeof localStorage !== 'undefined' ? localStorage.getItem(STORAGE_KEY) : null
-const theme = ref(VALID_THEMES.includes(_stored) ? _stored : 'dark')
+let _theme = VALID_THEMES.includes(_stored) ? _stored : 'dark'
+
+const _listeners = new Set()
+const _subscribe = (l) => { _listeners.add(l); return () => _listeners.delete(l) }
+const _getSnapshot = () => _theme
 
 const _applyTheme = (value) => {
   if (typeof localStorage !== 'undefined') localStorage.setItem(STORAGE_KEY, value)
   if (typeof document !== 'undefined') document.body.dataset.theme = value
 }
 
+// Apply theme on module load
+_applyTheme(_theme)
+
 export const useTheme = () => {
+  const theme = useSyncExternalStore(_subscribe, _getSnapshot)
+
   const setTheme = (value) => {
     if (!VALID_THEMES.includes(value)) return
-    theme.value = value
-    _applyTheme(theme.value)
+    _theme = value
+    _applyTheme(_theme)
+    _listeners.forEach((l) => l())
   }
-
-  onMounted(() => {
-    _applyTheme(theme.value)
-  })
 
   return { theme, setTheme }
 }

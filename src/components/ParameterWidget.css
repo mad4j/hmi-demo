@@ -1,0 +1,135 @@
+/* ── Base widget ─────────────────────────────────────────── */
+.param-widget {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 5.5rem;
+  border: 1px solid var(--border);
+  border-radius: 0.45rem;
+  overflow: hidden;
+  background: var(--bg-btn);
+  color: var(--text-primary);
+  transition: border-color 0.15s, background 0.25s, color 0.25s;
+}
+
+.param-name {
+  flex: 0 0 auto;
+  padding: 0.25rem 0.55rem;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  background: var(--bg-main);
+  transition: background 0.25s, color 0.25s, border-color 0.25s;
+}
+
+.param-value {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.3rem 0.4rem;
+  font-size: 1.55rem;
+  font-weight: 700;
+  line-height: 1.1;
+  text-align: center;
+  overflow-wrap: break-word;
+  color: var(--text-primary);
+}
+
+/* ── Boolean: clickable ──────────────────────────────────── */
+.param-widget--clickable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.param-widget--clickable:focus-visible {
+  outline: 2px solid var(--active-border);
+  outline-offset: 2px;
+}
+
+/* ── Boolean: OFF state ──────────────────────────────────── */
+.param-widget--boolean .param-value {
+  font-size: 1rem;
+  color: var(--text-secondary);
+}
+
+/* ── Boolean: ON / active state ──────────────────────────── */
+.param-widget--boolean.param-widget--active {
+  border-color: var(--active-border);
+}
+
+.param-widget--boolean.param-widget--active .param-name {
+  background: var(--active-name-bg);
+  border-bottom-color: var(--active-name-border);
+  color: var(--active-text);
+}
+
+.param-widget--boolean.param-widget--active .param-value {
+  color: var(--active-text);
+  font-size: 1rem;
+}
+
+/* ── Enum widget ─────────────────────────────────────────── */
+.param-widget--enum .param-value {
+  font-size: 1rem;
+  color: var(--text-blue);
+}
+
+/* ── Percentage widget ───────────────────────────────────── */
+.param-widget--percentage .param-value {
+  color: var(--text-blue);
+}
+
+.param-widget--text .param-value,
+.param-widget--password .param-value,
+.param-widget--date .param-value {
+  font-size: 1rem;
+  color: var(--text-blue);
+}
+
+.param-widget--percentage.param-widget--clickable:hover .param-value {
+  color: var(--active-text);
+}
+
+/* ── Read-only widget ────────────────────────────────────── */
+.param-widget--readonly {
+  opacity: 0.75;
+}
+
+.param-widget--modified {
+  border-color: var(--transaction-modified-border);
+}
+
+.param-widget--modified .param-name {
+  background: var(--transaction-modified-bg);
+  border-bottom-color: var(--transaction-modified-border);
+  color: var(--transaction-modified-text);
+}
+
+.param-widget--modified .param-value {
+  color: var(--transaction-modified-text);
+}
+
+.param-unit {
+  font-size: 0.65em;
+  font-weight: 600;
+  margin-left: 0.2em;
+  opacity: 0.75;
+  vertical-align: baseline;
+}
+
+.readonly-icon {
+  display: inline-block;
+  width: 0.6rem;
+  height: 0.6rem;
+  margin-left: 0.2rem;
+  vertical-align: middle;
+  opacity: 0.6;
+  flex-shrink: 0;
+}

@@ -39,24 +39,24 @@ export const useTransactionPageActions = ({
   })
 
   const handleToggleParameter = (id) => {
-    if (isTransactionPage.value) {
-      transactionStore.toggleTransactionParameter(currentPage.value.id, id)
+    if (isTransactionPage) {
+      transactionStore.toggleTransactionParameter(currentPage.id, id)
       return
     }
     transactionStore.toggleParameter(id)
   }
 
   const handleSetParameterValue = (id, value) => {
-    if (isTransactionPage.value) {
-      transactionStore.setTransactionParameterValue(currentPage.value.id, id, value)
+    if (isTransactionPage) {
+      transactionStore.setTransactionParameterValue(currentPage.id, id, value)
       return
     }
     transactionStore.setParameterValue(id, value)
   }
 
   const handleResetTransaction = () => {
-    if (!isTransactionPage.value) return
-    transactionStore.resetTransactionPage(currentPage.value.id)
+    if (!isTransactionPage) return
+    transactionStore.resetTransactionPage(currentPage.id)
   }
 
   return {
