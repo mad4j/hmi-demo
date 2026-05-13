@@ -1,4 +1,4 @@
-import { useEffect, useRef, useMemo } from 'react'
+import { useEffect, useRef, useMemo, useState } from 'react'
 import './PageParametersView.css'
 import AppIcon from './AppIcon.jsx'
 import ParameterWidget from './ParameterWidget.jsx'
