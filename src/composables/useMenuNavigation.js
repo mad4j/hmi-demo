@@ -3,7 +3,7 @@ import {
   menuConfig,
   flattenSelectablePages,
   findPageById,
-} from './useMenuConfig.js'
+} from './menuConfig.js'
 
 const HOME_PAGE_ID = '__home__'
 const HOME_PAGE = {

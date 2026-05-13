@@ -1,18 +1,31 @@
+import { useParameterStore } from './useParameterStore.js'
 import { createDefaultTransactionPagePolicies } from '../features/transaction/transactionPagePolicies.js'
 import { useTransactionPageState } from '../features/transaction/useTransactionPageState.js'
 import { useTransactionSubmitFlow } from '../features/transaction/useTransactionSubmitFlow.js'
 
 export const useTransactionPageActions = ({
   currentPage,
-  parameterValues,
-  transactionStore,
   notifications,
   navigation,
   pagePolicies,
 }) => {
+  const {
+    parameterValues,
+    toggleParameter,
+    setParameterValue,
+    toggleTransactionParameter,
+    setTransactionParameterValue,
+    getTransactionDisplayValues,
+    getTransactionModifiedIds,
+    hasTransactionChanges,
+    resetTransactionPage,
+    commitTransactionPage,
+    refreshParameters,
+  } = useParameterStore()
+
   const resolvedPagePolicies = pagePolicies
     ?? createDefaultTransactionPagePolicies({
-      refreshParameters: transactionStore.refreshParameters,
+      refreshParameters,
       parameterValues,
       setNotification: notifications.setNotification,
     })
@@ -25,14 +38,14 @@ export const useTransactionPageActions = ({
   } = useTransactionPageState({
     currentPage,
     parameterValues,
-    getTransactionDisplayValues: transactionStore.getTransactionDisplayValues,
-    getTransactionModifiedIds: transactionStore.getTransactionModifiedIds,
-    hasTransactionChanges: transactionStore.hasTransactionChanges,
+    getTransactionDisplayValues,
+    getTransactionModifiedIds,
+    hasTransactionChanges,
   })
 
   const { handleSubmitTransaction } = useTransactionSubmitFlow({
     currentPage,
-    commitTransactionPage: transactionStore.commitTransactionPage,
+    commitTransactionPage,
     setNotification: notifications.setNotification,
     navigation,
     pagePolicies: resolvedPagePolicies,
@@ -40,23 +53,23 @@ export const useTransactionPageActions = ({
 
   const handleToggleParameter = (id) => {
     if (isTransactionPage) {
-      transactionStore.toggleTransactionParameter(currentPage.id, id)
+      toggleTransactionParameter(currentPage.id, id)
       return
     }
-    transactionStore.toggleParameter(id)
+    toggleParameter(id)
   }
 
   const handleSetParameterValue = (id, value) => {
     if (isTransactionPage) {
-      transactionStore.setTransactionParameterValue(currentPage.id, id, value)
+      setTransactionParameterValue(currentPage.id, id, value)
       return
     }
-    transactionStore.setParameterValue(id, value)
+    setParameterValue(id, value)
   }
 
   const handleResetTransaction = () => {
     if (!isTransactionPage) return
-    transactionStore.resetTransactionPage(currentPage.id)
+    resetTransactionPage(currentPage.id)
   }
 
   return {

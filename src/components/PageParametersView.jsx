@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from 'react'
+import { useEffect, useRef, useMemo } from 'react'
 import './PageParametersView.css'
 import AppIcon from './AppIcon.jsx'
 import ParameterWidget from './ParameterWidget.jsx'
@@ -12,29 +12,24 @@ const EDITABLE_TYPES = ['percentage', 'text', 'password', 'date', 'enum']
 export default function PageParametersView({
   parameters,
   parameterValues,
-  viewportWidth,
   transactionMode = false,
   modifiedParameterIds = [],
   canSubmitTransaction = false,
   panels = null,
+  currentPanel = 0,
   onToggleParameter,
   onSetParameterValue,
   onSubmitTransaction,
   onResetTransaction,
   onPanelChange,
 }) {
-  const [currentPanel, setCurrentPanel] = useState(0)
+  // editingParamId is intentionally kept as internal state: it controls which modal is
+  // open and has no cross-cutting concern (unlike currentPanel which feeds the notification bar).
   const [editingParamId, setEditingParamId] = useState(null)
   const dragRef = useRef({ startX: 0, isDragging: false })
 
   const hasPanels = Array.isArray(panels) && panels.length > 0
   const totalPanels = hasPanels ? panels.length : 1
-
-  // Reset panel when panels prop changes
-  useEffect(() => { setCurrentPanel(0) }, [panels])
-
-  // Emit panel-change whenever currentPanel changes
-  useEffect(() => { onPanelChange?.(currentPanel) }, [currentPanel]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Global Enter keydown for transaction submit
   useEffect(() => {
@@ -57,7 +52,7 @@ export default function PageParametersView({
   )
 
   const goToPanel = (index) => {
-    setCurrentPanel(Math.max(0, Math.min(index, totalPanels - 1)))
+    onPanelChange?.(Math.max(0, Math.min(index, totalPanels - 1)))
   }
 
   const handlePanelKeydown = (e, panelIndex) => {

@@ -1,9 +1,6 @@
 import './HmiHeader.css'
 import StatusIconBar from './StatusIconBar.jsx'
 import IconCommState from './icons/IconCommState.jsx'
-import { useHeaderState } from '../composables/useHeaderState.js'
-import { useMenuNavigation } from '../composables/useMenuNavigation.js'
-import { useEquipmentGateway } from '../composables/useEquipmentGateway.js'
 
 const commLabel = {
   'tx': 'TX – Transmitting',
@@ -13,13 +10,17 @@ const commLabel = {
   'radio-silence': 'RADIO SILENCE',
 }
 
-export default function HmiHeader() {
-  const { activeWaveformName, activePresetName, activeChannelLabel, cryptoAlgorithm, cryptoContext, commIconVariant, missionTimeTod } = useHeaderState()
-  const { navigateToPage } = useMenuNavigation()
-  const { sendCommand } = useEquipmentGateway()
-
-  const triggerEmergencyZeroization = async () => { await sendCommand('KEY_ZEROIZE') }
-
+export default function HmiHeader({
+  activeWaveformName,
+  activePresetName,
+  activeChannelLabel,
+  cryptoAlgorithm,
+  cryptoContext,
+  commIconVariant,
+  missionTimeTod,
+  onNavigateToWaveform,
+  onZeroize,
+}) {
   return (
     <header className="bar top-bar">
       <button
@@ -27,7 +28,7 @@ export default function HmiHeader() {
         title={commLabel[commIconVariant]}
         aria-label={commLabel[commIconVariant]}
         type="button"
-        onClick={() => navigateToPage('waveform-attiva')}
+        onClick={onNavigateToWaveform}
       >
         <IconCommState variant={commIconVariant} size={30} />
       </button>
@@ -37,7 +38,7 @@ export default function HmiHeader() {
       </div>
 
       <div className="zone zone-identity-wrap">
-        <button className="zone zone-identity" type="button" onClick={() => navigateToPage('waveform-attiva')}>
+        <button className="zone zone-identity" type="button" onClick={onNavigateToWaveform}>
           <span className="waveform-name">{activeWaveformName}</span>
           <span className="preset-name">{activePresetName}</span>
         </button>
@@ -56,7 +57,7 @@ export default function HmiHeader() {
           type="button"
           title="Emergency zeroization"
           aria-label="Emergency zeroization"
-          onClick={triggerEmergencyZeroization}
+          onClick={onZeroize}
         >
           <span className="zeroize-symbol" aria-hidden="true">Z</span>
         </button>

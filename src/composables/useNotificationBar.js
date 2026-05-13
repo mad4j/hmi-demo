@@ -1,5 +1,4 @@
 import { useRef, useReducer } from 'react'
-import { useMenuNavigation } from './useMenuNavigation.js'
 
 const PRIORITY_ORDER = { ERROR: 0, WARNING: 1, SUCCESS: 2, NORMAL: 3, MENU: 4 }
 const NOTIFICATION_TIMEOUT_DEFAULT_MS = 5000
@@ -7,8 +6,6 @@ const DISPLAY_MODE_TIMEOUT = 'TIMEOUT'
 const DISPLAY_MODE_ACKNOWLEDGED = 'ACKNOWLEDGED'
 
 export const useNotificationBar = ({ menuMessage } = {}) => {
-  const { currentPage } = useMenuNavigation()
-
   // Use refs for mutable state accessed in timer callbacks (avoids stale closures)
   const queueRef = useRef([])
   const activeRef = useRef(null)
@@ -97,7 +94,7 @@ export const useNotificationBar = ({ menuMessage } = {}) => {
     ? { status: active.status, message: active.message }
     : {
         status: 'MENU',
-        message: typeof menuMessage === 'string' ? menuMessage : (currentPage?.label ?? ''),
+        message: typeof menuMessage === 'string' ? menuMessage : '',
       }
 
   const pendingCount = queueRef.current.length

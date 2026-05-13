@@ -1,10 +1,9 @@
 import { useEffect } from 'react'
+import { useParameterStore } from './useParameterStore.js'
 
-export const useCurrentPageParameterRefresh = ({
-  currentPage,
-  pageParameters,
-  refreshParameters,
-}) => {
+export const useCurrentPageParameterRefresh = ({ currentPage, pageParameters }) => {
+  const { refreshParameters } = useParameterStore()
+
   useEffect(() => {
     if (!currentPage) return
     const ids = pageParameters.map((param) => param.id)
