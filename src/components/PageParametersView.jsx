@@ -6,6 +6,7 @@ import EnumEditorModal from './EnumEditorModal.jsx'
 import PercentageEditorModal from './PercentageEditorModal.jsx'
 import TextEditorModal from './TextEditorModal.jsx'
 import DateEditorModal from './DateEditorModal.jsx'
+import TableParameterView from './TableParameterView.jsx'
 
 const EDITABLE_TYPES = ['percentage', 'text', 'password', 'date', 'enum']
 
@@ -46,6 +47,10 @@ export default function PageParametersView({
   }, [transactionMode, editingParamId, canSubmitTransaction, onSubmitTransaction])
 
   const visibleParameters = hasPanels ? (panels[currentPanel]?.parameters ?? []) : parameters
+  const tableParameter = visibleParameters.find((param) => param?.type === 'table') ?? null
+  const visibleStandardParameters = tableParameter
+    ? []
+    : visibleParameters
   const allParameters = useMemo(
     () => hasPanels ? panels.flatMap((p) => p.parameters ?? []) : parameters,
     [hasPanels, panels, parameters]
@@ -114,22 +119,29 @@ export default function PageParametersView({
             className={`panels-wrapper${hasPanels ? ' panels-wrapper--active' : ''}`}
             {...panelWrapperProps}
           >
-            <div className="widget-grid">
-              {visibleParameters.map((param) => (
-                <ParameterWidget
-                  key={param.id}
-                  name={param.name}
-                  type={param.type}
-                  unit={param.unit}
-                  precision={param.precision}
-                  options={param.options}
-                  value={parameterValues[param.id]}
-                  readonly={param.readonly}
-                  modified={isParameterModified(param.id)}
-                  onToggle={() => onToggleParameter?.(param.id)}
-                  onEdit={() => setEditingParamId(param.id)}
+            <div className={`widget-grid${tableParameter ? ' widget-grid--table' : ''}`}>
+              {tableParameter ? (
+                <TableParameterView
+                  title={tableParameter.name}
+                  rawValue={parameterValues[tableParameter.id]}
                 />
-              ))}
+              ) : (
+                visibleStandardParameters.map((param) => (
+                  <ParameterWidget
+                    key={param.id}
+                    name={param.name}
+                    type={param.type}
+                    unit={param.unit}
+                    precision={param.precision}
+                    options={param.options}
+                    value={parameterValues[param.id]}
+                    readonly={param.readonly}
+                    modified={isParameterModified(param.id)}
+                    onToggle={() => onToggleParameter?.(param.id)}
+                    onEdit={() => setEditingParamId(param.id)}
+                  />
+                ))
+              )}
             </div>
 
             {hasPanels && totalPanels > 1 && (

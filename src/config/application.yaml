@@ -1,5 +1,13 @@
 name: HMI Demo Application
 pages:
+  - id: demo_table
+    label: Demo Table
+    icon: "menu"
+    parameters:
+      - id: tabella_eventi_demo
+        name: Eventi Missione
+        type: table
+        readonly: true
   - id: app-configurazione
     label: Configuration
     icon: "settings"

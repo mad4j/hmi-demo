@@ -166,6 +166,13 @@ pages:
             name: Build number
             type: text
             readonly: true
+      - id: demo_table
+        label: Demo Table
+        parameters:
+          - id: tabella_eventi_demo
+            name: Eventi Missione
+            type: table
+            readonly: true
       - id: pannelli_transazione
         label: Transaction Panels
         mode: transaction

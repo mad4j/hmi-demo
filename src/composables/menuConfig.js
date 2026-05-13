@@ -102,7 +102,7 @@ export const normalizeParameters = (params) => {
     .filter((p) => p && typeof p === 'object' && typeof p.id === 'string' && p.id.trim())
     .map((p) => {
       const type =
-        ['number', 'percentage', 'enum', 'boolean', 'text', 'password', 'date'].includes(p.type)
+        ['number', 'percentage', 'enum', 'boolean', 'text', 'password', 'date', 'table'].includes(p.type)
           ? p.type
           : 'number'
 

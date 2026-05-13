@@ -101,6 +101,21 @@ const apparatusState = {
   waveform_versione:    '3.2.1',
   preset_stato:         'SAVED',
   preset_descrizione:   'Standard NATO interoperability profile',
+  // JSON table demo parameter
+  tabella_eventi_demo: JSON.stringify([
+    { id: 1001, sistema: 'NAV', severita: 'INFO', stato: 'OPEN', canale: 'CH1', ts: '2026-05-13 09:10:00', descrizione: 'Align completed' },
+    { id: 1002, sistema: 'COMMS', severita: 'WARN', stato: 'OPEN', canale: 'CH3', ts: '2026-05-13 09:11:40', descrizione: 'Signal degraded' },
+    { id: 1003, sistema: 'PWR', severita: 'INFO', stato: 'CLOSED', canale: 'CH2', ts: '2026-05-13 09:12:10', descrizione: 'Aux bus nominal' },
+    { id: 1004, sistema: 'GPS', severita: 'WARN', stato: 'OPEN', canale: 'CH1', ts: '2026-05-13 09:13:12', descrizione: 'Satellite lock reduced' },
+    { id: 1005, sistema: 'COMMS', severita: 'INFO', stato: 'CLOSED', canale: 'CH4', ts: '2026-05-13 09:13:58', descrizione: 'Hop sync restored' },
+    { id: 1006, sistema: 'NAV', severita: 'WARN', stato: 'OPEN', canale: 'CH5', ts: '2026-05-13 09:14:23', descrizione: 'Drift above threshold' },
+    { id: 1007, sistema: 'PWR', severita: 'WARN', stato: 'OPEN', canale: 'CH2', ts: '2026-05-13 09:15:48', descrizione: 'Battery sag detected' },
+    { id: 1008, sistema: 'SEC', severita: 'INFO', stato: 'CLOSED', canale: 'CH1', ts: '2026-05-13 09:16:09', descrizione: 'User login verified' },
+    { id: 1009, sistema: 'COMMS', severita: 'WARN', stato: 'OPEN', canale: 'CH3', ts: '2026-05-13 09:17:17', descrizione: 'Packet loss peak' },
+    { id: 1010, sistema: 'NAV', severita: 'INFO', stato: 'OPEN', canale: 'CH2', ts: '2026-05-13 09:18:21', descrizione: 'Waypoint uploaded' },
+    { id: 1011, sistema: 'PWR', severita: 'INFO', stato: 'CLOSED', canale: 'CH4', ts: '2026-05-13 09:18:44', descrizione: 'Thermal margin stable' },
+    { id: 1012, sistema: 'SEC', severita: 'WARN', stato: 'OPEN', canale: 'CH1', ts: '2026-05-13 09:19:02', descrizione: 'Policy mismatch on role' },
+  ]),
 }
 
 const VALID_LOGIN_NAME     = 'admin'
@@ -213,6 +228,35 @@ const generateTick = () => {
       const states = ['IDLE', 'IDLE', 'IDLE', 'RX', 'TX']
       setIfChanged('comm_state', states[Math.floor(Math.random() * states.length)])
     }
+  }
+
+  if (Math.random() < 0.35) {
+    const severities = ['INFO', 'WARN']
+    const systems = ['NAV', 'COMMS', 'PWR', 'GPS', 'SEC']
+    const channels = ['CH1', 'CH2', 'CH3', 'CH4', 'CH5']
+    const statuses = ['OPEN', 'OPEN', 'OPEN', 'CLOSED']
+    let tableRows = []
+    try {
+      tableRows = JSON.parse(apparatusState.tabella_eventi_demo)
+      if (!Array.isArray(tableRows)) tableRows = []
+    } catch {
+      tableRows = []
+    }
+
+    const nowTs = new Date().toISOString().slice(0, 19).replace('T', ' ')
+    const nextId = Number(tableRows[0]?.id ?? 1000) + 1
+    const nextRow = {
+      id: nextId,
+      sistema: systems[Math.floor(Math.random() * systems.length)],
+      severita: severities[Math.floor(Math.random() * severities.length)],
+      stato: statuses[Math.floor(Math.random() * statuses.length)],
+      canale: channels[Math.floor(Math.random() * channels.length)],
+      ts: nowTs,
+      descrizione: 'Tick update evento',
+    }
+
+    const cappedRows = [nextRow, ...tableRows].slice(0, 40)
+    setIfChanged('tabella_eventi_demo', JSON.stringify(cappedRows))
   }
 
   return updates

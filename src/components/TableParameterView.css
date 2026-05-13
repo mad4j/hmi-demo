@@ -1,0 +1,127 @@
+.table-parameter-view {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  width: 100%;
+  min-height: 0;
+  border: 1px solid var(--border);
+  border-radius: 0.45rem;
+  background: color-mix(in srgb, var(--bg-btn) 22%, transparent);
+}
+
+.table-parameter-view__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.55rem 0.75rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.table-parameter-view__header h2 {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.table-parameter-view__meta {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+}
+
+.table-parameter-view__table-wrap {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+}
+
+.table-parameter-view__table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.table-parameter-view__table th,
+.table-parameter-view__table td {
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 80%, transparent);
+  padding: 0.45rem 0.5rem;
+  text-align: left;
+  font-size: 0.82rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.table-parameter-view__table thead th {
+  position: sticky;
+  z-index: 1;
+  background: color-mix(in srgb, var(--bg-main) 86%, black 14%);
+}
+
+.table-parameter-view__table thead tr:first-child th {
+  top: 0;
+}
+
+.table-parameter-view__table thead tr:nth-child(2) th {
+  top: 2rem;
+}
+
+.table-sort-button {
+  width: 100%;
+  border: none;
+  background: transparent;
+  color: var(--text-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.35rem;
+  font-size: 0.78rem;
+  padding: 0;
+}
+
+.table-sort-button__arrow {
+  color: var(--text-blue);
+  font-size: 0.72rem;
+}
+
+.table-filter-input {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid var(--border);
+  border-radius: 0.25rem;
+  padding: 0.25rem 0.35rem;
+  background: var(--bg-main);
+  color: var(--text-primary);
+  font-size: 0.75rem;
+}
+
+.table-empty {
+  text-align: center;
+  color: var(--text-secondary);
+  padding: 0.8rem;
+}
+
+.table-parameter-view__pager {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 0.5rem 0.75rem;
+  border-top: 1px solid var(--border);
+}
+
+.table-parameter-view__pager span {
+  min-width: 7.5rem;
+  text-align: center;
+  font-size: 0.82rem;
+}
+
+.table-parameter-view__pager button {
+  min-width: 4.5rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  padding: 0.35rem 0.5rem;
+}
