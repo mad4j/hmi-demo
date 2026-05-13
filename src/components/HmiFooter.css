@@ -16,6 +16,7 @@
 .bottom-bar {
   border-bottom: 0;
   border-top: 1px solid var(--border);
+  height: 100%;
   padding: 0;
   gap: 0;
   align-items: stretch;
@@ -46,8 +47,9 @@ button:active {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.2rem;
-  padding: 0.35rem 0.25rem;
+  gap: 0.125rem;
+  height: 100%;
+  padding: 0.25rem 0.2rem;
   border: none;
   border-left: 1px solid var(--border);
   border-radius: 0;
@@ -55,6 +57,7 @@ button:active {
   color: var(--text-secondary);
   font-size: 1rem;
   font-weight: 600;
+  line-height: 1;
   letter-spacing: 0.05em;
   text-transform: uppercase;
   touch-action: manipulation;
@@ -98,4 +101,5 @@ button:active {
 
 .tab-label {
   font-size: 1rem;
+  line-height: 1;
 }

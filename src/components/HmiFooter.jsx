@@ -11,7 +11,7 @@ export default function HmiFooter({ level1Items, activeLevel1Id, isAtHome, canGo
         disabled={!canGoToPreviousPage}
         onClick={onGoBack}
       >
-        <AppIcon name="back" size={22} />
+        <AppIcon name="back" size={32} />
       </button>
       <button
         className={`tab-button tab-button--home${isAtHome ? ' tab-button--active' : ''}`}
@@ -19,7 +19,7 @@ export default function HmiFooter({ level1Items, activeLevel1Id, isAtHome, canGo
         aria-label="Home"
         onClick={onGoHome}
       >
-        <AppIcon name="home" size={22} />
+        <AppIcon name="home" size={20} />
         <span className="tab-label">Home</span>
       </button>
       {level1Items.map((item) => (
@@ -29,7 +29,7 @@ export default function HmiFooter({ level1Items, activeLevel1Id, isAtHome, canGo
           type="button"
           onClick={() => onSelectItem(item)}
         >
-          {item.icon && <AppIcon name={item.icon} size={22} />}
+          {item.icon && <AppIcon name={item.icon} size={20} />}
           <span className="tab-label">{item.label}</span>
         </button>
       ))}
