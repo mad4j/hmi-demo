@@ -1,0 +1,72 @@
+.critical-alert-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(15, 6, 6, 0.78);
+}
+
+.critical-alert-modal {
+  display: flex;
+  flex-direction: column;
+  width: min(28rem, 100%);
+  border: 1px solid var(--status-critical-border, #c54c4c);
+  border-radius: 0.7rem;
+  background: color-mix(in srgb, var(--bg-main) 86%, #2b0909);
+  color: var(--text-primary);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.48);
+  overflow: hidden;
+}
+
+.critical-alert-header {
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--status-critical-color, #ffd7d7);
+  background: color-mix(in srgb, var(--status-critical-bg, #5a1616) 88%, black);
+  border-bottom: 1px solid var(--status-critical-border, #c54c4c);
+}
+
+.critical-alert-body {
+  padding: 1.25rem 1rem;
+}
+
+.critical-alert-message {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.critical-alert-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0.85rem 1rem 1rem;
+  border-top: 1px solid var(--border);
+  background: color-mix(in srgb, var(--bg-bar) 92%, #1a0808);
+}
+
+.critical-alert-button {
+  min-width: 10rem;
+  min-height: 3rem;
+  padding: 0.7rem 1.1rem;
+  border: 1px solid var(--status-critical-border, #c54c4c);
+  border-radius: 0.5rem;
+  background: color-mix(in srgb, var(--status-critical-bg, #5a1616) 82%, #220606);
+  color: var(--status-critical-color, #ffd7d7);
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.critical-alert-button:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--status-critical-border, #c54c4c) 68%, white);
+  outline-offset: 2px;
+}

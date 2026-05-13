@@ -25,3 +25,24 @@ Valori correnti in tempo reale (oggetto reattivo):
 ```js
 hmiDebug.parameterValues
 ```
+
+## Test notifiche HMI
+
+Generare una notifica CRITICAL che deve essere confermata esplicitamente:
+
+```js
+hmiDebug.notifyCritical('Battery level below 10% - acknowledge required.')
+```
+
+Generare una notifica arbitraria specificando severita, messaggio e opzioni:
+
+```js
+hmiDebug.notify('WARNING', 'Link degraded')
+hmiDebug.notify('ERROR', 'Backend write failed', { displayMode: 'DISMISS' })
+```
+
+Esito atteso per il caso CRITICAL:
+
+- compare il popup modale di alert
+- il tap sulla notification bar non chiude l'alert
+- la chiusura avviene solo con il pulsante `Acknowledge`

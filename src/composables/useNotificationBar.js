@@ -1,9 +1,10 @@
 import { useRef, useReducer } from 'react'
 
-const PRIORITY_ORDER = { ERROR: 0, WARNING: 1, SUCCESS: 2, NORMAL: 3, MENU: 4 }
+const PRIORITY_ORDER = { CRITICAL: 0, ERROR: 1, WARNING: 2, SUCCESS: 3, NORMAL: 4, MENU: 5 }
 const NOTIFICATION_TIMEOUT_DEFAULT_MS = 5000
 const DISPLAY_MODE_TIMEOUT = 'TIMEOUT'
 const DISPLAY_MODE_ACKNOWLEDGED = 'ACKNOWLEDGED'
+const NOTIFICATION_STATUS_CRITICAL = 'CRITICAL'
 
 export const useNotificationBar = ({ menuMessage } = {}) => {
   // Use refs for mutable state accessed in timer callbacks (avoids stale closures)
@@ -54,7 +55,9 @@ export const useNotificationBar = ({ menuMessage } = {}) => {
     const normalizedMode =
       typeof options.displayMode === 'string' ? options.displayMode.trim().toUpperCase() : ''
     const displayMode =
-      normalizedMode === DISPLAY_MODE_ACKNOWLEDGED ? DISPLAY_MODE_ACKNOWLEDGED : DISPLAY_MODE_TIMEOUT
+      normalizedMode === DISPLAY_MODE_ACKNOWLEDGED || status === NOTIFICATION_STATUS_CRITICAL
+        ? DISPLAY_MODE_ACKNOWLEDGED
+        : DISPLAY_MODE_TIMEOUT
     const timeoutMs =
       Number.isFinite(options.timeoutMs) && options.timeoutMs > 0
         ? options.timeoutMs
@@ -80,6 +83,14 @@ export const useNotificationBar = ({ menuMessage } = {}) => {
 
   const handleNotificationTap = () => {
     if (!activeRef.current) return
+    if (activeRef.current.status === NOTIFICATION_STATUS_CRITICAL) return
+    clearDismissTimer()
+    activeRef.current = null
+    showNext()
+  }
+
+  const acknowledgeNotification = () => {
+    if (!activeRef.current) return
     clearDismissTimer()
     activeRef.current = null
     showNext()
@@ -100,12 +111,16 @@ export const useNotificationBar = ({ menuMessage } = {}) => {
   const pendingCount = queueRef.current.length
 
   const notificationBarClasses = [`notification-bar--${notification.status.toLowerCase()}`]
+  const isCriticalAcknowledgementRequired =
+    active?.status === NOTIFICATION_STATUS_CRITICAL && active?.displayMode === DISPLAY_MODE_ACKNOWLEDGED
 
   return {
     notification,
     pendingCount,
     notificationBarClasses,
+    isCriticalAcknowledgementRequired,
     setNotification,
+    acknowledgeNotification,
     handleNotificationTap,
     disposeNotificationBar,
   }

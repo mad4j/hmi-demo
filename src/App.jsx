@@ -3,6 +3,7 @@ import './App.css'
 import HmiShell from './components/HmiShell.jsx'
 import HmiHeaderContainer from './components/HmiHeaderContainer.jsx'
 import HmiNotificationBar from './components/HmiNotificationBar.jsx'
+import CriticalAlertModal from './components/CriticalAlertModal.jsx'
 import HmiFooter from './components/HmiFooter.jsx'
 import HmiContentRouter from './components/HmiContentRouter.jsx'
 import { menuConfig, findPageById } from './composables/menuConfig.js'
@@ -18,6 +19,7 @@ const LOGOUT_PAGE_ID = 'logout'
 
 const NOTIFICATION_ICON = {
   MENU: 'menu',
+  CRITICAL: 'alarm',
   NORMAL: 'info',
   SUCCESS: 'check-circle',
   WARNING: 'fault',
@@ -50,7 +52,9 @@ export default function App() {
     notification,
     pendingCount,
     notificationBarClasses,
+    isCriticalAcknowledgementRequired,
     setNotification,
+    acknowledgeNotification,
     handleNotificationTap,
     disposeNotificationBar,
   } = useNotificationBar({ menuMessage: menuNotificationMessage })
@@ -58,6 +62,29 @@ export default function App() {
   useEffect(() => {
     return () => { disposeNotificationBar() }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (!import.meta.env.DEV || typeof window === 'undefined') return undefined
+
+    const previousDebug = window.hmiDebug ?? {}
+
+    window.hmiDebug = {
+      ...previousDebug,
+      notify(status, message, options = {}) {
+        setNotification(String(status ?? 'NORMAL').trim().toUpperCase(), String(message ?? ''), options)
+      },
+      notifyCritical(message = 'Simulated CRITICAL alert for operator acknowledgement test.') {
+        setNotification('CRITICAL', String(message), { displayMode: 'ACKNOWLEDGED' })
+      },
+    }
+
+    return () => {
+      if (window.hmiDebug) {
+        delete window.hmiDebug.notify
+        delete window.hmiDebug.notifyCritical
+      }
+    }
+  }, [setNotification])
 
   const notifications = { setNotification }
   const navigation = { goHome, goToPreviousPage }
@@ -124,6 +151,12 @@ export default function App() {
         notifications={notifications}
         navigation={navigation}
       />
+      {isCriticalAcknowledgementRequired && (
+        <CriticalAlertModal
+          message={notification.message}
+          onAcknowledge={acknowledgeNotification}
+        />
+      )}
     </HmiShell>
   )
 }
