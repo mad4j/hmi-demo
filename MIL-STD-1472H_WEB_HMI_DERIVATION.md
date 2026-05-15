@@ -268,26 +268,90 @@ From 5.12.2/5.12.4, 4.13, and 5.7.19. This reduces mode confusion and inconsiste
 
 ## 5. Traceability Table to MIL-STD-1472H
 
+### 5.1 Derived Requirement -> Original Clause (Primary Mapping)
+
 | Derived requirement | Original MIL-STD-1472H section | Applicability | Derivation type | Derivation note |
 | --- | --- | --- | --- | --- |
 | RQ-WEB-MIL-001 | 5.2.1, 4.13.4 | High | Direct + adapted | State and mode visibility translated into persistent status bar |
-| RQ-WEB-MIL-002 | 5.2, 5.17 | High | Derived | Display responsiveness translated into immediate UI feedback |
-| RQ-WEB-MIL-003 | 5.7.2, 5.7.3, 4.14, 5.17.24-32 | High | Derived | Normative coding translated into redundant alarm representation |
+| RQ-WEB-MIL-002 | 5.2.2, 5.17.9, 5.17.10, 5.17.12 | High | Derived | Display responsiveness translated into immediate UI feedback and clear completion states |
+| RQ-WEB-MIL-003 | 5.7.2, 5.7.3, 4.14, 5.17.24-5.17.32 | High | Derived | Alarm coding translated into redundant representation (text, icon, color, priority) |
 | RQ-WEB-MIL-004 | 4.6.1, 5.7.19, 5.1.3 | High | Derived | Fail-safe/software safety translated into guarded actions |
-| RQ-WEB-MIL-005 | 4.6, 5.7.19, 5.16.6 | High | Derived | Application interlocks on safety preconditions |
+| RQ-WEB-MIL-005 | 4.6.1, 5.7.19, 5.16.6 | High | Derived | Application interlocks on safety preconditions |
 | RQ-WEB-MIL-006 | 5.16.6 | High | Direct | Real/simulation distinction made persistent in UI |
-| RQ-WEB-MIL-007 | 5.16.1, 5.16.2 | High | Direct + adapted | Access control and auth applied to web app and APIs |
+| RQ-WEB-MIL-007 | 5.16.1, 5.16.2 | High | Direct + adapted | Access control and authentication applied to web app and APIs |
 | RQ-WEB-MIL-008 | 5.16.3, 5.16.4 | High | Direct | Logon/logoff/timeouts in browser session lifecycle |
 | RQ-WEB-MIL-009 | 5.16.5 | High | Derived | Data protection translated into web client/server controls |
-| RQ-WEB-MIL-010 | 5.17.10, 5.17.9, 5.17.12 | High | Direct + adapted | Error management transformed into recovery-focused UX |
-| RQ-WEB-MIL-011 | 5.17.2, 5.17.7, 5.17.13 | High | Direct + adapted | Dialog/prompt consistency and safe defaults |
-| RQ-WEB-MIL-012 | 4.8, 5.17.20 | High | Derived | Interaction + information organization translated into navigable IA |
-| RQ-WEB-MIL-013 | 4.14, 5.2, 5.5.3, 5.17.18, 5.17.25-27 | High | Derived | Display/color/lighting translated into contrast strategy |
+| RQ-WEB-MIL-010 | 5.17.9, 5.17.10, 5.17.12 | High | Direct + adapted | Error management transformed into recovery-focused UX |
+| RQ-WEB-MIL-011 | 5.17.2, 5.17.7, 5.17.13, 5.4 | High/Medium | Direct + adapted | Dialog/prompt consistency, safe defaults, and unambiguous labels |
+| RQ-WEB-MIL-012 | 4.8, 5.17.20 | High | Derived | Interaction and information organization translated into stable navigable IA |
+| RQ-WEB-MIL-013 | 4.14, 5.2.1, 5.2.2, 5.5.3, 5.17.18, 5.17.25-5.17.27 | High/Medium | Derived | Display/color/lighting translated into contrast and readability controls |
 | RQ-WEB-MIL-014 | 5.8, 5.17.16 | Medium | Derived | Anthropometry/PPE translated into touch target and spacing |
-| RQ-WEB-MIL-015 | 5.3.x, 5.7.x | Medium | Derived | Audio alerting made optional and redundant to visual channel |
-| RQ-WEB-MIL-016 | 5.16, 5.17.11 | High | Derived | Cyber + multi-user access translated into audit trail |
+| RQ-WEB-MIL-015 | 5.3.x, 5.7.2, 5.7.3 | Medium | Derived | Audio alerting made optional and redundant to visual channel |
+| RQ-WEB-MIL-016 | 5.16.1-5.16.5, 5.17.11 | High | Derived | Security/accountability translated into audit trail controls |
 | RQ-WEB-MIL-017 | 5.19.5, 5.17.22 | Medium | Derived | PED application design translated into responsive operational parity |
-| RQ-WEB-MIL-018 | 5.12.2, 5.12.4, 4.13, 5.7.19 | Medium | Derived | Teleoperation safety context translated into UI indicators |
+| RQ-WEB-MIL-018 | 5.12.2, 5.12.4, 4.13, 5.7.19 | Medium | Derived | Teleoperation safety context translated into persistent UI indicators |
+
+### 5.2 Original Clause -> Derived Requirement (Extended Paragraph-Level Coverage)
+
+This matrix extends traceability to all original MIL-STD-1472H paragraphs currently in scope for this derivation document, including clauses previously grouped as ranges.
+
+| Original MIL-STD-1472H paragraph | Derived requirement(s) | Coverage type | Note |
+| --- | --- | --- | --- |
+| 4.6.1 | RQ-WEB-MIL-004, RQ-WEB-MIL-005 | Direct + derived | Fail-safe intent mapped to guarded/blocked execution |
+| 4.8 | RQ-WEB-MIL-012 | Derived | Interaction principles mapped to consistent navigation |
+| 4.13 | RQ-WEB-MIL-018 | Derived | Automation context mapped to remote operation state awareness |
+| 4.13.4 | RQ-WEB-MIL-001 | Direct + adapted | Mode/state indication mapped to persistent status presentation |
+| 4.14 | RQ-WEB-MIL-003, RQ-WEB-MIL-013 | Derived | Functional color use mapped to redundant coding and contrast rules |
+| 5.1.3 | RQ-WEB-MIL-004 | Direct + adapted | Information-system controls mapped to guarded critical actions |
+| 5.2.1 | RQ-WEB-MIL-001, RQ-WEB-MIL-013 | Direct + adapted | General display visibility/readability mapped to persistent status and contrast |
+| 5.2.2 | RQ-WEB-MIL-002, RQ-WEB-MIL-013 | Direct + adapted | Electronic display behavior mapped to feedback timing/readability |
+| 5.3.x | RQ-WEB-MIL-015 | Derived | Speech/audio constraints mapped to multimodal alert redundancy |
+| 5.4 | RQ-WEB-MIL-011 | Adapted | Physical marking principles translated into digital labeling/microcopy |
+| 5.5.3 | RQ-WEB-MIL-013 | Adapted | Workspace lighting translated into luminance/contrast/theme validation |
+| 5.7.2 | RQ-WEB-MIL-003, RQ-WEB-MIL-015 | Direct + derived | Warnings/hazards mapped to severity hierarchy and channel redundancy |
+| 5.7.3 | RQ-WEB-MIL-003, RQ-WEB-MIL-015 | Direct + derived | Visual alerting mapped to alarm coding and audio-visual synchronization |
+| 5.7.19 | RQ-WEB-MIL-004, RQ-WEB-MIL-005, RQ-WEB-MIL-018 | Direct + derived | Software safety mapped to interlocks and remote-operation safeguards |
+| 5.8 | RQ-WEB-MIL-014 | Adapted | Anthropometric criteria mapped to touch/PPE operability |
+| 5.12.2 | RQ-WEB-MIL-018 | Adapted | Teleoperation constraints mapped to latency/link-state indicators |
+| 5.12.4 | RQ-WEB-MIL-018 | Adapted | UxV/remote operation constraints mapped to ownership/authority cues |
+| 5.16.1 | RQ-WEB-MIL-007, RQ-WEB-MIL-016 | Direct + derived | Identification requirements mapped to authN and auditing |
+| 5.16.2 | RQ-WEB-MIL-007 | Direct + adapted | Authorization requirements mapped to RBAC/ABAC enforcement |
+| 5.16.3 | RQ-WEB-MIL-008 | Direct | Logon controls mapped to explicit session entry |
+| 5.16.4 | RQ-WEB-MIL-008 | Direct | Logoff/timeout controls mapped to lock and re-authentication |
+| 5.16.5 | RQ-WEB-MIL-009, RQ-WEB-MIL-016 | Direct + derived | Data protection mapped to secure transport, masking, and traceability |
+| 5.16.6 | RQ-WEB-MIL-006, RQ-WEB-MIL-005 | Direct + adapted | Simulated mode separation mapped to persistent distinction and command gating |
+| 5.17.2 | RQ-WEB-MIL-011 | Direct + adapted | Dialog semantics mapped to contextual prompt behavior |
+| 5.17.3 | RQ-WEB-MIL-011 | Derived | Interactive prompt behavior mapped to consistent UI messaging |
+| 5.17.4 | RQ-WEB-MIL-011 | Derived | User action invocation patterns mapped to safe interaction defaults |
+| 5.17.5 | RQ-WEB-MIL-012 | Derived | Control/flow consistency mapped to predictable IA paths |
+| 5.17.6 | RQ-WEB-MIL-012 | Derived | Information organization mapped to bounded workflow depth |
+| 5.17.7 | RQ-WEB-MIL-011 | Direct + adapted | Prompt clarity mapped to explicit object/action identification |
+| 5.17.8 | RQ-WEB-MIL-011 | Derived | Interaction consistency mapped to standardized notification terminology |
+| 5.17.9 | RQ-WEB-MIL-002, RQ-WEB-MIL-010 | Direct + adapted | Error acknowledgement/feedback mapped to timed UI response and recovery cues |
+| 5.17.10 | RQ-WEB-MIL-010 | Direct + adapted | Error content mapped to cause-impact-action presentation |
+| 5.17.11 | RQ-WEB-MIL-016 | Direct + adapted | Record/logging concepts mapped to auditable action trails |
+| 5.17.12 | RQ-WEB-MIL-002, RQ-WEB-MIL-010 | Direct + adapted | Retry/recovery behavior mapped to explicit retry state management |
+| 5.17.13 | RQ-WEB-MIL-011 | Direct + adapted | Notification/dialog conventions mapped to semantic consistency rules |
+| 5.17.14 | RQ-WEB-MIL-011 | Derived | Prompt composition rules mapped to unambiguous message structure |
+| 5.17.15 | RQ-WEB-MIL-012 | Derived | User orientation requirements mapped to continuous path context |
+| 5.17.16 | RQ-WEB-MIL-014 | Direct + adapted | Input ergonomics mapped to touch target size/spacing requirements |
+| 5.17.17 | RQ-WEB-MIL-013 | Derived | Information legibility mapped to readability constraints |
+| 5.17.18 | RQ-WEB-MIL-013 | Direct + adapted | Display readability mapped to day/night visual validation |
+| 5.17.19 | RQ-WEB-MIL-013 | Derived | Information coding constraints mapped to robust visual semantics |
+| 5.17.20 | RQ-WEB-MIL-012 | Direct + adapted | Information architecture mapped to stable navigation and bounded depth |
+| 5.17.21 | RQ-WEB-MIL-012 | Derived | Navigation consistency mapped to cross-module pattern invariance |
+| 5.17.22 | RQ-WEB-MIL-017 | Direct + adapted | Cross-platform behavior mapped to equivalent operational semantics |
+| 5.17.23 | RQ-WEB-MIL-017 | Derived | Device adaptation constraints mapped to responsive safety-preserving behavior |
+| 5.17.24 | RQ-WEB-MIL-003 | Direct + adapted | Alert/message handling mapped to severity-driven prioritization |
+| 5.17.25 | RQ-WEB-MIL-013 | Direct + adapted | Color/readability constraints mapped to contrast thresholds |
+| 5.17.26 | RQ-WEB-MIL-013 | Direct + adapted | Color usage constraints mapped to semantic color consistency |
+| 5.17.27 | RQ-WEB-MIL-013 | Direct + adapted | Discriminability constraints mapped to non-color backup cues |
+| 5.17.28 | RQ-WEB-MIL-003 | Derived | Alert coding constraints mapped to icon/text redundancy |
+| 5.17.29 | RQ-WEB-MIL-003 | Derived | Prioritization constraints mapped to ordered alarm queue behavior |
+| 5.17.30 | RQ-WEB-MIL-003 | Derived | Attention guidance constraints mapped to visual salience gradients |
+| 5.17.31 | RQ-WEB-MIL-003 | Derived | Criticality distinction mapped to protected high-priority alarm presentation |
+| 5.17.32 | RQ-WEB-MIL-003 | Derived | Final alert presentation constraints mapped to robust multimarker severity signaling |
+| 5.19.5 | RQ-WEB-MIL-017 | Adapted | PED application design mapped to responsive and secure mission parity |
 
 ## 6. General Translation Rationale (Original -> Web)
 
