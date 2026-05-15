@@ -26,6 +26,39 @@ Valori correnti in tempo reale (oggetto reattivo):
 hmiDebug.parameterValues
 ```
 
+## Profilo di risoluzione
+
+Mostrare il profilo attivo, quello rilevato dai media query e l'eventuale override forzato:
+
+```js
+hmiDebug.getResolutionProfile()
+// Esempio output: { detected: '1024x768', forced: null, active: '1024x768' }
+```
+
+Forzare un profilo specifico (sovrascrive i media query via attributo CSS sul tag `<html>`):
+
+```js
+hmiDebug.setResolutionProfile('800x600')
+hmiDebug.setResolutionProfile('1024x768')
+hmiDebug.setResolutionProfile('1920x1080')
+```
+
+Profili validi: `'800x600'`, `'1024x768'`, `'1920x1080'`.
+
+Rimuovere l'override e tornare al profilo rilevato automaticamente:
+
+```js
+hmiDebug.clearResolutionProfile()
+```
+
+Flusso tipico per testare un profilo diverso da quello della finestra corrente:
+
+```js
+hmiDebug.setResolutionProfile('1920x1080')   // attiva scala 24 px + 6 colonne
+hmiDebug.getResolutionProfile()              // verifica stato
+hmiDebug.clearResolutionProfile()            // ripristina
+```
+
 ## Test notifiche HMI
 
 Generare una notifica CRITICAL che deve essere confermata esplicitamente:

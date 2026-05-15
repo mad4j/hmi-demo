@@ -68,6 +68,14 @@ export default function App() {
 
     const previousDebug = window.hmiDebug ?? {}
 
+    const PROFILES = ['800x600', '1024x768', '1920x1080']
+
+    function detectResolutionProfile() {
+      if (window.matchMedia('(min-width: 1920px) and (min-height: 1080px)').matches) return '1920x1080'
+      if (window.matchMedia('(min-width: 1024px) and (min-height: 768px)').matches) return '1024x768'
+      return '800x600'
+    }
+
     window.hmiDebug = {
       ...previousDebug,
       notify(status, message, options = {}) {
@@ -76,12 +84,38 @@ export default function App() {
       notifyCritical(message = 'Simulated CRITICAL alert for operator acknowledgement test.') {
         setNotification('CRITICAL', String(message), { displayMode: 'ACKNOWLEDGED' })
       },
+      getResolutionProfile() {
+        const detected = detectResolutionProfile()
+        const forced = document.documentElement.dataset.resolutionProfile ?? null
+        const active = forced ?? detected
+        console.info(
+          `%c[HMI Resolution Profile]%c\n  detected : ${detected}\n  forced   : ${forced ?? '(none)'}\n  active   : ${active}`,
+          'color: #58a6ff; font-weight: bold',
+          'color: inherit',
+        )
+        return { detected, forced, active }
+      },
+      setResolutionProfile(profile) {
+        if (!PROFILES.includes(profile)) {
+          console.warn(`[HMI] Unknown profile "${profile}". Valid values: ${PROFILES.join(', ')}`)
+          return
+        }
+        document.documentElement.dataset.resolutionProfile = profile
+        console.info(`[HMI] Resolution profile forced to "${profile}". Call hmiDebug.clearResolutionProfile() to reset.`)
+      },
+      clearResolutionProfile() {
+        delete document.documentElement.dataset.resolutionProfile
+        console.info(`[HMI] Resolution profile override cleared. Detected: ${detectResolutionProfile()}`)
+      },
     }
 
     return () => {
       if (window.hmiDebug) {
         delete window.hmiDebug.notify
         delete window.hmiDebug.notifyCritical
+        delete window.hmiDebug.getResolutionProfile
+        delete window.hmiDebug.setResolutionProfile
+        delete window.hmiDebug.clearResolutionProfile
       }
     }
   }, [setNotification])

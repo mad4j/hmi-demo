@@ -23,9 +23,26 @@
   margin: auto 0;
 }
 
+/* Default: 4 columns (800×600 and 1024×768) */
 .widget-grid > * {
   box-sizing: border-box;
   flex: 0 0 calc(25% - 0.375rem);
+}
+
+/* 1920×1080: 6 columns */
+@media (min-width: 1920px) and (min-height: 1080px) {
+  .widget-grid > * {
+    flex: 0 0 calc(16.667% - 0.417rem);
+  }
+}
+
+/* Forced profile column overrides */
+html[data-resolution-profile='800x600'] .widget-grid > *,
+html[data-resolution-profile='1024x768'] .widget-grid > * {
+  flex: 0 0 calc(25% - 0.375rem);
+}
+html[data-resolution-profile='1920x1080'] .widget-grid > * {
+  flex: 0 0 calc(16.667% - 0.417rem);
 }
 
 .widget-grid--table {

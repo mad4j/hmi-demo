@@ -193,9 +193,30 @@
   background: var(--scrollbar-thumb-hover);
 }
 
-@media (max-width: 600px), (max-height: 600px) {
+@media (max-width: 800px), (max-height: 600px) {
   .hmi-shell {
     border-radius: 0;
     border: none;
   }
+}
+
+/* Full-screen profile: 1920×1080 — no chrome border */
+@media (min-width: 1920px) and (min-height: 1080px) {
+  .hmi-shell {
+    border-radius: 0;
+    border: none;
+  }
+}
+
+/* Forced profile: restore border when forcing 800×600 or 1024×768 on large screen */
+html[data-resolution-profile='800x600'] .hmi-shell,
+html[data-resolution-profile='1024x768'] .hmi-shell {
+  border-radius: 0.5rem;
+  border: 1px solid var(--border);
+}
+
+/* Forced profile: remove border when forcing 1920×1080 on small screen */
+html[data-resolution-profile='1920x1080'] .hmi-shell {
+  border-radius: 0;
+  border: none;
 }
