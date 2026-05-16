@@ -44,6 +44,11 @@ html[data-resolution-profile='1024x768'] .widget-grid > * {
 html[data-resolution-profile='1920x1080'] .widget-grid > * {
   flex: 0 0 calc(16.667% - 0.417rem);
 }
+html[data-resolution-profile='800x600'] .widget-grid--table > *,
+html[data-resolution-profile='1024x768'] .widget-grid--table > *,
+html[data-resolution-profile='1920x1080'] .widget-grid--table > * {
+  flex: 1 1 100%;
+}
 
 .widget-grid--table {
   flex: 1 1 auto;
