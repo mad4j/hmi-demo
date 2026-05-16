@@ -16,6 +16,11 @@ import { useCurrentPagePanels } from './composables/useCurrentPagePanels.js'
 import { useLogoutPageAction } from './features/page-actions/useLogoutPageAction.js'
 
 const LOGOUT_PAGE_ID = 'logout'
+const SCREEN_PROFILE_TO_RESOLUTION_PROFILE = {
+  COMPACT: '800x600',
+  STANDARD: '1024x768',
+  EXPANDED: '1920x1080',
+}
 
 const NOTIFICATION_ICON = {
   MENU: 'menu',
@@ -41,6 +46,7 @@ export default function App() {
 
   const { theme } = useTheme()
   const { parameterValues, setParameterValue } = useParameterStore()
+  const screenProfile = String(parameterValues.ui_screen_profile ?? 'STANDARD').toUpperCase()
 
   const { currentPagePanels, currentPanelIndex, pageParameters, currentPanelLabel, handlePanelChange } =
     useCurrentPagePanels({ currentPage })
@@ -62,6 +68,19 @@ export default function App() {
   useEffect(() => {
     return () => { disposeNotificationBar() }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (typeof document === 'undefined') return
+
+    const resolutionProfile = SCREEN_PROFILE_TO_RESOLUTION_PROFILE[screenProfile]
+
+    if (resolutionProfile) {
+      document.documentElement.dataset.resolutionProfile = resolutionProfile
+      return
+    }
+
+    delete document.documentElement.dataset.resolutionProfile
+  }, [screenProfile])
 
   useEffect(() => {
     if (!import.meta.env.DEV || typeof window === 'undefined') return undefined

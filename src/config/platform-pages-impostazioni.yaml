@@ -8,6 +8,14 @@ pages:
         label: Theme
         icon: "theme"
         parameters: []
+      - id: schermo
+        label: Screen
+        icon: "screen"
+        parameters:
+          - id: ui_screen_profile
+            name: Dimensione Profilo
+            type: enum
+            options: [COMPACT, STANDARD, EXPANDED]
       - id: gps
         label: GPS
         icon: "gps"
