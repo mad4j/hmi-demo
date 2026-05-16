@@ -60,12 +60,39 @@ export default function PageParametersView({
     onPanelChange?.(Math.max(0, Math.min(index, totalPanels - 1)))
   }
 
-  const handlePanelKeydown = (e, panelIndex) => {
-    if (e.key === 'ArrowRight') { e.preventDefault(); goToPanel(panelIndex + 1) }
-    else if (e.key === 'ArrowLeft') { e.preventDefault(); goToPanel(panelIndex - 1) }
-    else if (e.key === 'Home') { e.preventDefault(); goToPanel(0) }
-    else if (e.key === 'End') { e.preventDefault(); goToPanel(totalPanels - 1) }
+  const getWrappedPanelIndex = (index) => {
+    if (totalPanels <= 0) return 0
+    return ((index % totalPanels) + totalPanels) % totalPanels
   }
+
+  useEffect(() => {
+    if (!hasPanels || totalPanels <= 1) return undefined
+
+    const handler = (e) => {
+      if (e.defaultPrevented) return
+
+      const target = e.target
+      const tagName = target?.tagName?.toLowerCase?.() ?? ''
+      const isTypingContext =
+        tagName === 'input' ||
+        tagName === 'textarea' ||
+        tagName === 'select' ||
+        target?.isContentEditable
+
+      if (isTypingContext) return
+
+      if (e.key === 'ArrowRight') {
+        e.preventDefault()
+        goToPanel(getWrappedPanelIndex(currentPanel + 1))
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault()
+        goToPanel(getWrappedPanelIndex(currentPanel - 1))
+      }
+    }
+
+    document.addEventListener('keydown', handler)
+    return () => document.removeEventListener('keydown', handler)
+  }, [hasPanels, totalPanels, currentPanel, onPanelChange])
 
   const onDragStart = (e) => {
     dragRef.current.startX = e.touches ? e.touches[0].clientX : e.clientX
@@ -145,17 +172,16 @@ export default function PageParametersView({
             </div>
 
             {hasPanels && totalPanels > 1 && (
-              <div className="panel-indicators" role="tablist" aria-label="Panels">
+              <div className="panel-indicators" aria-label="Panels">
                 {Array.from({ length: totalPanels }, (_, i) => (
                   <button
                     key={i}
                     className={`panel-dot${i === currentPanel ? ' panel-dot--active' : ''}`}
-                    role="tab"
-                    aria-selected={i === currentPanel}
+                    aria-current={i === currentPanel ? 'true' : undefined}
                     aria-label={`Panel ${i + 1}`}
-                    tabIndex={i === currentPanel ? 0 : -1}
+                    tabIndex={-1}
+                    onMouseDown={(e) => e.preventDefault()}
                     onClick={(e) => { e.stopPropagation(); goToPanel(i) }}
-                    onKeyDown={(e) => handlePanelKeydown(e, i)}
                   />
                 ))}
               </div>
