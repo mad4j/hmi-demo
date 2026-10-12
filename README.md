@@ -1,11 +1,11 @@
 # hmi-demo
 
-Demo HMI sviluppata con Vue 3 e Vite per simulare un pannello veicolo 800x600 con menu gerarchici, widget parametro e stato apparato aggiornato in modo asincrono.
+Demo HMI sviluppata con React 18 e Vite per simulare un pannello veicolo 800x600 con menu gerarchici, widget parametro e stato apparato aggiornato in modo asincrono.
 
 ## Stato attuale del progetto (Aprile 2026)
 
-- UI Vue 3 basata su composable singleton per menu, parametri, notifiche e tema.
-- Configurazione menu e pagine da YAML (`src/config/platform.yaml` + `includes`).
+- UI React 18 con store singleton (`useSyncExternalStore`) per menu, parametri, notifiche e tema.
+- Configurazione menu e pagine da YAML (`config/platform.yaml` + `includes`).
 - Supporto pagine transaction con draft locali, submit ottimistico e rollback su errore.
 - Client apparato con percorso standard `NetworkAdapter` (nessuna customizzazione codice richiesta se il backend espone le stesse API `/api/*`).
 - Simulazione apparato disponibile tramite Service Worker (`public/sw.js`) su chiamate `/api/*`.
@@ -31,21 +31,39 @@ npm run build
 
 ## Architettura
 
-- `src/App.vue`: shell principale, griglie dei widget, barra di stato e modali di editing.
-- `src/composables/useMenuConfig.js`: parsing e normalizzazione del menu YAML.
-- `src/composables/useMenuNavigation.js`: stato singleton della navigazione tra primo e secondo livello.
-- `src/composables/useParameterStore.js`: stato reattivo dei parametri e sincronizzazione con il client apparato.
-- `src/composables/useEquipmentGateway.js`: client async verso apparato via `NetworkAdapter`.
-- `src/adapters/NetworkAdapter.js`: adapter HTTP `/api/*`, con trasporto notifiche configurabile (`poll`, `sse`, `text-tail`).
+Struttura a livelli, con dipendenze in un'unica direzione: `app → features → core → shared`.
+
+```
+src/
+  app/        composizione: main.jsx, App.jsx, HmiContentRouter.jsx
+  features/   capacita funzionali (navigation, parameters, transaction, notifications,
+              header-status, theme, page-actions), ognuna con `index.js` pubblico
+  core/       config (parsing YAML), store (parameterStore), gateway (equipmentGateway,
+              adapters, notifications transport)
+  shared/     UI riusabile (AppIcon, HmiShell, HmiFooter), icone, stili globali
+config/       YAML di piattaforma (menu, pagine, icone di stato)
+public/sw.js  simulatore apparato (Service Worker)
+docs/         architettura, requisiti, comandi di debug
+```
+
+Alias di import: `@app`, `@core`, `@features`, `@shared`, `@config`. Dettagli, regole di dipendenza e linee guida di estendibilita in [docs/architecture/README.md](docs/architecture/README.md).
+
+Moduli principali:
+
+- `src/app/App.jsx`: shell principale, compone header, barra notifiche, contenuto e footer.
+- `src/core/config/menuConfig.js`: parsing e normalizzazione del menu YAML.
+- `src/features/navigation/hooks/useMenuNavigation.js`: stato singleton della navigazione.
+- `src/core/store/parameterStore.js`: stato reattivo dei parametri e sincronizzazione con il client apparato.
+- `src/core/gateway/equipmentGateway.js`: client async verso apparato via `NetworkAdapter`.
+- `src/core/gateway/adapters/NetworkAdapter.js`: adapter HTTP `/api/*`, con trasporto notifiche configurabile (`poll`, `sse`, `text-tail`).
 - `public/sw.js`: simulatore apparato in Service Worker, con routing API e coda aggiornamenti pending.
-- `src/components/`: widget, modali e icone usati dall'interfaccia.
 
 ## Diagramma architettura applicazione
 
 ```mermaid
 flowchart TD
-  UI[App Vue Components] --> STORE[useParameterStore]
-  STORE --> CLIENT[useEquipmentGateway]
+  UI[App React Components] --> STORE[parameterStore]
+  STORE --> CLIENT[equipmentGateway]
 
   CLIENT --> NET[NetworkAdapter]
 
@@ -62,7 +80,7 @@ flowchart TD
 
 ### 1) Flusso standard rete (default)
 
-- `useEquipmentGateway` usa `NetworkAdapter` per default.
+- `equipmentGateway` usa `NetworkAdapter` per default.
 - Le chiamate `getParameters`, `setParameters`, `sendCommand` passano da fetch su `/api/*`.
 - Con backend reale: le stesse chiamate raggiungono direttamente il server apparato.
 - Con simulatore SW attivo: `public/sw.js` intercetta le richieste, aggiorna lo stato apparato e accumula delta.
@@ -81,7 +99,7 @@ flowchart TD
 
 ## Diagrammi di sequenza per metodi interfaccia adapter
 
-Interfaccia di riferimento: `DeviceAdapter` in `src/adapters/DeviceAdapter.js`.
+Interfaccia di riferimento: `DeviceAdapter` in `src/core/gateway/adapters/DeviceAdapter.js`.
 
 ### 1) getParameters(ids)
 
@@ -256,29 +274,29 @@ Diagnosi rapida in browser:
 
 ### Componenti da implementare o adattare
 
-- `src/adapters/NetworkAdapter.js`: mantenere il contratto API `/api/*`; aggiungere policy reali (autenticazione, timeout, retry) senza cambiare interfaccia applicativa.
+- `src/core/gateway/adapters/NetworkAdapter.js`: mantenere il contratto API `/api/*`; aggiungere policy reali (autenticazione, timeout, retry) senza cambiare interfaccia applicativa.
 - Backend API apparato reale: deve esporre endpoint compatibili:
   - GET `/api/parameters?ids=...`
   - POST `/api/parameters`
   - POST `/api/commands/:commandId`
   - GET `/api/notifications/poll` oppure canale push equivalente
-- `src/composables/useEquipmentGateway.js`: interfaccia gia stabile; endpoint e trasporto notifiche sono configurabili da env.
+- `src/core/gateway/equipmentGateway.js`: interfaccia gia stabile; endpoint e trasporto notifiche sono configurabili da env.
 
 ### Componenti riusabili senza modifiche strutturali
 
-- `src/composables/useParameterStore.js`
-- `src/components/*`
-- `src/composables/useMenuConfig.js` e YAML in `src/config/*`
+- `src/core/store/parameterStore.js`
+- `src/features/*` e `src/shared/*`
+- `src/core/config/menuConfig.js` e YAML in `config/*`
 
 Questi moduli restano stabili se il contratto `DeviceAdapter` non cambia.
 
 ## Configurazione menu
 
-La struttura del menu applicativo e i parametri visualizzati sono definiti in `src/config/platform.yaml`.
+La struttura del menu applicativo e i parametri visualizzati sono definiti in `config/platform.yaml`.
 
-`platform.yaml` e il file padre e include i file figli con prefisso `platform-` nella stessa cartella, ad esempio:
+`platform.yaml` e il file padre e include i file figli (risolti per nome file in `config/**`, ad esempio in `config/pages/`), ad esempio:
 
-- `platform-status-icons.yaml`
+- `status-icons.yaml`
 - `platform-pages-menu.yaml`
 - `platform-pages-allarmi.yaml`
 - `platform-pages-info.yaml`
