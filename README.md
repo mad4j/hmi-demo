@@ -31,14 +31,20 @@ npm run build
 
 ## Architettura
 
-- `src/App.vue`: shell principale, griglie dei widget, barra di stato e modali di editing.
-- `src/composables/useMenuConfig.js`: parsing e normalizzazione del menu YAML.
-- `src/composables/useMenuNavigation.js`: stato singleton della navigazione tra primo e secondo livello.
-- `src/composables/useParameterStore.js`: stato reattivo dei parametri e sincronizzazione con il client apparato.
-- `src/composables/useEquipmentGateway.js`: client async verso apparato via `NetworkAdapter`.
+- `src/main.jsx`: entry point; `src/app/`: `App.jsx` (composizione shell) e `useLogoutPageAction.js`.
+- `src/features/`: organizzata per feature, una cartella per ogni componente React con CSS e hook che lo usano:
+  - `shell/HmiShell`, `header/{HmiHeader,HmiHeaderContainer,StatusIconBar}`, `footer/HmiFooter`
+  - `notifications/{HmiNotificationBar,CriticalAlertModal}` + `useNotificationBar.js`
+  - `content/HmiContentRouter` (+ `useCurrentPagePanels`, `useCurrentPageParameterRefresh`, `useTransactionPageActions`)
+  - `parameters/PageParametersView`, `parameters/widgets/<Tipo>ParameterWidget` (Boolean, Number, Percentage, Text, Password, Date, Enum, Plain), `parameters/modals/<Tipo>EditorModal` (Enum, Percentage, Text, Date, Number) + `useParameterStore.js`
+  - `link-grid/{HmiLinkGridPage,LinkWidget}`, `alarms/{AlarmPanel,AlarmTableWidget}`
+  - `settings/{HmiThemeSettingsPage,HmiScreenSettingsPage}` (con `useTheme.js` e `useScreenProfile.js`)
+  - `navigation/` (`menuConfig.js`: parsing e normalizzazione del menu YAML; `useMenuNavigation.js`: stato singleton della navigazione)
+  - `radio-gateway/useRadioGateway.js`: client async verso apparato via `NetworkAdapter`
+  - `transaction/`: stato e policy delle pagine in modalita transaction
+- `src/icons/`: un componente per icona; `iconRegistry.js` risolve i nomi icona provenienti dallo YAML.
 - `src/adapters/NetworkAdapter.js`: adapter HTTP `/api/*`, con trasporto notifiche configurabile (`poll`, `sse`, `text-tail`).
 - `public/sw.js`: simulatore apparato in Service Worker, con routing API e coda aggiornamenti pending.
-- `src/components/`: widget, modali e icone usati dall'interfenv ! accia.
 
 ## Diagramma architettura applicazione
 
@@ -262,13 +268,13 @@ Diagnosi rapida in browser:
   - POST `/api/parameters`
   - POST `/api/commands/:commandId`
   - GET `/api/notifications/poll` oppure canale push equivalente
-- `src/composables/useEquipmentGateway.js`: interfaccia gia stabile; endpoint e trasporto notifiche sono configurabili da env.
+- `src/features/radio-gateway/useRadioGateway.js`: interfaccia gia stabile; endpoint e trasporto notifiche sono configurabili da env.
 
 ### Componenti riusabili senza modifiche strutturali
 
-- `src/composables/useParameterStore.js`
-- `src/components/*`
-- `src/composables/useMenuConfig.js` e YAML in `src/config/*`
+- `src/features/parameters/useParameterStore.js`
+- `src/features/*` (componenti, widget e modali)
+- `src/features/navigation/menuConfig.js` e YAML in `src/config/*`
 
 Questi moduli restano stabili se il contratto `DeviceAdapter` non cambia.
 

@@ -1,29 +1,35 @@
 import { useEffect } from 'react'
 import './App.css'
-import HmiShell from './components/HmiShell.jsx'
-import HmiHeaderContainer from './components/HmiHeaderContainer.jsx'
-import HmiNotificationBar from './components/HmiNotificationBar.jsx'
-import CriticalAlertModal from './components/CriticalAlertModal.jsx'
-import HmiFooter from './components/HmiFooter.jsx'
-import HmiContentRouter from './components/HmiContentRouter.jsx'
-import { menuConfig, findPageById } from './composables/menuConfig.js'
-import { useMenuNavigation } from './composables/useMenuNavigation.js'
-import { useTheme } from './composables/useTheme.js'
-import { useParameterStore } from './composables/useParameterStore.js'
-import { useNotificationBar } from './composables/useNotificationBar.js'
-import { useCurrentPagePanels } from './composables/useCurrentPagePanels.js'
-import { useLogoutPageAction } from './features/page-actions/useLogoutPageAction.js'
-import './composables/useScreenProfile.js'
+import HmiShell from '@/features/shell/HmiShell/HmiShell.jsx'
+import HmiHeaderContainer from '@/features/header/HmiHeaderContainer/HmiHeaderContainer.jsx'
+import HmiNotificationBar from '@/features/notifications/HmiNotificationBar/HmiNotificationBar.jsx'
+import CriticalAlertModal from '@/features/notifications/CriticalAlertModal/CriticalAlertModal.jsx'
+import HmiFooter from '@/features/footer/HmiFooter/HmiFooter.jsx'
+import HmiContentRouter from '@/features/content/HmiContentRouter/HmiContentRouter.jsx'
+import { menuConfig, findPageById } from '@/features/navigation/menuConfig.js'
+import { useMenuNavigation } from '@/features/navigation/useMenuNavigation.js'
+import { useTheme } from '@/features/settings/HmiThemeSettingsPage/useTheme.js'
+import { useParameterStore } from '@/features/parameters/useParameterStore.js'
+import { useNotificationBar } from '@/features/notifications/useNotificationBar.js'
+import { useCurrentPagePanels } from '@/features/content/HmiContentRouter/useCurrentPagePanels.js'
+import { useLogoutPageAction } from './useLogoutPageAction.js'
+import '@/features/settings/HmiScreenSettingsPage/useScreenProfile.js'
+import IconMenu from '@/icons/IconMenu.jsx'
+import IconAlarm from '@/icons/IconAlarm.jsx'
+import IconInfo from '@/icons/IconInfo.jsx'
+import IconCheckCircle from '@/icons/IconCheckCircle.jsx'
+import IconFault from '@/icons/IconFault.jsx'
+import IconXCircle from '@/icons/IconXCircle.jsx'
 
 const LOGOUT_PAGE_ID = 'logout'
 
 const NOTIFICATION_ICON = {
-  MENU: 'menu',
-  CRITICAL: 'alarm',
-  NORMAL: 'info',
-  SUCCESS: 'check-circle',
-  WARNING: 'fault',
-  ERROR: 'x-circle',
+  MENU: IconMenu,
+  CRITICAL: IconAlarm,
+  NORMAL: IconInfo,
+  SUCCESS: IconCheckCircle,
+  WARNING: IconFault,
+  ERROR: IconXCircle,
 }
 
 export default function App() {
@@ -89,7 +95,7 @@ export default function App() {
   const notifications = { setNotification }
   const navigation = { goHome, goToPreviousPage }
 
-  const notificationIcon = NOTIFICATION_ICON[notification.status] ?? 'info'
+  const notificationIcon = NOTIFICATION_ICON[notification.status] ?? IconInfo
 
 const visibleHomePages =
   (menuConfig.homePage?.panels ?? [])
@@ -136,7 +142,7 @@ const logoutPageConfig =
       header={<HmiHeaderContainer />}
       notification={
         <HmiNotificationBar
-          icon={notificationIcon}
+          Icon={notificationIcon}
           message={notification.message}
           pendingCount={pendingCount}
           barClasses={notificationBarClasses}

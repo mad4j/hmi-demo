@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useParameterStore } from './useParameterStore.js'
+import { useParameterStore } from '@/features/parameters/useParameterStore.js'
 
 export const useCurrentPageParameterRefresh = ({
   currentPage,

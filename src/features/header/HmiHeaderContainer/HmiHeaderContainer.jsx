@@ -1,7 +1,7 @@
-import HmiHeader from './HmiHeader.jsx'
-import { useHeaderState } from '../composables/useHeaderState.js'
-import { useMenuNavigation } from '../composables/useMenuNavigation.js'
-import { useRadioGateway } from '../composables/useRadioGateway.js'
+import HmiHeader from '../HmiHeader/HmiHeader.jsx'
+import { useHeaderState } from './useHeaderState.js'
+import { useMenuNavigation } from '@/features/navigation/useMenuNavigation.js'
+import { useRadioGateway } from '@/features/radio-gateway/useRadioGateway.js'
 
 export default function HmiHeaderContainer() {
   const {

@@ -1,6 +1,6 @@
 import './HmiHeader.css'
-import StatusIconBar from './StatusIconBar.jsx'
-import IconCommState from './icons/IconCommState.jsx'
+import StatusIconBar from '../StatusIconBar/StatusIconBar.jsx'
+import IconCommState from '@/icons/IconCommState.jsx'
 
 const commLabel = {
   'tx': 'TX – Transmitting',

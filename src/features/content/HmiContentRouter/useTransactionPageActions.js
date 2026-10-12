@@ -1,5 +1,5 @@
-import { useParameterStore } from './useParameterStore.js'
-import { useTransactionPageState } from '../features/transaction/useTransactionPageState.js'
+import { useParameterStore } from '@/features/parameters/useParameterStore.js'
+import { useTransactionPageState } from '@/features/transaction/useTransactionPageState.js'
 
 export const useTransactionPageActions = ({ currentPage }) => {
   const {

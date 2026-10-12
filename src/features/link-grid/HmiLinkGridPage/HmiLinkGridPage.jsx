@@ -1,4 +1,4 @@
-import LinkWidget from './LinkWidget.jsx'
+import LinkWidget from '../LinkWidget/LinkWidget.jsx'
 
 export default function HmiLinkGridPage({ items, onNavigate }) {
 

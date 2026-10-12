@@ -1,13 +1,12 @@
-import { useTransactionPageActions } from '../composables/useTransactionPageActions.js'
-import { useCurrentPagePanels } from '@/composables/useCurrentPagePanels.js'
-import { useCurrentPageParameterRefresh } from '../composables/useCurrentPageParameterRefresh.js'
+import { useTransactionPageActions } from './useTransactionPageActions.js'
+import { useCurrentPagePanels } from './useCurrentPagePanels.js'
+import { useCurrentPageParameterRefresh } from './useCurrentPageParameterRefresh.js'
 
-import PageParametersView from './PageParametersView.jsx'
-import HmiLinkGridPage from './HmiLinkGridPage.jsx'
-import HmiThemeSettingsPage from './HmiThemeSettingsPage.jsx'
-import HmiScreenSettingsPage from './HmiScreenSettingsPage.jsx'
+import PageParametersView from '@/features/parameters/PageParametersView/PageParametersView.jsx'
+import HmiLinkGridPage from '@/features/link-grid/HmiLinkGridPage/HmiLinkGridPage.jsx'
+import HmiThemeSettingsPage from '@/features/settings/HmiThemeSettingsPage/HmiThemeSettingsPage.jsx'
+import HmiScreenSettingsPage from '@/features/settings/HmiScreenSettingsPage/HmiScreenSettingsPage.jsx'
 
-import TableWidget from './TableWidget.jsx'
 const SETTINGS_PAGE_ID = 'tema'
 const SCREEN_PAGE_ID = 'screen'
 

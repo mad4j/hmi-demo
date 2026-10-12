@@ -1,12 +1,50 @@
-import React, { useState } from 'react'
-import './TableWidget.css'
+import { useState } from 'react'
+import './AlarmTableWidget.css'
 
-export default function TableWidget({ 
-  title, 
-  columns = [], 
-  data = [],
-  rowKey = 'id' 
-}) {
+const rowKey = 'id'
+
+const columns = [
+  {
+    key: 'time',
+    label: 'Timestamp',
+    render: (value) => {
+      if (!value) return '—'
+      const date = new Date(value)
+      return new Intl.DateTimeFormat('it-IT', {
+        day: '2-digit', month: '2-digit', year: '2-digit',
+        hour: '2-digit', minute: '2-digit', second: '2-digit'
+      }).format(date)
+    }
+  },
+  {
+    key: 'code',
+    label: 'Codice'
+  },
+  {
+    key: 'severity',
+    label: 'Livello',
+    render: (value) => {
+      const className = `severity-${value.toLowerCase()}`
+      return <span className={className}>{value}</span>
+    }
+  },
+  {
+    key: 'equipment',
+    label: 'Modulo HW',
+    render: (value) => <strong>{value}</strong>
+  },
+  {
+    key: 'alarm',
+    label: 'Descrizione Allarme'
+  },
+  {
+    key: 'status',
+    label: 'Stato',
+    render: (value) => <i>{value}</i>
+  }
+]
+
+export default function AlarmTableWidget({ title, data = [] }) {
   const [focusedCell, setFocusedCell] = useState(null)
 
   const handleCellClick = (rowId, colKey) => {

@@ -1,8 +1,8 @@
 import './StatusIconBar.css'
-import AppIcon from './AppIcon.jsx'
-import { menuConfig } from '../composables/menuConfig.js'
-import { useParameterStore } from '../composables/useParameterStore.js'
-import { useMenuNavigation } from '../composables/useMenuNavigation.js'
+import { getIconByName } from '@/icons/iconRegistry.js'
+import { menuConfig } from '@/features/navigation/menuConfig.js'
+import { useParameterStore } from '@/features/parameters/useParameterStore.js'
+import { useMenuNavigation } from '@/features/navigation/useMenuNavigation.js'
 
 export default function StatusIconBar() {
   const { parameterValues } = useParameterStore()
@@ -26,18 +26,21 @@ export default function StatusIconBar() {
 
   return (
     <div className="status-icon-bar">
-      {menuConfig.statusIcons.map((icon) => (
-        <button
-          key={icon.id}
-          className={`si-btn ${stateClass(icon.parameterId)}`}
-          type="button"
-          aria-label={icon.label}
-          title={icon.label}
-          onClick={() => navigateToPage(getTargetPageId(icon))}
-        >
-          <AppIcon name={icon.icon} size={22} />
-        </button>
-      ))}
+      {menuConfig.statusIcons.map((icon) => {
+        const StatusIcon = getIconByName(icon.icon)
+        return (
+          <button
+            key={icon.id}
+            className={`si-btn ${stateClass(icon.parameterId)}`}
+            type="button"
+            aria-label={icon.label}
+            title={icon.label}
+            onClick={() => navigateToPage(getTargetPageId(icon))}
+          >
+            <StatusIcon size={22} />
+          </button>
+        )
+      })}
     </div>
   )
 }

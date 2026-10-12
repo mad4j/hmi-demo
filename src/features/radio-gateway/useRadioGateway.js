@@ -1,4 +1,4 @@
-import { NetworkAdapter } from '../adapters/NetworkAdapter.js'
+import { NetworkAdapter } from '@/adapters/NetworkAdapter.js'
 
 const API_BASE_URL = "http://localhost:5224"
 

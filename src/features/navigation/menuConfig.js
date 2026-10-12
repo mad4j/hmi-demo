@@ -1,7 +1,7 @@
 import { load } from 'js-yaml'
-import rawPlatformConfig from '../config/platform.yaml?raw'
+import rawPlatformConfig from '@/config/platform.yaml?raw'
 
-const rawConfigFiles = import.meta.glob('../config/*.yaml', {
+const rawConfigFiles = import.meta.glob('/src/config/*.yaml', {
   eager: true,
   query: '?raw',
   import: 'default',

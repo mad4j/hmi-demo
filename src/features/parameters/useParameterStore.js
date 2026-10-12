@@ -1,6 +1,6 @@
 import { useSyncExternalStore } from 'react'
-import { flattenSelectablePages, menuConfig } from './menuConfig.js'
-import { useRadioGateway } from './useRadioGateway.js'
+import { flattenSelectablePages, menuConfig } from '@/features/navigation/menuConfig.js'
+import { useRadioGateway } from '@/features/radio-gateway/useRadioGateway.js'
 
 const { getParameters, setParameters, notifyParameters, sendCommand } =
   useRadioGateway()

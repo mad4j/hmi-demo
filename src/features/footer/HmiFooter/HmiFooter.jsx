@@ -1,5 +1,7 @@
 import './HmiFooter.css'
-import AppIcon from './AppIcon.jsx'
+import IconBack from '@/icons/IconBack.jsx'
+import IconHome from '@/icons/IconHome.jsx'
+import { getIconByName } from '@/icons/iconRegistry.js'
 
 export default function HmiFooter({ level1Items, activeLevel1Id, isAtHome, canGoToPreviousPage, onGoBack, onGoHome, onSelectItem }) {
 
@@ -13,7 +15,7 @@ export default function HmiFooter({ level1Items, activeLevel1Id, isAtHome, canGo
         disabled={!canGoToPreviousPage}
         onClick={onGoBack}
       >
-        <AppIcon name="back" size={50} />
+        <IconBack size={50} />
       </button>
       <button
         className={`tab-button tab-button--home${isAtHome ? ' tab-button--active' : ''}`}
@@ -21,20 +23,23 @@ export default function HmiFooter({ level1Items, activeLevel1Id, isAtHome, canGo
         aria-label="Home"
         onClick={onGoHome}
       >
-        <AppIcon name="home" size={20} />
+        <IconHome size={20} />
         <span className="tab-label">Home</span>
       </button>
-      {level1Items.map((item) => (
-        <button
-          key={item.id}
-          className={`tab-button${item.id === activeLevel1Id ? ' tab-button--active' : ''}`}
-          type="button"
-          onClick={() => onSelectItem(item)}
-        >
-          {item.icon && <AppIcon name={item.icon} size={20} />}
-          <span className="tab-label">{item.label}</span>
-        </button>
-      ))}
+      {level1Items.map((item) => {
+        const ItemIcon = item.icon ? getIconByName(item.icon) : null
+        return (
+          <button
+            key={item.id}
+            className={`tab-button${item.id === activeLevel1Id ? ' tab-button--active' : ''}`}
+            type="button"
+            onClick={() => onSelectItem(item)}
+          >
+            {ItemIcon && <ItemIcon size={20} />}
+            <span className="tab-label">{item.label}</span>
+          </button>
+        )
+      })}
     </footer>
   )
 }

@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import ParameterWidget from './ParameterWidget.jsx'
-import EnumEditorModal from './EnumEditorModal.jsx'
-import { useScreenProfile, SCREEN_PROFILES } from '../composables/useScreenProfile.js'
+import EnumParameterWidget from '@/features/parameters/widgets/EnumParameterWidget/EnumParameterWidget.jsx'
+import EnumEditorModal from '@/features/parameters/modals/EnumEditorModal/EnumEditorModal.jsx'
+import { useScreenProfile, SCREEN_PROFILES } from './useScreenProfile.js'
 
 export default function HmiScreenSettingsPage() {
   const { screenProfile, setScreenProfile } = useScreenProfile()
@@ -10,9 +10,8 @@ export default function HmiScreenSettingsPage() {
   return (
     <div className="settings-page">
       <div className="settings-widget">
-        <ParameterWidget
+        <EnumParameterWidget
           name="Screen"
-          type="enum"
           value={screenProfile}
           options={SCREEN_PROFILES}
           optionsValue={SCREEN_PROFILES}

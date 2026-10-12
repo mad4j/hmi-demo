@@ -1,14 +1,23 @@
 import { useEffect, useRef, useMemo, useState } from 'react'
 import './PageParametersView.css'
-import AppIcon from './AppIcon.jsx'
-import ParameterWidget from './ParameterWidget.jsx'
-import EnumEditorModal from './EnumEditorModal.jsx'
-import PercentageEditorModal from './PercentageEditorModal.jsx'
-import TextEditorModal from './TextEditorModal.jsx'
-import DateEditorModal from './DateEditorModal.jsx'
-import NumberEditorModal from './NumberEditorModal'
-import LinkWidget from './LinkWidget'
-import AlarmPanel from './AlarmPanel.jsx'
+import IconReset from '@/icons/IconReset.jsx'
+import IconReload from '@/icons/IconReload.jsx'
+import IconSend from '@/icons/IconSend.jsx'
+import BooleanParameterWidget from '../widgets/BooleanParameterWidget/BooleanParameterWidget.jsx'
+import NumberParameterWidget from '../widgets/NumberParameterWidget/NumberParameterWidget.jsx'
+import PercentageParameterWidget from '../widgets/PercentageParameterWidget/PercentageParameterWidget.jsx'
+import TextParameterWidget from '../widgets/TextParameterWidget/TextParameterWidget.jsx'
+import PasswordParameterWidget from '../widgets/PasswordParameterWidget/PasswordParameterWidget.jsx'
+import DateParameterWidget from '../widgets/DateParameterWidget/DateParameterWidget.jsx'
+import EnumParameterWidget from '../widgets/EnumParameterWidget/EnumParameterWidget.jsx'
+import PlainParameterWidget from '../widgets/PlainParameterWidget/PlainParameterWidget.jsx'
+import EnumEditorModal from '../modals/EnumEditorModal/EnumEditorModal.jsx'
+import PercentageEditorModal from '../modals/PercentageEditorModal/PercentageEditorModal.jsx'
+import TextEditorModal from '../modals/TextEditorModal/TextEditorModal.jsx'
+import DateEditorModal from '../modals/DateEditorModal/DateEditorModal.jsx'
+import NumberEditorModal from '../modals/NumberEditorModal/NumberEditorModal.jsx'
+import LinkWidget from '@/features/link-grid/LinkWidget/LinkWidget.jsx'
+import AlarmPanel from '@/features/alarms/AlarmPanel/AlarmPanel.jsx'
 
 const EDITABLE_TYPES = ['percentage', 'text', 'password', 'date', 'enum', 'number']
 
@@ -155,6 +164,108 @@ export default function PageParametersView({
     onTouchEnd: onDragEnd,
   } : {}
 
+  const renderParameterWidget = (param) => {
+    const modified = isParameterModified(param.id)
+    const value = resolvedValues[param.id]
+    const onEdit = () => setEditingParamId(param.id)
+
+    switch (param.type) {
+      case 'boolean':
+        return (
+          <BooleanParameterWidget
+            key={param.id}
+            name={param.name}
+            value={value}
+            readonly={param.readonly}
+            modified={modified}
+            onToggle={() => onToggleParameter?.(param.id)}
+          />
+        )
+      case 'number':
+        return (
+          <NumberParameterWidget
+            key={param.id}
+            name={param.name}
+            value={value}
+            unit={param.unit}
+            precision={1}
+            readonly={param.readonly}
+            modified={modified}
+            onEdit={onEdit}
+          />
+        )
+      case 'percentage':
+        return (
+          <PercentageParameterWidget
+            key={param.id}
+            name={param.name}
+            value={value}
+            precision={param.precision}
+            readonly={param.readonly}
+            modified={modified}
+            onEdit={onEdit}
+          />
+        )
+      case 'text':
+        return (
+          <TextParameterWidget
+            key={param.id}
+            name={param.name}
+            value={value}
+            readonly={param.readonly}
+            modified={modified}
+            onEdit={onEdit}
+          />
+        )
+      case 'password':
+        return (
+          <PasswordParameterWidget
+            key={param.id}
+            name={param.name}
+            value={value}
+            readonly={param.readonly}
+            modified={modified}
+            onEdit={onEdit}
+          />
+        )
+      case 'date':
+        return (
+          <DateParameterWidget
+            key={param.id}
+            name={param.name}
+            value={value}
+            readonly={param.readonly}
+            modified={modified}
+            onEdit={onEdit}
+          />
+        )
+      case 'enum':
+        return (
+          <EnumParameterWidget
+            key={param.id}
+            name={param.name}
+            value={value}
+            options={param.optionsLabel}
+            optionsValue={param.optionsValue}
+            readonly={param.readonly}
+            modified={modified}
+            onEdit={onEdit}
+          />
+        )
+      default:
+        return (
+          <PlainParameterWidget
+            key={param.id}
+            name={param.name}
+            type={param.type}
+            value={value}
+            readonly={param.readonly}
+            modified={modified}
+          />
+        )
+    }
+  }
+
   if (pageId === 'allarmi') {
     return <AlarmPanel />
   }
@@ -168,22 +279,7 @@ export default function PageParametersView({
             {...panelWrapperProps}
           >
             <div className="widget-grid">
-              {visibleParameters.map((param) => (
-                <ParameterWidget
-                  key={param.id}
-                  name={param.name}
-                  type={param.type}
-                  unit={param.unit}
-                  precision={param.type == 'number' ? 1 : param.precision}
-                  options={param.optionsLabel}
-                  optionsValue={param.optionsValue}
-                  value={resolvedValues[param.id]}  
-                  readonly={param.readonly}
-                  modified={isParameterModified(param.id)}
-                  onToggle={() => onToggleParameter?.(param.id)}
-                  onEdit={() => setEditingParamId(param.id)}
-                />
-              ))}
+              {visibleParameters.map(renderParameterWidget)}
 
               {/* <-- AGGIUNGI QUESTO BLOCCO: Stampa i sottomenu se ce ne sono --> */}
               {visibleSubmenus.map((submenu) => (
@@ -230,11 +326,9 @@ export default function PageParametersView({
     aria-label={hasModifications ? "Reset" : "Reload"}
     onClick={handleReset}
   >
-    <AppIcon
-      name={hasModifications ? "reset" : "reload"}
-      size={hasModifications ?24:24}
-      className={hasModifications ? "is-modified" : ""}
-    />
+    {hasModifications
+      ? <IconReset size={24} />
+      : <IconReload size={24} />}
   </button>
 
   {/* SUBMIT */}
@@ -245,7 +339,7 @@ export default function PageParametersView({
     onClick={handleSubmit}
     disabled={!hasModifications}
   >
-    <AppIcon name="send" size={24} />
+    <IconSend size={24} />
   </button>
 
 </div>

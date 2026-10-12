@@ -1,6 +1,6 @@
 import { useSyncExternalStore, useEffect } from 'react'
-import { useParameterStore } from './useParameterStore.js'
-import { useRadioGateway } from './useRadioGateway.js'
+import { useParameterStore } from '@/features/parameters/useParameterStore.js'
+import { useRadioGateway } from '@/features/radio-gateway/useRadioGateway.js'
 import { useHeaderStore } from './useHeaderStore.js' 
 const MISSION_TIME_PLACEHOLDER = '--:--:--'
 const APPARATUS_TIME_PARAM_ID = 'ora_sistema'

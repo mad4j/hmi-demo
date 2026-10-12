@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import ParameterWidget from './ParameterWidget.jsx'
-import EnumEditorModal from './EnumEditorModal.jsx'
-import { useTheme, VALID_THEMES } from '../composables/useTheme.js'
+import EnumParameterWidget from '@/features/parameters/widgets/EnumParameterWidget/EnumParameterWidget.jsx'
+import EnumEditorModal from '@/features/parameters/modals/EnumEditorModal/EnumEditorModal.jsx'
+import { useTheme, VALID_THEMES } from './useTheme.js'
 
 export default function HmiThemeSettingsPage() {
   const { theme, setTheme } = useTheme()
@@ -10,9 +10,8 @@ export default function HmiThemeSettingsPage() {
   return (
     <div className="settings-page">
       <div className="settings-widget">
-        <ParameterWidget
+        <EnumParameterWidget
           name="Theme"
-          type="enum"
           value={theme.toUpperCase()}
           options={VALID_THEMES.map((t) => t.toUpperCase())}
           onEdit={() => setIsEditing(true)}

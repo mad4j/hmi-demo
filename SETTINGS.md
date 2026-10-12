@@ -38,16 +38,16 @@ viewport corrente.
 1. La sottopagina **Screen** di Impostazioni e' dichiarata in
    [`src/config/platform-pages-impostazioni.yaml`](src/config/platform-pages-impostazioni.yaml)
    e renderizzata da `HmiScreenSettingsPage`.
-2. [`src/composables/useScreenProfile.js`](src/composables/useScreenProfile.js)
+2. [`src/features/settings/HmiScreenSettingsPage/useScreenProfile.js`](src/features/settings/HmiScreenSettingsPage/useScreenProfile.js)
    conserva il profilo (`COMPACT`, `STANDARD`, `EXTENDED`) in `localStorage`
    (chiave `hmi-screen-profile`), come il tema. Non e' inviato all'apparato.
 3. Lo stesso modulo imposta `data-resolution-profile` sull'elemento `<html>`
    al caricamento e a ogni cambio, ed ascolta l'evento `resize`.
 4. I fogli di stile applicano le dimensioni e i layout coerenti con
    quell'attributo: [`src/assets/main.css`](src/assets/main.css) gestisce
-   dimensioni dell'app e scala del testo; [`src/App.css`](src/App.css) e
-   [`src/components/PageParametersView.css`](src/components/PageParametersView.css)
-   le colonne dei widget; [`src/components/HmiShell.css`](src/components/HmiShell.css)
+   dimensioni dell'app e scala del testo; [`src/app/App.css`](src/app/App.css) e
+   [`src/features/parameters/PageParametersView/PageParametersView.css`](src/features/parameters/PageParametersView/PageParametersView.css)
+   le colonne dei widget; [`src/features/shell/HmiShell/HmiShell.css`](src/features/shell/HmiShell/HmiShell.css)
    bordi e forma della shell. Senza un valore valido si applicano i valori di
    default (`STANDARD`); le media query restano solo per gli schermi stretti.
 
@@ -88,7 +88,7 @@ viewport corrente.
 ### Nota sulla nomenclatura in questo repository
 
 Il profilo `1920 x 1080` si chiama `EXTENDED` ovunque: nella lista enum YAML e
-nella mappa di [`src/App.jsx`](src/App.jsx). Non confondere il parametro utente
+nella mappa di [`src/features/settings/HmiScreenSettingsPage/useScreenProfile.js`](src/features/settings/HmiScreenSettingsPage/useScreenProfile.js). Non confondere il parametro utente
 `ui_screen_profile` (`COMPACT`, `STANDARD`, `EXTENDED`) con l'attributo
 `data-resolution-profile` applicato a `<html>`, che usa gli identificatori
 `800x600`, `1024x768` e `1920x1080`. Questo attributo e' l'unico meccanismo di

@@ -1,7 +1,7 @@
 import { useSyncExternalStore } from 'react'
 import yaml from 'js-yaml'
-import headerYaml from '../config/headerState.yaml?raw'
-import { useRadioGateway } from './useRadioGateway.js'
+import headerYaml from '@/config/headerState.yaml?raw'
+import { useRadioGateway } from '@/features/radio-gateway/useRadioGateway.js'
 
 const { getParameters, notifyParameters } = useRadioGateway()
 

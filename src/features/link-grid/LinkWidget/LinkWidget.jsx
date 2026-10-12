@@ -1,7 +1,8 @@
 import './LinkWidget.css'
-import AppIcon from './AppIcon.jsx'
+import { getIconByName } from '@/icons/iconRegistry.js'
 
 export default function LinkWidget({ label, icon = '', active = false, onNavigate }) {
+  const LinkIcon = icon ? getIconByName(icon) : null
   const handleKey = (e) => {
     if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onNavigate?.() }
   }
@@ -16,7 +17,7 @@ export default function LinkWidget({ label, icon = '', active = false, onNavigat
       onKeyDown={handleKey}
     >
       <div className="link-icon">
-        {icon ? <AppIcon name={icon} size={28} /> : <span className="link-icon-arrow">›</span>}
+        {LinkIcon ? <LinkIcon size={28} /> : <span className="link-icon-arrow">›</span>}
       </div>
       <div className="link-label">{label}</div>
     </div>

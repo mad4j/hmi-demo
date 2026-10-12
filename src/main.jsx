@@ -1,8 +1,8 @@
 import './assets/main.css'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import App from './App.jsx'
-import { _getParamValues, _sendCommand } from './composables/useParameterStore.js'
+import App from './app/App.jsx'
+import { _getParamValues, _sendCommand } from './features/parameters/useParameterStore.js'
 
 const enableSwSimulator = String(import.meta.env.VITE_ENABLE_SW_SIMULATOR ?? 'true').toLowerCase() === 'true'
 
