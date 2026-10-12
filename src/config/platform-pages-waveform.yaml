@@ -1,5 +1,5 @@
 pages:
-  - id: waveform
+  - id: waveformSelect
     label: Waveform
     icon: "channel"
     parameters: []

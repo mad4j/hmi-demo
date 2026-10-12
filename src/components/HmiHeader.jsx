@@ -19,6 +19,7 @@ export default function HmiHeader({
   commIconVariant,
   missionTimeTod,
   onNavigateToWaveform,
+  getRadioChannels,
   onZeroize,
 }) {
   return (
@@ -28,7 +29,7 @@ export default function HmiHeader({
         title={commLabel[commIconVariant]}
         aria-label={commLabel[commIconVariant]}
         type="button"
-        onClick={onNavigateToWaveform}
+        onClick={getRadioChannels}
       >
         <IconCommState variant={commIconVariant} size={30} />
       </button>

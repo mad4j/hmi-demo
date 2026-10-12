@@ -1,70 +1,76 @@
-/* ── Resolution profile: 800×600 (default) ─────────────── */
+/* ── Screen profile (data-resolution-profile on <html>) ─────
+   --hmi-width/--hmi-height: logical area (CSS px, unitless)
+   --hmi-base: base font size (px, unitless)
+   --hmi-columns: widget columns. STANDARD is the default.   */
+:root {
+  --hmi-width: 1024;
+  --hmi-height: 768;
+  --hmi-base: 20;
+  --hmi-columns: 5;
+}
+
+html[data-resolution-profile='800x600'] {
+  --hmi-width: 800;
+  --hmi-height: 600;
+  --hmi-base: 16;
+  --hmi-columns: 4;
+}
+
+html[data-resolution-profile='1024x768'] {
+  --hmi-width: 1024;
+  --hmi-height: 768;
+  --hmi-base: 20;
+  --hmi-columns: 5;
+}
+
+html[data-resolution-profile='1920x1080'] {
+  --hmi-width: 1920;
+  --hmi-height: 1080;
+  --hmi-base: 24;
+  --hmi-columns: 6;
+}
+
+/* Base scale shrinks proportionally on smaller viewports (min 12px) */
+html {
+  font-size: calc(var(--hmi-base) * 1px);
+  font-size: clamp(
+    12px,
+    min(
+      calc(var(--hmi-base) * 100vw / var(--hmi-width)),
+      calc(var(--hmi-base) * 100vh / var(--hmi-height))
+    ),
+    calc(var(--hmi-base) * 1px)
+  );
+  font-size: clamp(
+    12px,
+    min(
+      calc(var(--hmi-base) * 100vw / var(--hmi-width)),
+      calc(var(--hmi-base) * 100dvh / var(--hmi-height))
+    ),
+    calc(var(--hmi-base) * 1px)
+  );
+}
+
 #app {
-  width: min(100vw, 800px);
-  height: min(100vh, 600px);
-  height: min(100dvh, 600px);
+  width: min(100vw, calc(var(--hmi-width) * 1px));
+  height: min(100vh, calc(var(--hmi-height) * 1px));
+  height: min(100dvh, calc(var(--hmi-height) * 1px));
   margin: 0 auto;
   user-select: none;
 }
 
-/* ── Resolution profile: 1024×768 ───────────────────────── */
-@media (min-width: 1024px) and (min-height: 768px) {
-  html { font-size: 20px; }
-
-  #app {
-    width: min(100vw, 1024px);
-    height: min(100vh, 768px);
-    height: min(100dvh, 768px);
-  }
-}
-
-/* ── Resolution profile: 1920×1080 ─────────────────────── */
-@media (min-width: 1920px) and (min-height: 1080px) {
-  html { font-size: 24px; }
-
-  #app {
-    width: 100vw;
-    height: 100vh;
-    height: 100dvh;
-  }
-}
-
-/* ── Fallback: screens smaller than 800×600 ─────────────── */
-@media (max-width: 800px), (max-height: 600px) {
-  #app {
-    width: 100vw;
-    height: 100vh;
-    height: 100dvh;
-  }
-}
-
-/* ── Forced profile overrides (debug — data-resolution-profile on <html>) ── */
-/* Attribute selector specificity (0-1-0) beats media-query rules (0-0-0).   */
-html[data-resolution-profile='800x600'] {
-  font-size: 16px;
-}
-html[data-resolution-profile='800x600'] #app {
-  width: min(100vw, 800px);
-  height: min(100vh, 600px);
-  height: min(100dvh, 600px);
-}
-
-html[data-resolution-profile='1024x768'] {
-  font-size: 20px;
-}
-html[data-resolution-profile='1024x768'] #app {
-  width: min(100vw, 1024px);
-  height: min(100vh, 768px);
-  height: min(100dvh, 768px);
-}
-
-html[data-resolution-profile='1920x1080'] {
-  font-size: 24px;
-}
+/* EXTENDED uses the whole viewport */
 html[data-resolution-profile='1920x1080'] #app {
   width: 100vw;
   height: 100vh;
   height: 100dvh;
+}
+
+@media (max-width: 599px) {
+  :root,
+  html[data-resolution-profile] {
+    --hmi-columns: 2;
+  }
 }
 
 html,

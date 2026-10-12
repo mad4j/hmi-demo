@@ -7,20 +7,15 @@ import CriticalAlertModal from './components/CriticalAlertModal.jsx'
 import HmiFooter from './components/HmiFooter.jsx'
 import HmiContentRouter from './components/HmiContentRouter.jsx'
 import { menuConfig, findPageById } from './composables/menuConfig.js'
-import { applicationConfig } from './composables/applicationConfig.js'
 import { useMenuNavigation } from './composables/useMenuNavigation.js'
 import { useTheme } from './composables/useTheme.js'
 import { useParameterStore } from './composables/useParameterStore.js'
 import { useNotificationBar } from './composables/useNotificationBar.js'
 import { useCurrentPagePanels } from './composables/useCurrentPagePanels.js'
 import { useLogoutPageAction } from './features/page-actions/useLogoutPageAction.js'
+import './composables/useScreenProfile.js'
 
 const LOGOUT_PAGE_ID = 'logout'
-const SCREEN_PROFILE_TO_RESOLUTION_PROFILE = {
-  COMPACT: '800x600',
-  STANDARD: '1024x768',
-  EXPANDED: '1920x1080',
-}
 
 const NOTIFICATION_ICON = {
   MENU: 'menu',
@@ -46,7 +41,6 @@ export default function App() {
 
   const { theme } = useTheme()
   const { parameterValues, setParameterValue } = useParameterStore()
-  const screenProfile = String(parameterValues.ui_screen_profile ?? 'STANDARD').toUpperCase()
 
   const { currentPagePanels, currentPanelIndex, pageParameters, currentPanelLabel, handlePanelChange } =
     useCurrentPagePanels({ currentPage })
@@ -70,30 +64,9 @@ export default function App() {
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (typeof document === 'undefined') return
-
-    const resolutionProfile = SCREEN_PROFILE_TO_RESOLUTION_PROFILE[screenProfile]
-
-    if (resolutionProfile) {
-      document.documentElement.dataset.resolutionProfile = resolutionProfile
-      return
-    }
-
-    delete document.documentElement.dataset.resolutionProfile
-  }, [screenProfile])
-
-  useEffect(() => {
     if (!import.meta.env.DEV || typeof window === 'undefined') return undefined
 
     const previousDebug = window.hmiDebug ?? {}
-
-    const PROFILES = ['800x600', '1024x768', '1920x1080']
-
-    function detectResolutionProfile() {
-      if (window.matchMedia('(min-width: 1920px) and (min-height: 1080px)').matches) return '1920x1080'
-      if (window.matchMedia('(min-width: 1024px) and (min-height: 768px)').matches) return '1024x768'
-      return '800x600'
-    }
 
     window.hmiDebug = {
       ...previousDebug,
@@ -103,38 +76,12 @@ export default function App() {
       notifyCritical(message = 'Simulated CRITICAL alert for operator acknowledgement test.') {
         setNotification('CRITICAL', String(message), { displayMode: 'ACKNOWLEDGED' })
       },
-      getResolutionProfile() {
-        const detected = detectResolutionProfile()
-        const forced = document.documentElement.dataset.resolutionProfile ?? null
-        const active = forced ?? detected
-        console.info(
-          `%c[HMI Resolution Profile]%c\n  detected : ${detected}\n  forced   : ${forced ?? '(none)'}\n  active   : ${active}`,
-          'color: #58a6ff; font-weight: bold',
-          'color: inherit',
-        )
-        return { detected, forced, active }
-      },
-      setResolutionProfile(profile) {
-        if (!PROFILES.includes(profile)) {
-          console.warn(`[HMI] Unknown profile "${profile}". Valid values: ${PROFILES.join(', ')}`)
-          return
-        }
-        document.documentElement.dataset.resolutionProfile = profile
-        console.info(`[HMI] Resolution profile forced to "${profile}". Call hmiDebug.clearResolutionProfile() to reset.`)
-      },
-      clearResolutionProfile() {
-        delete document.documentElement.dataset.resolutionProfile
-        console.info(`[HMI] Resolution profile override cleared. Detected: ${detectResolutionProfile()}`)
-      },
     }
 
     return () => {
       if (window.hmiDebug) {
         delete window.hmiDebug.notify
         delete window.hmiDebug.notifyCritical
-        delete window.hmiDebug.getResolutionProfile
-        delete window.hmiDebug.setResolutionProfile
-        delete window.hmiDebug.clearResolutionProfile
       }
     }
   }, [setNotification])
@@ -144,19 +91,34 @@ export default function App() {
 
   const notificationIcon = NOTIFICATION_ICON[notification.status] ?? 'info'
 
-  const visibleHomePages = (applicationConfig.pages ?? []).filter((item) => item.visibility !== 'hidden')
-  const autoOpenedHomePageId = visibleHomePages.length === 1 ? (visibleHomePages[0]?.id ?? null) : null
-  const isHomeTabActive = isAtHome || (autoOpenedHomePageId !== null && currentPage?.id === autoOpenedHomePageId)
-  const activeLevel1IdForFooter = isHomeTabActive ? null : activeLevel1Id
+const visibleHomePages =
+  (menuConfig.homePage?.panels ?? [])
 
-  // Auto-navigate when home screen has exactly one page
-  useEffect(() => {
-    if (!isAtHome || !autoOpenedHomePageId) return
-    navigateToPage(autoOpenedHomePageId)
-  }, [isAtHome, autoOpenedHomePageId]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  const logoutPageConfig = findPageById(menuConfig.pages, LOGOUT_PAGE_ID)
+const autoOpenedHomePageId =
+  visibleHomePages.length === 2
+    ? (menuConfig.homePage?.id ?? null)
+    : null
 
+const isHomeTabActive =
+  isAtHome ||
+  (
+    autoOpenedHomePageId !== null &&
+    currentPage?.id === autoOpenedHomePageId
+  )
+
+const activeLevel1IdForFooter =
+  isHomeTabActive ? null : activeLevel1Id
+
+// Auto-navigate when home screen has exactly one page
+useEffect(() => {
+  if (!isAtHome || !autoOpenedHomePageId) return
+
+  navigateToPage(autoOpenedHomePageId)
+}, [isAtHome, autoOpenedHomePageId]) // eslint-disable-line react-hooks/exhaustive-deps
+
+const logoutPageConfig =
+  findPageById(menuConfig.pages, LOGOUT_PAGE_ID)
   useLogoutPageAction({
     currentPage,
     parameterValues,
@@ -196,10 +158,6 @@ export default function App() {
       <HmiContentRouter
         currentPage={currentPage}
         isAtHome={isAtHome}
-        currentPagePanels={currentPagePanels}
-        currentPanelIndex={currentPanelIndex}
-        pageParameters={pageParameters}
-        handlePanelChange={handlePanelChange}
         navigateToPage={navigateToPage}
         notifications={notifications}
         navigation={navigation}

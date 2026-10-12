@@ -1,0 +1,2191 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<waveforminterface>
+
+	<shortsummary
+		led ="true"
+		objectId = "SystemControlService_PCP"
+		paramId = "DCE:42343886-9097-4e1b-aba5-75ecc254aa45"
+		liveperiod = "1"
+	>
+
+		<simple
+			id="DCE:23be4d57-28de-46f5-9f4e-22415ea8c01a"
+			type="long"
+			modtype="select"
+			position="60,0"
+			name="Waveform Mode"
+			fontsize="10"
+			digits="6"
+			>
+			<description>Modalita' della waveform</description>
+			<enumerations>
+				<enumeration label="FM" value="0"/>
+				<enumeration label="FSK" value="2"/>
+				<enumeration label="AM" value="5"/>
+				<enumeration label="ASK" value="8"/>
+				<enumeration label="FM Satcom" value="9"/>
+			</enumerations>
+		</simple>
+
+		<simple
+			id="DCE:64c67f71-70f9-4e1d-816c-fca969e74dab"
+			type="ulong"
+			modtype="textbox"
+			position="6,36"
+			name="TX Frequency"
+			fontsize="10"
+			digits="4"
+		>
+			<units>Hz</units>
+		</simple>
+
+		<simple
+			id="DCE:1ec07f2d-6e02-468f-8be2-c3653f74fa5d"
+			type="ulong"
+			modtype="textbox"
+			position="128,36"
+			name="RX Frequency"
+			fontsize="10"
+			digits="4"
+		>
+			<units>Hz</units>
+		</simple>
+		
+		<simple
+			id="DCE:3e1d2141-0dfc-4a22-a261-3fd904320f6a"
+			type="float"
+			mode="readonly"
+			name="RF TX Power"
+			modtype="textbox"
+			position="6,72"
+			fontsize="10"
+			digits="4"
+		  >
+			  <description>Potenza RF trasmessa</description>
+			  <units>W</units>
+		</simple>
+            
+		<simple
+			id="DCE:c68f2f74-d7d1-40d1-9e09-570a1e7985f4"
+			type="long"
+			modtype="select"
+			mode="readwrite"
+			name="Squelch Type"
+			position="128,72"
+			fontsize="10"
+			digits="4"
+		>
+			<description>Tipo di squelch</description>
+			<enumerations> 
+				<enumeration label="None" value="0"/>
+				<enumeration label="Noise(AM/FM)" value="1"/>
+				<enumeration label="Tone(FM)" value="2"/>
+			</enumerations>
+		</simple>
+
+		<simple
+			id="DCE:934241da-9765-4a65-a77b-7cd5e0eed857"
+			type="long"
+			modtype="select"
+			mode="readonly"
+			name="Traffic Type"
+			position="6,108"
+			fontsize="10"
+			digits="4"
+		>
+			<description>Tipo di traffico</description>
+			<enumerations> 
+				<enumeration label="Analog voice" value="0"/>
+				<enumeration label="Audio wideband" value="1"/>
+				<enumeration label="Digital data" value="2"/>
+				<enumeration label="Analog voice" value="3"/>
+				<enumeration label="Analog data Link 11" value="4"/>
+				<enumeration label="Analog data Link 22" value="5"/>
+				
+			</enumerations>
+		</simple>
+
+		<simple
+			id="DCE:4785d2e4-c278-400e-b3f8-15b36b858ce8"
+			type="string"
+			mode="readonly"
+			name="Notification"
+			modtype="textbox"
+			position="128,108"
+			fontsize="10"
+			digits="10"
+			>
+			<description>Messaggio di stato corrente valorizzato in corrispondenza di eventi significativi. "No message" in assenza di eventi da segnalare</description>
+		</simple>
+				
+	</shortsummary>
+
+
+	<summary>
+
+		<simple
+			id="DCE:64c67f71-70f9-4e1d-816c-fca969e74dab"
+			type="ulong"
+			modtype="textbox"
+			mode="readwrite"
+			position="140,60"
+			name="TX Frequency"
+			isstep="false"
+			fontsize="12"
+			digits="9"
+			namefixdim="90"
+			fieldfixdim="97"
+			>
+			<units>Hz</units>
+			<range max="511995000" min="1"/>
+			<multipliers>
+				<multi1 label="MHz" factor="1000000"/>
+				<multi2 label="KHz" factor="1000"/>
+				<multi3 label="Hz" factor="1"/>
+			</multipliers>
+		</simple>
+	
+		<simple
+			id="DCE:1ec07f2d-6e02-468f-8be2-c3653f74fa5d"
+			type="ulong"
+			modtype="textbox"
+			mode="readwrite"
+			position="140,100"
+			name="RX Frequency"
+			isstep="false"
+			fontsize="12"
+			digits="9"
+			namefixdim="90"
+			fieldfixdim="97"
+			>
+			<units>Hz</units>
+			<range max="511995000" min="1"/>
+			<multipliers>
+				<multi1 label="MHz" factor="1000000"/>
+				<multi2 label="KHz" factor="1000"/>
+				<multi3 label="Hz" factor="1"/>
+			</multipliers>
+		</simple>
+
+		<simple
+			id="DCE:23be4d57-28de-46f5-9f4e-22415ea8c01a"
+			type="long"
+			modtype="select"
+			mode="readwrite"
+			name="Waveform Mode"
+			position="140,140"
+			fontsize="12"
+			digits="13"
+			namefixdim="90"
+			fieldfixdim="120"
+		>
+			<description>Modalita' della waveform</description>
+			<range max="3" min="0"/>
+			<enumerations> 
+						<enumeration label="FM" value="0"/>
+						<enumeration label="FSK" value="2"/>
+						<enumeration label="AM" value="5"/>
+						<enumeration label="ASK" value="8"/>
+						<enumeration label="FM Satcom" value="9"/>
+			</enumerations>
+		</simple>
+
+		<simple
+			id="DCE:934241da-9765-4a65-a77b-7cd5e0eed857"
+			type="long"
+			modtype="select"
+			mode="readonly"
+			name="Traffic Type"
+			position="140,180"
+			fontsize="12"
+			digits="7"
+			namefixdim="90"
+			fieldfixdim="120"
+		>
+			<description>Tipo di traffico</description>
+			<enumerations> 
+				<enumeration label="Analog voice" value="0"/>
+				<enumeration label="Audio wideband" value="1"/>
+				<enumeration label="Digital data" value="2"/>
+				<enumeration label="Analog voice" value="3"/>
+				<enumeration label="Analog data Link 11" value="4"/>
+				<enumeration label="Analog data Link 22" value="5"/>
+			</enumerations>
+		</simple>
+		
+		<simple
+			id="DCE:c68f2f74-d7d1-40d1-9e09-570a1e7985f4"
+			type="long"
+			modtype="select"
+			mode="readwrite"
+			name="Squelch Type"
+			position="140,220"
+			fontsize="12"
+			digits="7"
+			namefixdim="90"
+			fieldfixdim="120"
+		>
+			<description>Tipo di squelch</description>
+			<range max="2" min="0"/>
+			<enumerations>
+				<enumeration label="None" value="0"/>
+				<enumeration label="Noise (AM/FM)" value="1"/>
+				<enumeration label="Tone (FM)" value="2"/>
+			</enumerations>
+		</simple>
+			
+		<simple
+			id="DCE:3e1d2141-0dfc-4a22-a261-3fd904320f6a"
+			type="float"
+			mode="readonly"
+			name="RF TX Power"
+			modtype="textbox"
+			position="140,260"
+			fontsize="12"
+			digits="4"
+			namefixdim="90"
+			fieldfixdim="82"
+		>
+			<description>Potenza RF trasmessa</description>
+			<units>Watt</units>
+		</simple>
+        		
+	
+		<simple
+			id="DCE:4785d2e4-c278-400e-b3f8-15b36b858ce8"
+			type="string"
+			mode="readonly"
+			name="Notification"
+			modtype="textbox"
+			position="2,400"
+			fontsize="12"
+			digits="10"
+			namefixdim="60"
+			fieldfixdim="420"
+			>
+			<description>Messaggio di stato corrente valorizzato in corrispondenza di eventi significativi. "No message" in assenza di eventi da segnalare</description>
+	
+		</simple>
+		 
+		<simple 
+			id="DCE:5ad9b91f-bafc-4a38-a088-3be228778a0b" 
+			type="boolean" 
+			modtype="textbox" 
+			mode="readwrite" 
+			name="Apply Conf." 
+			position="110,50" 
+			fontsize="12" 
+			digits="3" 
+			namefixdim="180" 
+			fieldfixdim="60" 
+			mandatory="true" 
+			configureOnChange="false">
+            <description>comando di attuazione della configurazione dei parametri</description>
+        </simple>
+		
+	</summary>
+
+
+	<parametersmenu>
+		<node name="menu" id="root">
+			<node name="Basic" id="BASIC" icon="../icons32/modulazione.gif">
+
+				<simple
+					id="DCE:64c67f71-70f9-4e1d-816c-fca969e74dab"
+					type="ulong"
+					modtype="textbox"
+					mode="readwrite"
+					position="140,50"
+					name="TX Frequency"
+					isstep="false"
+					fontsize="12"
+					digits="9"
+					namefixdim="90"
+					fieldfixdim="97"
+				>
+					<units>Hz</units>
+					<range max="511995000" min="1"/>
+					<multipliers>
+						<multi1 label="MHz" factor="1000000"/>
+						<multi2 label="KHz" factor="1000"/>
+						<multi3 label="Hz" factor="1"/>
+					</multipliers>
+				</simple>
+			
+				<simple
+					id="DCE:1ec07f2d-6e02-468f-8be2-c3653f74fa5d"
+					type="ulong"
+					modtype="textbox"
+					mode="readwrite"
+					position="140,90"
+					name="RX Frequency"
+					isstep="false"
+					fontsize="12"
+					digits="9"
+					namefixdim="90"
+					fieldfixdim="97"
+				>
+					<units>Hz</units>
+					<range max="511995000" min="1"/>
+					<multipliers>
+						<multi1 label="MHz" factor="1000000"/>
+						<multi2 label="KHz" factor="1000"/>
+						<multi3 label="Hz" factor="1"/>
+					</multipliers>
+				</simple>
+
+				<simple
+					id="DCE:23be4d57-28de-46f5-9f4e-22415ea8c01a"
+					type="long"
+					modtype="select"
+					mode="readwrite"
+					position="140,130"
+					name="Waveform Mode"
+					fontsize="12"
+					digits="6"
+					namefixdim="90"
+					fieldfixdim="120"
+				>
+					<description>Modalita' della waveform</description>
+					<range max="3" min="0"/>
+					<enumerations> 
+						<enumeration label="FM" value="0"/>
+						<enumeration label="FSK" value="2"/>
+						<enumeration label="AM" value="5"/>
+						<enumeration label="ASK" value="8"/>
+						<enumeration label="FM Satcom" value="9"/>
+					</enumerations>
+				</simple>
+				
+				<simple
+					id="DCE:934241da-9765-4a65-a77b-7cd5e0eed857"
+					type="long"
+					modtype="select"
+					mode="readonly"
+					name="Traffic Type"
+					position="140,170"
+					fontsize="12"
+					digits="13"
+					namefixdim="90"
+					fieldfixdim="120"
+				>
+					<description>Tipo di traffico</description>
+					<enumerations> 
+						<enumeration label="Analog voice" value="0"/>
+						<enumeration label="Audio wideband" value="1"/>
+						<enumeration label="Digital data" value="2"/>
+						<enumeration label="Analog voice" value="3"/>
+						<enumeration label="Analog data Link 11" value="4"/>
+						<enumeration label="Analog data Link 22" value="5"/>
+					</enumerations>
+				</simple>
+
+				<simple
+					id="DCE:6d918dfb-ee4d-437d-9a11-09bdf020f76d"
+					type="long"
+					modtype="select"
+					mode="readwrite"
+					name="Rx traffic type"
+					position="140,210"
+					fontsize="12"
+					digits="7"
+					namefixdim="90"
+					fieldfixdim="120"
+				>
+					<description>Abilita l'ingresso dei dati o dalla seriale o dall' IP, ovvero dal componente MIL</description>
+					<range max="2" min="0"/>
+					<enumerations>
+						<enumeration label="Voice" value="0"/>
+						<enumeration label="Serial" value="1"/>
+						<enumeration label="IP" value="2"/>
+					</enumerations>
+				</simple>
+
+				<simple
+					id="DCE:4a4aee28-84ed-4ec3-a805-56edb1f24edd"
+					type="boolean"
+					mode="readwrite"
+					name="Black Preamble"
+					modtype="select"
+					position="140,250"
+					fontsize="12"
+					digits="3"
+					namefixdim="90"
+					fieldfixdim="120"
+					>
+					<description>Abilitazione allineamento al byte (TrasparentFlow=false)</description>
+					<enumerations>
+						<enumeration label="OFF" value="1" />
+						<enumeration label="ON"  value="0" />
+					</enumerations>
+				</simple>
+
+				<simple
+					id="DCE:4785d2e4-c278-400e-b3f8-15b36b858ce8"
+					type="string"
+					mode="readonly"
+					name="Notification"
+					modtype="textbox"
+					position="2,400"
+					fontsize="12"
+					digits="10"
+					namefixdim="60"
+					fieldfixdim="420"
+					>
+					<description>Messaggio di stato corrente valorizzato in corrispondenza di eventi significativi. "No message" in assenza di eventi da segnalare</description>
+				</simple>
+				<simple 
+					id="DCE:5ad9b91f-bafc-4a38-a088-3be228778a0b" 
+					type="boolean" 
+					modtype="textbox" 	
+					mode="readwrite" 
+					name="Apply Conf." 
+					position="110,50" 
+					fontsize="12" 
+					digits="3" 
+					namefixdim="180" 
+					fieldfixdim="60" 
+					localVisible="false" 
+					mandatory="true" 
+					configureOnChange="false">
+                    <description>comando di attuazione della configurazione dei parametri</description>
+                </simple>
+			</node>
+
+			<node name="Squelch" id="SQUELCH" icon="../icons32/modulazione.gif">
+
+				<simple
+					id="DCE:c68f2f74-d7d1-40d1-9e09-570a1e7985f4"
+					type="long"
+					modtype="select"
+					mode="readwrite"
+					name="Squelch Type"
+					position="155,130"
+					fontsize="12"
+					digits="7"
+					namefixdim="90"
+					fieldfixdim="120"
+				>
+					<description>Tipo di squelch</description>
+					<range max="2" min="0"/>
+					<enumerations> 
+						<enumeration label="None" value="0"/>
+						<enumeration label="Noise (AM/FM)" value="1"/>
+						<enumeration label="Tone (FM)" value="2"/>
+					</enumerations>
+				</simple>
+
+				<simple
+					id="DCE:f6789831-fad0-4ffe-aadc-7efdac1dae6b"
+					type="ushort"
+					modtype="textbox"
+					mode="readwrite"
+					name="Squelch Level"
+					position="155,190"
+					fontsize="12"
+					digits="1"
+					namefixdim="90"
+					fieldfixdim="120"
+				>
+					<description>Livello soglia squelch di tipo noise</description>
+					<range max="9" min="0"/>
+				</simple>
+			
+				<simple
+					id="DCE:4785d2e4-c278-400e-b3f8-15b36b858ce8"
+					type="string"
+					mode="readonly"
+					name="Notification"
+					modtype="textbox"
+					position="2,400"
+					fontsize="12"
+					digits="10"
+					namefixdim="60"
+					fieldfixdim="420"
+					>
+					<description>Messaggio di stato corrente valorizzato in corrispondenza di eventi significativi. "No message" in assenza di eventi da segnalare</description>
+				</simple>
+
+			</node>
+
+			<node name="Crypto" id="CRYPTO" icon="../icons32/modulazione.gif">
+
+				<simple
+					id="DCE:6d918dfb-ee4d-437d-9a11-09bdf020f780"
+					type="long"
+					modtype="select"
+					mode="readonly"
+					name="Cypher Engine"
+					position="140,90"
+					fontsize="12"
+					digits="2"
+					namefixdim="180"
+					fieldfixdim="60"
+					noarrowinselreadonly="TRUE"
+				>
+					<description>Cypher Engine</description>
+					<enumerations> 
+						<enumeration label="NONE" value="0"/>
+						<enumeration label="W7NB" value="1"/>
+						<enumeration label="W7NA" value="2"/>
+						<enumeration label="W7IA" value="3"/>
+					</enumerations>
+				</simple>
+				
+				<simple
+					id="DCE:23ed19f2-7a01-4458-8eae-1e30d0c20688"
+					type="string"
+					mode="readonly"
+					name="Available TEK IDs"
+					modtype="textarea"
+					position="140,50"
+					fontsize="12"
+					digits="10"
+					>
+					<description>Available TEK Ids</description>
+				</simple>
+
+				<simple
+					id="DCE:6d918dfb-ee4d-437d-9a11-09bdf020f77f"
+					type="long"
+					modtype="select"
+					mode="readwrite"
+					name="TEK Id"
+					position="140,90"
+					fontsize="12"
+					digits="2"
+					namefixdim="180"
+					fieldfixdim="60"
+				>
+					<description>ID chiave TEK da utilizzare</description>
+					<enumerations> 
+						<enumeration label="TEK1" value="1"/>
+						<enumeration label="TEK2" value="2"/>
+						<enumeration label="TEK3" value="3"/>
+						<enumeration label="TEK4" value="4"/>
+						<enumeration label="TEK5" value="5"/>
+						<enumeration label="TEK6" value="6"/>
+						<enumeration label="TEK7" value="7"/>
+						<enumeration label="TEK8" value="8"/>
+						<enumeration label="TEK9" value="9"/>
+						<enumeration label="TEK10" value="10"/>
+						<enumeration label="TEK11" value="11"/>
+						<enumeration label="TEK12" value="12"/>
+						<enumeration label="TEK13" value="13"/>
+						<enumeration label="TEK14" value="14"/>
+						<enumeration label="TEK15" value="15"/>
+						<enumeration label="TEK16" value="16"/>
+						<enumeration label="BLKTEK1" value="17"/>
+					</enumerations>
+				</simple>
+
+				<simple
+					id="DCE:6d918dfb-ee4d-437d-9a11-09bdf020f77e"
+					type="long"
+					modtype="select"
+					mode="readwrite"
+					name="CT Protocol Type"
+					position="140,90"
+					fontsize="12"
+					digits="3"
+					namefixdim="180"
+					fieldfixdim="60"
+				>
+					<description>Tipo di algoritmo STaC-IS/TSVCIS</description>
+					<enumerations>
+						<enumeration label="STaC-IS" value="0" />
+						<enumeration label="TSVCIS" value="1" />
+					</enumerations>
+				</simple>
+
+				<simple
+					id="DCE:6d918dfb-ee4d-437d-9a11-09bdf020faa1"
+					type="long"
+					modtype="select"
+					mode="readwrite"
+					name="STaC-IS Voice"
+					position="140,90"
+					fontsize="12"
+					digits="3"
+					namefixdim="180"
+					fieldfixdim="60"
+				>
+					<description>Seleziona il tipo di voce digitale per la modalita' cifrata</description>
+					<enumerations>
+						<enumeration label="MELPe" value="0" />
+						<enumeration label="MELPe SC" value="1" />
+					</enumerations>
+				</simple>
+
+				<simple
+					id="DCE:6d918dfb-ee4d-437d-9a11-09bdf020f77d"
+					type="long"
+					modtype="select"
+					mode="readwrite"
+					name="Crypto Mode"
+					position="140,90"
+					fontsize="12"
+					digits="3"
+					namefixdim="180"
+					fieldfixdim="60"
+				>
+					<description>Abilitazione PT/CT</description>
+					<enumerations>
+						<enumeration label="PT" value="0" />
+						<enumeration label="CT" value="1" />
+					</enumerations>
+				</simple>
+
+				<simple
+					id="DCE:4785d2e4-c278-400e-b3f8-15b36b858ce8"
+					type="string"
+					mode="readonly"
+					name="Notification"
+					modtype="textbox"
+					position="2,400"
+					fontsize="12"
+					digits="10"
+					namefixdim="60"
+					fieldfixdim="420"
+					>
+					<description>Messaggio di stato corrente valorizzato in corrispondenza di eventi significativi. "No message" in assenza di eventi da segnalare</description>
+				</simple>
+				
+			</node>				
+
+			<node name="Audio" id="AUDIO" icon="../icons32/modulazione.gif">
+
+				<simple
+					id="DCE:92da5026-9640-403b-a0e6-3c0cb1990b30"
+					type="boolean"
+					modtype="select"
+					mode="readwrite"
+					name="Sidetone Enable"
+					position="140,90"
+					fontsize="12"
+					digits="3"
+					namefixdim="180"
+					fieldfixdim="60"
+				>
+					<description>Abilitazione sidetone</description>
+					<enumerations>
+						<enumeration label="ON" value="1" />
+						<enumeration label="OFF" value="0" />
+					</enumerations>
+				</simple>
+
+				<simple
+					id="DCE:fa38b6a7-807e-4145-b0dc-bc119b85520a"
+					type="boolean"
+					modtype="select"
+					mode="readwrite"
+					name="Analog Voice Monitor Enable"
+					position="140,150"
+					fontsize="12"
+					digits="3"
+					namefixdim="180"
+					fieldfixdim="60"
+					>
+					<description>Abilitazione modalita' secondaria Analog Voice Monitor</description>
+					<enumerations>
+						<enumeration label="ON" value="1" />
+						<enumeration label="OFF" value="0" />
+					</enumerations>
+				</simple>
+			
+				<simple
+					id="DCE:19d3bcbc-fef5-4bf5-a4c3-0ce2160ef2f6"
+					type="ushort"
+					modtype="textbox"
+					mode="readwrite"
+					name="Volume"
+					position="140,210"
+					fontsize="12"
+					digits="1"
+					namefixdim="180"
+					fieldfixdim="60"
+				>
+					<description>Livello audio in rx. (0=OFF)</description>
+					<range max="10" min="0"/>
+				</simple>
+
+					
+				<simple
+					id="DCE:2ac5ea49-6934-4a59-9095-1a5de93472e1"
+					type="float"
+					modtype="textbox"
+					mode="readwrite"
+					name="Audio Input Gain"
+					position="140,270"
+					fontsize="12"
+					digits="5"
+					namefixdim="180"
+					fieldfixdim="60"
+				>
+					<description>Guadagno in dB dell'audio in ingresso (rispetto al valore nominale), applicabile solo in modalita' ANALOG_DATA (con algoritmo CAV disabilitato)</description>
+					<range max="30.0" min="-10.0"/>
+				</simple>
+
+				<simple
+					id="DCE:4785d2e4-c278-400e-b3f8-15b36b858ce8"
+					type="string"
+					mode="readonly"
+					name="Notification"
+					modtype="textbox"
+					position="2,400"
+					fontsize="12"
+					digits="10"
+					namefixdim="60"
+					fieldfixdim="420"
+					>
+					<description>Messaggio di stato corrente valorizzato in corrispondenza di eventi significativi. "No message" in assenza di eventi da segnalare</description>
+				</simple>
+                <simple 
+                            id="DCE:5ad9b91f-bafc-4a38-a088-3be228778a0b" 
+                            type="boolean" 
+                            modtype="textbox" 
+                            mode="readwrite" 
+                            name="Apply Conf." 
+                            position="110,50" 
+                            fontsize="12" 
+                            digits="3" 
+                            namefixdim="180" 
+                            fieldfixdim="60" 
+                            mandatory="true" 
+                            configureOnChange="false"
+                            localVisible="false">
+                <description>comando di attuazione della configurazione dei parametri</description>
+            </simple>
+			</node>
+
+			<node name="Serial" id="SERIAL" icon="../icons32/modulazione.gif">
+
+				<!--simple
+					id="DCE:99899c11-9320-4b06-8ac3-50097275e1cd"
+					type="long"
+					modtype="select"
+					mode="readwrite"
+					name="Sync Type"
+					position="130,90"
+					fontsize="12"
+					digits="5"
+					namefixdim="160"
+					fieldfixdim="80"
+				>
+					<description>Tipo di sincronizzazione su porta seriale</description>
+					<range max="1" min="0"/>
+					<enumerations> 
+						<enumeration label="Sync" value="0"/>
+						<enumeration label="Async" value="1"/>
+					</enumerations>
+				</simple-->
+
+				<simple
+					id="DCE:32fa8e91-b2af-4d10-a498-a55da7039cfe"
+					type="long"
+					modtype="select"
+					mode="readwrite"
+					name="Serial HW Protocol"
+					position="130,150"
+					fontsize="12"
+					digits="7"
+					namefixdim="160"
+					fieldfixdim="80"
+				>
+					<description>Protocollo hardware su porta seriale</description>
+					<range max="2" min="0"/>
+					<enumerations> 
+						<enumeration label="EIA 232" value="0"/>
+						<enumeration label="EIA 422" value="1"/>
+						<enumeration label="EIA 423" value="2"/>
+					</enumerations>
+				</simple>
+			
+				<simple
+					id="DCE:551d3210-267a-4e6a-a018-eb276340c4e3"
+					type="long"
+					mode="readwrite"
+					name="Serial Data Polarity Inversion"
+					modtype="select"
+					position="130,210"
+					fontsize="12"
+					digits="9"
+					namefixdim="160"
+					fieldfixdim="80"
+				>
+					<description>Inversione della polarita' dei dati su porta seriale</description>
+					<range max="3" min="0"/>
+					<enumerations> 
+						<enumeration label="None" value="0"/>
+						<enumeration label="TX Only" value="1"/>
+						<enumeration label="RX Only" value="2"/>
+						<enumeration label="TX and RX" value="3"/>
+					</enumerations>
+				</simple>
+
+				<simple
+					id="DCE:4785d2e4-c278-400e-b3f8-15b36b858ce8"
+					type="string"
+					mode="readonly"
+					name="Notification"
+					modtype="textbox"
+					position="2,400"
+					fontsize="12"
+					digits="10"
+					namefixdim="60"
+					fieldfixdim="420"
+					>
+					<description>Messaggio di stato corrente valorizzato in corrispondenza di eventi significativi. "No message" in assenza di eventi da segnalare</description>
+				</simple>
+
+			</node>
+
+			<!--node name="Sync" id="SYNC" icon="../icons32/modulazione.gif">
+
+				<simple
+					id="DCE:6d88b670-e397-4c6e-8223-f63caf24c288"
+					type="ushort"
+					mode="readonly"
+					name="Sync Baud Rate"
+					modtype="textbox"
+					position="120,80"
+					fontsize="12"
+					digits="5"
+					namefixdim="160"
+					fieldfixdim="90"
+				>
+					<description>Baud rate su seriale sincrona (bps)</description>
+					<units>bps</units>
+				</simple>
+
+				<simple
+					id="DCE:264cf591-99f9-4059-a690-d502ef9fe303"
+					type="long"
+					mode="readonly"
+					name="Sync TX Clock Source"
+					modtype="select"
+					position="120,140"
+					fontsize="12"
+					digits="3"
+					namefixdim="160"
+					fieldfixdim="120"
+				>
+					<description>Sorgente del clock tx su seriale sincrona</description>
+					<range max="1" min="0"/>
+					<enumerations> 
+						<enumeration label="DCE" value="0"/>
+						<enumeration label="DTE" value="1"/>
+					</enumerations>
+				</simple>
+
+				<simple
+					id="DCE:e889c354-c735-4e24-aa52-58a446124572"
+					type="long"
+					mode="readonly"
+					name="Sync TX Clock Control Type"
+					modtype="select"
+					position="120,200"
+					fontsize="12"
+					digits="12"
+					namefixdim="160"
+					fieldfixdim="120"
+				>
+					<description>Tipo di controllo del clock tx su seriale sincrona</description>
+					<range max="1" min="0"/>
+					<enumerations> 
+						<enumeration label="RTS CTS" value="0"/>
+						<enumeration label="Free Running" value="1"/>
+					</enumerations>
+				</simple>
+			
+				<simple
+					id="DCE:1216ff60-d8f2-45c6-a702-cc01ae88ba88"
+					type="boolean"
+					mode="readonly"
+					name="Sync RTS CTS Enable"
+					modtype="select"
+					position="120,260"
+					fontsize="12"
+					digits="3"
+					namefixdim="160"
+					fieldfixdim="120"
+				>
+					<description>Abilitazione RTS/CTS su seriale sincrona</description>
+					<enumerations>
+						<enumeration label="ON" value="1" />
+						<enumeration label="OFF" value="0" />
+					</enumerations>
+				</simple>
+
+				<simple
+					id="DCE:4785d2e4-c278-400e-b3f8-15b36b858ce8"
+					type="string"
+					mode="readonly"
+					name="Notification"
+					modtype="textbox"
+					position="2,400"
+					fontsize="12"
+					digits="10"
+					namefixdim="60"
+					fieldfixdim="420"
+					>
+					<description>Messaggio di stato corrente valorizzato in corrispondenza di eventi significativi. "No message" in assenza di eventi da segnalare</description>
+				</simple>
+
+			</node-->
+
+			<!--node name="Async" id="ASYNC" icon="../icons32/modulazione.gif">
+
+				<simple
+					id="DCE:6cc93268-a554-4016-8c15-15a5398ac449"
+					type="long"
+					mode="readwrite"
+					name="Async Parity"
+					modtype="select"
+					position="120,50"
+					fontsize="12"
+					digits="11"
+					namefixdim="140"
+					fieldfixdim="120"
+				>
+					<description>Tipo di parita' su seriale asincrona</description>
+					<range max="2" min="0"/>
+					<enumerations> 
+						<enumeration label="Odd Parity" value="0"/>
+						<enumeration label="Even Parity" value="1"/>
+						<enumeration label="None" value="2"/>
+					</enumerations>
+				</simple>
+			
+				<simple
+					id="DCE:1d2a525f-a490-4d1d-ae90-d0b52f08e634"
+					type="long"
+					mode="readwrite"
+					name="Async Stop Bits"
+					modtype="select"
+					position="120,100"
+					fontsize="12"
+					digits="16"
+					namefixdim="140"
+					fieldfixdim="120"
+				>
+					<description>Numero di bit di stop su seriale asincrona</description>
+					<range max="2" min="0"/>
+					<enumerations> 
+						<enumeration label="One Bit" value="0"/>
+						<enumeration label="One and Half Bit" value="1"/>
+						<enumeration label="Two Bits" value="2"/>
+					</enumerations>
+				</simple>
+			
+				<simple
+					id="DCE:3097745c-86d9-4154-9174-1a78ce998395"
+					type="long"
+					mode="readwrite"
+					name="Async Data Bits"
+					modtype="select"
+					position="120,150"
+					fontsize="12"
+					digits="10"
+					namefixdim="140"
+					fieldfixdim="120"
+				>
+					<description>Numero di bit dati su seriale asincrona</description>
+					<range max="3" min="0"/>
+					<enumerations> 
+						<enumeration label="Five Bits" value="0"/>
+						<enumeration label="Six Bits" value="1"/>
+						<enumeration label="Seven Bits" value="2"/>
+						<enumeration label="Eight Bits" value="3"/>
+					</enumerations>
+				</simple>
+			
+				<simple
+					id="DCE:a344e9bc-9d13-41d7-83c5-660a88f41b49"
+					type="long"
+					mode="readwrite"
+					name="Async Baud Rate"
+					modtype="select"
+					position="120,200"
+					fontsize="12"
+					digits="6"
+					namefixdim="140"
+					fieldfixdim="120"
+				>
+					<description>Baud rate su seriale asincrona</description>
+					<range max="4" min="1"/>
+					<enumerations>
+						<enumeration label="28800" value="1"/> 
+						<enumeration label="38400" value="2"/>
+						<enumeration label="57600" value="3"/>
+						<enumeration label="115200" value="4"/>
+					</enumerations>
+				</simple>
+			
+				<simple
+					id="DCE:88c05889-6222-4730-89ca-46eda9faade5"
+					type="long"
+					mode="readwrite"
+					name="Async Flow Control Type"
+					modtype="select"
+					position="120,250"
+					fontsize="12"
+					digits="8"
+					namefixdim="140"
+					fieldfixdim="120"
+				>
+					<description>Tipo di controllo di flusso su seriale asincrona</description>
+					<range max="2" min="0"/>
+					<enumerations> 
+						<enumeration label="Hardware" value="0"/>
+						<enumeration label="Software" value="1"/>
+						<enumeration label="None" value="2"/>
+					</enumerations>
+				</simple>
+			
+				<simple
+					id="DCE:159a8fea-024f-4d05-98f6-55aa8ffc04be"
+					type="boolean"
+					mode="readwrite"
+					name="Async DMA Enable"
+					modtype="select"
+					position="120,300"
+					fontsize="12"
+					digits="3"
+					namefixdim="140"
+					fieldfixdim="120"
+				>
+					<description>Abilitazione Direct Memory Access (DMA) su seriale asincrona</description>
+					<enumerations>
+						<enumeration label="ON" value="1" />
+						<enumeration label="OFF" value="0" />
+					</enumerations>
+				</simple>
+
+				<simple
+					id="DCE:4785d2e4-c278-400e-b3f8-15b36b858ce8"
+					type="string"
+					mode="readonly"
+					name="Notification"
+					modtype="textbox"
+					position="2,400"
+					fontsize="12"
+					digits="10"
+					namefixdim="60"
+					fieldfixdim="420"
+					>
+					<description>Messaggio di stato corrente valorizzato in corrispondenza di eventi significativi. "No message" in assenza di eventi da segnalare</description>
+				</simple>
+
+			</node-->
+		
+			<node name="Radio" id="RADIO" icon="../icons32/modulazione.gif">
+
+				<simple
+					id="DCE:ec38c6bf-1955-41ba-b34b-9ace301895c1"
+					type="long"
+					mode="readonly"
+					name="Radio State"
+					modtype="select"
+					position="130,40"
+					fontsize="12"
+					digits="12"
+					namefixdim="110"
+					fieldfixdim="120"
+					noarrowinselreadonly="TRUE"
+				>
+					<description>Stato della radio (idle / trasmissione attiva / ricezione attiva)</description>
+					<range max="4" min="0"/>
+					<enumerations> 
+						<enumeration label="Idle" value="0"/>
+						<enumeration label="Transmitting" value="1"/>
+						<enumeration label="Receiving" value="2"/>
+						<enumeration label="Error" value="3"/>
+						<enumeration label="Stand-by" value="4"/>
+					</enumerations>
+				</simple>
+			
+				<simple
+					id="DCE:f3eee68d-a1f3-493c-86b5-37a15d872e79"
+					type="short"
+					mode="readonly"
+					name="RX Signal Level"
+					modtype="textbox"
+					position="130,90"
+					fontsize="12"
+					digits="5"
+					namefixdim="110"
+					fieldfixdim="87"
+				>
+					<description>Livello del segnale RF ricevuto (dBm)</description>
+					<units>dBm</units>
+				</simple>
+			
+				<simple
+					id="DCE:da2508fd-1da9-4237-acd5-5c1dd8a3246c"
+					type="float"
+					mode="readonly"
+					name="Max RF TX Power"
+					modtype="textbox"
+					position="130,140"
+					fontsize="12"
+					digits="5"
+					namefixdim="110"
+					fieldfixdim="87"
+				>
+					<description>Massima potenza trasmissibile dall'amplificatore</description>
+					<units>Watt</units>
+				</simple>
+			
+				<simple
+					id="DCE:3e1d2141-0dfc-4a22-a261-3fd904320f6a"
+					type="float"
+					mode="readonly"
+					name="RF TX Power"
+					modtype="textbox"
+					position="130,190"
+					fontsize="12"
+					digits="5"
+					namefixdim="110"
+					fieldfixdim="87"
+				>
+					<description>Potenza RF trasmessa</description>
+					<units>Watt</units>
+				</simple>
+			
+				<simple
+					id="DCE:4a57c5be-a537-4399-a3c8-abb15da87d3c"
+					type="long"
+					mode="readwrite"
+					name="Set Tx Power"
+					modtype="select"
+					position="130,240"
+					fontsize="12"
+					digits="3"
+					namefixdim="110"
+					fieldfixdim="120"
+					priorityConfigure="1"
+				>
+					<description>Set della potenza tramite 4 livelli: FULL, HALF, ONE_QUARTER e ONE_TENTH. Il quinto USERD_DIFINED abilita l'impostazione tramite l'attenuazione in db</description>
+					<range max="4" min="0"/>
+					<enumerations>
+						<enumeration label="FULL" value="0"/>
+						<enumeration label="HALF" value="1"/>
+						<enumeration label="ONE_QUARTER" value="2"/>
+						<enumeration label="ONE_TENTH" value="3"/>
+						<enumeration label="USER_DEFINED" value="4"/>
+					</enumerations>
+				</simple>
+
+ 				<simple
+					id="DCE:159f8de1-b822-457c-a3fa-fd123e00c8c9"
+					type="ushort"
+					mode="readwrite"
+					name="RF TX Attenuation"
+					modtype="textbox"
+					position="130,290"
+					fontsize="12"
+					digits="5"
+					namefixdim="110"
+					fieldfixdim="98"
+					priorityConfigure="2"
+				>
+					<description>Attenuzione rispetto alla potenza massima</description>
+					<range max="30" min="0"/>
+					<units>dB</units>
+				</simple>
+
+				<simple
+					id="DCE:4785d2e4-c278-400e-b3f8-15b36b858ce8"
+					type="string"
+					mode="readonly"
+					name="Notification"
+					modtype="textbox"
+					position="2,400"
+					fontsize="12"
+					digits="10"
+					namefixdim="60"
+					fieldfixdim="420"
+					>
+					<description>Messaggio di stato corrente valorizzato in corrispondenza di eventi significativi. "No message" in assenza di eventi da segnalare</description>
+				</simple>
+
+			</node>
+		
+			<node name="Audio Compressor" id="COMPRESSOR" icon="../icons32/modulazione.gif">
+				
+				<simple
+					id="DCE:b5f2f316-0325-46bf-813c-27dbd022a2ff"
+					type="boolean"
+					mode="readwrite"
+					name="Enable"
+					modtype="select"
+					position="125,50"
+					fontsize="12"
+					digits="3"
+					namefixdim="150"
+					fieldfixdim="120"
+				>
+					<description>Abilitazione compressore audio tx (ACP)</description>
+					<enumerations>
+						<enumeration label="ON" value="1" />
+						<enumeration label="OFF" value="0" />
+					</enumerations>
+				</simple>
+
+				<simple
+					id="DCE:52861107-823a-431d-8171-39246d4ef154"
+					type="ushort"
+					mode="readwrite"
+					name="Speech Enhancement"
+					modtype="select"
+					position="125,100"
+					fontsize="12"
+					digits="7"
+					namefixdim="150"
+					fieldfixdim="120"
+					noarrowinselreadonly="TRUE"
+					>
+					<description>Abilitazione della funzionalita' Speech Enancement</description>
+					<range max="1" min="0"/>
+					<enumerations> 
+						<enumeration label="OFF" value="0" />
+						<enumeration label="ON" value="1" />
+					</enumerations>
+				</simple>
+
+				<simple
+					id="DCE:c5b02a52-5e0a-4912-b317-ed99b02180e6"
+					type="long"
+					mode="readwrite"
+					name="Min Threshold"
+					modtype="select"
+					position="125,150"
+					fontsize="12"
+					digits="7"
+					namefixdim="150"
+					fieldfixdim="120"
+					>
+					<description>Soglia  minima del compressore audio (dBm)</description>
+					<range max="2" min="0"/>
+					<enumerations> 
+						<enumeration label="-15 dBm" value="0"/>
+						<enumeration label="-20 dBm" value="1"/>
+						<enumeration label="-25 dBm" value="2"/>
+					</enumerations>
+				</simple>
+			
+				<simple
+					id="DCE:cb852a11-cf42-4b33-b6d9-27e115a9f9cd"
+					type="ushort"
+					mode="readwrite"
+					name="Attack Time"
+					modtype="textbox"
+					position="125,200"
+					fontsize="12"
+					digits="2"
+					namefixdim="150"
+					fieldfixdim="100"
+					>
+					<description>Tempo di attacco del compressore audio tx (ms)</description>
+					<units>ms</units>
+					<range max="50" min="0"/>
+				</simple>
+			
+				<simple
+					id="DCE:bbeca81b-512b-47fe-8cb2-f6d539b87fb9"
+					type="ushort"
+					mode="readwrite"
+					name="Hold Time"
+					modtype="textbox"
+					position="125,250"
+					fontsize="12"
+					digits="4"
+					namefixdim="150"
+					fieldfixdim="100"
+					>
+					<description>Tempo di tenuta del compressore audio tx (ms)</description>
+					<units>ms</units>
+					<range max="5000" min="0"/>
+				</simple>
+			
+				<simple
+					id="DCE:31b25926-04f3-4504-9f46-e9e75f5b3f3b"
+					type="ushort"
+					mode="readwrite"
+					name="Release Time"
+					modtype="textbox"
+					position="125,300"
+					fontsize="12"
+					digits="3"
+					namefixdim="150"
+					fieldfixdim="100"
+					>
+					<description>Tempo di rilascio del compressore audio tx (ms)</description>
+					<units>ms</units>
+					<range max="500" min="0"/>
+				</simple>
+
+				<simple
+					id="DCE:4785d2e4-c278-400e-b3f8-15b36b858ce8"
+					type="string"
+					mode="readonly"
+					name="Notification"
+					modtype="textbox"
+					position="2,400"
+					fontsize="12"
+					digits="10"
+					namefixdim="60"
+					fieldfixdim="420"
+					>
+					<description>Messaggio di stato corrente valorizzato in corrispondenza di eventi significativi. "No message" in assenza di eventi da segnalare</description>
+				</simple>
+
+			</node>
+
+			<node name="Radio Silence" id="10" icon="../icons32/modulazione.gif">
+
+				<simple
+					id="DCE:2baf2467-8e95-409f-bd48-a9386a165098"
+					type="boolean"
+					mode="readwrite"
+					name="Radio Silence"
+					modtype="select"
+					position="140,150"
+					fontsize="12"
+					digits="5"
+					namefixdim="120"
+					fieldfixdim="100"
+				>
+					<range max="1" min="0"/>
+					<enumerations> 
+						<enumeration label="FALSE" value="0"/>
+						<enumeration label="TRUE" value="1"/>
+					</enumerations> 
+				</simple>
+
+				<simple
+					id="DCE:4785d2e4-c278-400e-b3f8-15b36b858ce8"
+					type="string"
+					mode="readonly"
+					name="Notification"
+					modtype="textbox"
+					position="2,400"
+					fontsize="12"
+					digits="10"
+					namefixdim="60"
+					fieldfixdim="420"
+					>
+					<description>Messaggio di stato corrente valorizzato in corrispondenza di eventi significativi. "No message" in assenza di eventi da segnalare</description>
+				</simple>
+
+			</node>
+
+			<node name="Power Saving" id="POWERSAVING" icon="../icons32/modulazione.gif">
+
+				<simple
+					id="DCE:416aca19-ce04-4177-a438-4df170a7447c"
+					type="boolean"
+					mode="readwrite"
+					name="Standby"
+					modtype="select"
+					position="140,150"
+					fontsize="12"
+					digits="5"
+					namefixdim="120"
+					fieldfixdim="100"
+				>
+					<range max="1" min="0"/>
+					<enumerations> 
+						<enumeration label="FALSE" value="0"/>
+						<enumeration label="TRUE" value="1"/>
+					</enumerations>
+				</simple>
+
+				<simple
+					id="DCE:4785d2e4-c278-400e-b3f8-15b36b858ce8"
+					type="string"
+					mode="readonly"
+					name="Notification"
+					modtype="textbox"
+					position="2,400"
+					fontsize="12"
+					digits="10"
+					namefixdim="60"
+					fieldfixdim="420"
+					>
+					<description>Messaggio di stato corrente valorizzato in corrispondenza di eventi significativi. "No message" in assenza di eventi da segnalare</description>
+				</simple>
+
+			</node>
+
+			<node name="MIL-STD-188-220C" id="MIL-STD_188_220C" icon="../icons32/modulazione.gif">
+				<node name="Network" id="MIL-220C NETWORK" icon="../icons32/modulazione.gif">
+
+					<simple id="DCE:6b14fb47-0ec4-42df-bc61-33db49d2ad47"
+						type="boolean" modtype="select" fontsize="12"
+						mode="readwrite" position="130,50" name="Relayer Status"
+						namefixdim="150" fieldfixdim="120">
+						<description>
+							Abilitazione / disabilitazione relayer status.
+						</description>
+						<enumerations>
+							<enumeration label="FALSE" value="0" />
+							<enumeration label="TRUE" value="1" />
+						</enumerations>
+					</simple>
+							
+					<simple
+						id="DCE:4785d2e4-c278-400e-b3f8-15b36b858ce8"
+						type="string"
+						mode="readonly"
+						name="Notification"
+						modtype="textbox"
+						position="2,400"
+						fontsize="12"
+						digits="10"
+						namefixdim="60"
+						fieldfixdim="420"
+						>
+						<description>Messaggio di stato corrente valorizzato in corrispondenza di eventi significativi. "No message" in assenza di eventi da segnalare</description>
+					</simple>
+	 
+				</node>
+
+				<node name="Data Link" id="MIL-220C DATA_LINK" icon="../icons32/modulazione.gif">
+					
+					<simple id="DCE:abed66a5-7483-49d7-a0f7-7d1cd6b34e9f"
+						type="boolean" modtype="select" fontsize="12"
+						mode="readwrite" position="20,50" name="Quiet Mode"
+						namefixdim="110" fieldfixdim="80">
+						<description>
+							Se TRUE la stazione può solo ricevere.
+						</description>
+						<enumerations>
+							<enumeration label="FALSE" value="0" />
+							<enumeration label="TRUE" value="1" />
+						</enumerations>
+					</simple>
+
+					<simple id="DCE:0454b065-9b76-4336-9d21-5a40ecf28466"
+						type="octet" modtype="textbox" fontsize="12"
+						mode="readwrite" position="20,90" name="Link Address"
+						namefixdim="110" fieldfixdim="80">
+						<range max="95" min="4"/>
+						<description>Link Address</description>
+					</simple>
+							
+					<simple id="DCE:9371be44-d593-4141-be44-afa8e585105a"
+						type="octet" modtype="textbox" fontsize="12"
+						mode="readwrite" position="20,130"
+						name="Num. of Stations" namefixdim="110"
+						fieldfixdim="80">
+						<range max="92" min="2"/>
+						<description>Number of stations</description>
+					</simple>
+							
+					<simple id="DCE:9126cbc5-41fe-4a42-8413-d42b8f8bb95f"
+						type="boolean" modtype="select" fontsize="12"
+						mode="readwrite" position="20,170"
+						name="DL Concatenation" namefixdim="110"
+						fieldfixdim="80">
+						<description>
+							Indica se una trasmissione MIL può essere
+							costituita dalla tx di più frame datalink
+						</description>
+						<enumerations>
+							<enumeration label="FALSE" value="0"></enumeration>
+							<enumeration label="TRUE" value="1"></enumeration>
+						</enumerations>
+					</simple>
+							
+					<simple id="DCE:60f42ebe-be3d-4f40-86e4-121e902638a8"
+						type="octet" modtype="textbox" fontsize="12"
+						mode="readwrite" position="20,290"
+						name="Type1 Busy Timer" namefixdim="110"
+						fieldfixdim="50">
+						<range max="120" min="0"/>
+						<description>
+							E' il tempo di attesa prima di rispristinare le
+							comunicazioni verso una stazione che ha risposto
+							con un messaggio URNR
+						</description>
+						<units>sec</units>
+					</simple>
+
+					<simple id="DCE:52a55545-73bf-4c52-a163-dddf877ac3de"
+						type="long" modtype="select" fontsize="12"
+						mode="readwrite" position="270,50" name="EDC Mode"
+						namefixdim="110" fieldfixdim="80">
+						<range max="2" min="0"/>
+						<description>
+							Abilita/disabilita la modalità di determinazione
+							e correzione di errore
+						</description>
+						<enumerations>
+							<enumeration label="NONE" value="0" />
+							<enumeration label="FEC" value="1" />
+							<enumeration label="FEC+TDC" value="2"></enumeration>
+						</enumerations>
+					</simple>
+
+					<simple id="DCE:71435f6c-00fe-4e9d-bc76-4bd08c1ce1aa"
+						type="octet" modtype="textbox" fontsize="12"
+						mode="readwrite" position="270,90" name="Group Address"
+						namefixdim="110" fieldfixdim="80">
+						<range max="125" min="96"/>
+						<description>
+							Indirizzo di gruppo a cui la stazione appartiene
+						</description>
+					</simple>
+
+					<simple id="DCE:142aacf1-da78-484c-899d-80534f69584d"
+						type="long" modtype="select" fontsize="12"
+						mode="readwrite" position="270,130"
+						name="Station Class" namefixdim="110" fieldfixdim="80">
+						<range max="1" min="0"/>
+						<description>Class of the station</description>
+						<enumerations>
+							<enumeration label="A" value="0"></enumeration>
+							<enumeration label="C" value="1"></enumeration>
+						</enumerations>
+					</simple>
+
+					<simple id="DCE:d8564d13-32fe-4b0f-8a8f-532b71bdc97f"
+						type="octet" modtype="textbox" fontsize="12"
+						mode="readwrite" position="270,170"
+						name="Type 1 Retr. Count" namefixdim="110"
+						fieldfixdim="80">
+						<range max="6" min="0"/>
+						<description>
+							Indica il num max di ritrasmissioni per le
+							operazioni con ack di tipo 1 che non hanno
+							ricevuto ack
+						</description>
+					</simple>
+
+					<simple id="DCE:57fc759e-a8e1-49f9-a781-b1aeae241906"
+						type="ushort" modtype="textbox" fontsize="12"
+						mode="readwrite" position="270,210"
+						name="Max Packet Length" namefixdim="110"
+						fieldfixdim="80">
+						<range max="3345" min="708"/>
+						<description>
+							Lunghezza massima del campo dati del frame
+							datalink
+						</description>
+					</simple>
+
+					<simple id="DCE:fa88a5c1-7d90-42be-a59f-bb4d30057d01"
+						type="octet" modtype="textbox" fontsize="12"
+						mode="readwrite" position="270,250"
+						name="Request Timer" namefixdim="110" fieldfixdim="50">
+						<range max="35" min="3"/>
+						<description>
+							Intervallo di tempo con il quale vengono gestite
+							le richieste in coda
+						</description>
+						<units>sec</units>
+					</simple>
+
+					<simple
+						id="DCE:4785d2e4-c278-400e-b3f8-15b36b858ce8"
+						type="string"
+						mode="readonly"
+						name="Notification"
+						modtype="textbox"
+						position="2,400"
+						fontsize="12"
+						digits="10"
+						namefixdim="60"
+						fieldfixdim="420"
+						>
+						<description>Messaggio di stato corrente valorizzato in corrispondenza di eventi significativi. "No message" in assenza di eventi da segnalare</description>
+					</simple>
+
+				</node>
+
+				<node name="MAC-Phy" id="MIL-220C MAC-PHY" icon="../icons32/modulazione.gif">
+					
+					<simple id="DCE:21996d33-8716-460c-be47-23172d839456"
+						type="long" modtype="select" fontsize="12"
+						mode="readwrite" position="20,50" name="NAD Method"
+						namefixdim="110" fieldfixdim="80">
+						<range max="1" min="0"/>
+						<description>
+							Selezione NAD Method: randomic o determinist
+							adaptable priority
+						</description>
+						<enumerations>
+							<enumeration label="R" value="0" />
+							<enumeration label="DAP" value="1" />
+						</enumerations>
+					</simple>
+
+					<simple id="DCE:13fc6d83-a068-449b-9d3a-789eab08404d"
+						type="octet" modtype="textbox" fontsize="12"
+						mode="readwrite" position="270,50" name="Subscriber"
+						namefixdim="110" fieldfixdim="80">
+						<range max="92" min="1"/>
+						<description>
+							Indica il numero progressivo del partecipante
+							alla rete
+						</description>
+					</simple>
+
+					<simple
+						id="DCE:4785d2e4-c278-400e-b3f8-15b36b858ce8"
+						type="string"
+						mode="readonly"
+						name="Notification"
+						modtype="textbox"
+						position="2,400"
+						fontsize="12"
+						digits="10"
+						namefixdim="60"
+						fieldfixdim="420"
+						>
+						<description>Messaggio di stato corrente valorizzato in corrispondenza di eventi significativi. "No message" in assenza di eventi da segnalare</description>
+					</simple>
+
+				</node>
+
+				<node name="About" id="MIL-220C ABOUT" icon="../icons32/modulazione.gif">
+
+					<simple id="DCE:84cc71e4-f211-44b4-a644-bafdd15addbe"
+						type="string" modtype="textbox" fontsize="12"
+						mode="readonly" position="145,100" name="Part Number"
+						namefixdim="130" fieldfixdim="90">
+						<description>SW Part Number</description>
+					</simple>
+
+
+					<simple id="DCE:9cdf1d53-914f-494c-afbb-b7a2df3d06af"
+						type="string" modtype="textbox" fontsize="12"
+						mode="readonly" position="145,160" name="SW Version"
+						namefixdim="130" fieldfixdim="90">
+						<description>SW Version</description>
+					</simple>
+							
+					<simple
+						id="DCE:4785d2e4-c278-400e-b3f8-15b36b858ce8"
+						type="string"
+						mode="readonly"
+						name="Notification"
+						modtype="textbox"
+						position="2,400"
+						fontsize="12"
+						digits="10"
+						namefixdim="60"
+						fieldfixdim="420"
+						>
+						<description>Messaggio di stato corrente valorizzato in corrispondenza di eventi significativi. "No message" in assenza di eventi da segnalare</description>
+					</simple>
+
+				    </node>
+
+			</node>
+
+			<node name="OTAD" id="OTAD" icon="../icons32/modulazione.gif">
+			
+				<simple
+					id="DCE:409e5872-a0de-43f4-b414-c95c0192da66"
+					type="long"
+					mode="readwrite"
+					modtype="select"
+					position="6,4"
+					name="OTAD TEK ID"
+					fontsize="12"
+					digits="6"
+					>
+					<description>Identificativo della chiave TEK da trasmettere/ricevere via OTAD</description>
+					<enumerations> 
+						<enumeration label="TEK1" value="1"/>
+						<enumeration label="TEK2" value="2"/>
+						<enumeration label="TEK3" value="3"/>
+						<enumeration label="TEK4" value="4"/>
+						<enumeration label="TEK5" value="5"/>
+						<enumeration label="TEK6" value="6"/>
+						<enumeration label="TEK7" value="7"/>
+						<enumeration label="TEK8" value="8"/>
+						<enumeration label="TEK9" value="9"/>
+						<enumeration label="TEK10" value="10"/>
+						<enumeration label="TEK11" value="11"/>
+						<enumeration label="TEK12" value="12"/>
+						<enumeration label="TEK13" value="13"/>
+						<enumeration label="TEK14" value="14"/>
+						<enumeration label="TEK15" value="15"/>
+						<enumeration label="TEK16" value="16"/>
+					</enumerations>
+				</simple>
+				
+				<simple
+					id="DCE:191e0f18-e000-43f7-b1af-e56a43b56d0d"
+					type="string"
+					mode="readonly"
+					name="KEK Update Count"
+					modtype="textbox"
+					position="140,50"
+					fontsize="12"
+					digits="10"
+					>
+					<description>Se presente, indica il numero di update della chiave KEK</description>
+				</simple>
+				
+				<simple
+					id="DCE:d06abac5-b00a-4abb-98f3-bdb72e18ec47"
+					type="long"
+					mode="readwrite"
+					modtype="textbox"
+					position="6,4"
+					name="OTAD Mode"
+					fontsize="12"
+					digits="6"
+					>
+					<description>tipo  di OTAD Mode</description>
+					<enumerations>
+						<enumeration label="Manual" value="0"/>
+						<enumeration label="Automatic"  value="1"/>
+					</enumerations>
+				</simple>
+			
+				<!-- OTAD_TX (bottone di comando) -->
+				<simple
+					id="DCE:dd2bf49c-477e-49dd-a631-f22d2e1dca35"
+					type="boolean"
+					modtype="button"
+					name="OTAD TX"
+					value="true"
+					position="130,230"
+					fontsize="12"
+					digits="3"
+					namefixdim="160"
+					fieldfixdim="80"
+					popUpConferma="TRUE"
+					popUpMsg="Confirm operation?"
+				>
+				<description>Commando OTAD TX</description>
+				</simple>
+				
+				<!-- OTAD_PREPARE_RX (bottone di comando) -->
+				<simple
+					id="DCE:c696abdf-8f1d-4764-944f-5163ccad47d5"
+					type="boolean"
+					modtype="button"
+					name="OTAD Prepare RX"
+					value="true"
+					position="130,230"
+					fontsize="12"
+					digits="3"
+					namefixdim="160"
+					fieldfixdim="80"
+					popUpConferma="TRUE"
+					popUpMsg="Confirm operation?"
+				>
+				<description>Commando OTAD Prepare RX</description>
+				</simple>
+				
+				<!-- OTAD_UPDATE_KEK (bottone di comando) -->
+				<simple
+					id="DCE:3fdab509-d483-4271-9f70-8c38ca9fba7a"
+					type="boolean"
+					modtype="button"
+					name="OTAD Update KEK"
+					value="true"
+					position="130,230"
+					fontsize="12"
+					digits="3"
+					namefixdim="160"
+					fieldfixdim="80"
+					popUpConferma="TRUE"
+					popUpMsg="Confirm operation?"
+				>
+				<description>Commando OTAD Update KEK</description>
+				</simple>
+
+				<!-- OTAD_STORE_TEK (bottone di comando) -->
+				<simple
+					id="DCE:e4b87eb9-6cd8-4562-9224-2c72295d9fd7"
+					type="boolean"
+					modtype="button"
+					name="STORE Received TEK"
+					value="true"
+					position="130,230"
+					fontsize="12"
+					digits="3"
+					namefixdim="160"
+					fieldfixdim="80"
+					popUpConferma="TRUE"
+					popUpMsg="Confirm operation?"
+				>
+				<description>Comando OTAD Store received TEK</description>
+				</simple>
+			
+				<simple
+					id="DCE:4785d2e4-c278-400e-b3f8-15b36b858ce8"
+					type="string"
+					mode="readonly"
+					name="Notification"
+					modtype="textbox"
+					position="2,400"
+					fontsize="12"
+					digits="10"
+					namefixdim="60"
+					fieldfixdim="420"
+					>
+					<description>Messaggio di stato corrente valorizzato in corrispondenza di eventi significativi. "No message" in assenza di eventi da segnalare</description>
+				</simple>
+				
+				<simple
+					id="DCE:23ed19f2-7a01-4458-8eae-1e30d0c20688"
+					type="string"
+					mode="readonly"
+					name="Available TEK IDs"
+					modtype="textarea"
+					position="140,50"
+					fontsize="12"
+					digits="10"
+					>
+					<description>Available TEK Ids</description>
+				</simple>
+			
+			</node>
+
+			<node name="About" id="ABOUT" icon="../icons32/modulazione.gif">
+
+				<simple
+					id="DCE:825b0765-a868-4ca4-acc6-e0452b24e74a"
+					type="string"
+					mode="readonly"
+					name="Waveform P/N:"
+					modtype="textbox"
+					position="135,50"
+					fontsize="12"
+					digits="10"
+					namefixdim="140"
+					fieldfixdim="120"
+					>
+					<description>Part number del package di waveform</description>
+				</simple>
+				<simple
+					id="DCE:c502e500-e2bc-4e7f-9f24-66d9a6e35858"
+					type="string"
+					mode="readonly"
+					name="Waveform Ver:"
+					modtype="textbox"
+					position="135,100"
+					fontsize="12"
+					digits="10"
+					namefixdim="140"
+					fieldfixdim="120"
+					>
+					<description>Versione del package di waveform</description>
+				</simple>
+				
+				<simple
+					id="DCE:5f9dfcb0-8c5f-4734-8d2c-4b0b654a658d"
+					type="string"
+					mode="readonly"
+					name="SW P/N:"
+					modtype="textbox"
+					position="135,150"
+					fontsize="12"
+					digits="10"
+					namefixdim="140"
+					fieldfixdim="120"
+					>
+					<description>Part number del software</description>
+				</simple>
+				<simple
+					id="DCE:bd9610cc-7bd5-4278-8cd6-c5d7e8c5cba9"
+					type="string"
+					mode="readonly"
+					name="SW Ver:"
+					modtype="textbox"
+					position="135,200"
+					fontsize="12"
+					digits="10"
+					namefixdim="140"
+					fieldfixdim="120"
+					>
+					<description>Versione del software</description>
+				</simple>
+
+				<simple
+					id="DCE:d8b1d0cd-dc49-41cc-a4df-5a1e0189fb09"
+					type="string"
+					mode="readonly"
+					name="FW P/N:"
+					modtype="textbox"
+					position="135,250"
+					fontsize="12"
+					digits="10"
+					namefixdim="140"
+					fieldfixdim="120"
+					>
+					<description>Part number del firmware</description>
+				</simple>
+				<simple
+					id="FW_VERSION"
+					type="string"
+					mode="readonly"
+					name="FW Ver:"
+					modtype="textbox"
+					position="135,300"
+					fontsize="12"
+					digits="10"
+					namefixdim="140"
+					fieldfixdim="120"
+					>
+					<description>Versione del firmware</description>
+				</simple>
+
+				<simple
+					id="DCE:4785d2e4-c278-400e-b3f8-15b36b858ce8"
+					type="string"
+					mode="readonly"
+					name="Notification"
+					modtype="textbox"
+					position="2,400"
+					fontsize="12"
+					digits="10"
+					namefixdim="60"
+					fieldfixdim="420"
+					>
+					<description>Messaggio di stato corrente valorizzato in corrispondenza di eventi significativi. "No message" in assenza di eventi da segnalare</description>
+				</simple>
+		
+			</node>
+		</node>
+	</parametersmenu>
+	
+	<constraints>
+		<constraininglist>
+			<constraining object="DCE:23be4d57-28de-46f5-9f4e-22415ea8c01a" constrainingtype="long" />
+			<!--constraining object="DCE:bedc0e73-f398-45a6-b196-aafe0fc83e40" constrainingtype="long" /-->
+			<constraining object="DCE:52861107-823a-431d-8171-39246d4ef154" constrainingtype="ushort" /> 
+			<constraining object="DCE:6d918dfb-ee4d-437d-9a11-09bdf020f77d" constrainingtype="long" />
+			<constraining object="DCE:6d918dfb-ee4d-437d-9a11-09bdf020f77e" constrainingtype="long" />
+		</constraininglist>
+
+<!--		WAVEFORM_MODE != FM/FSK allora disabilito la visualizzazione dello SQUELCH_TYPE Tone-->
+		<constrained object="DCE:c68f2f74-d7d1-40d1-9e09-570a1e7985f4" >
+			<constraining object="DCE:23be4d57-28de-46f5-9f4e-22415ea8c01a" constrainingtype="long">
+				<constrainingvalues>
+					<constrainingvalue>5</constrainingvalue> <!-- AM -->
+					<constrainingvalue>8</constrainingvalue> <!-- ASK -->
+				</constrainingvalues>
+			</constraining>
+
+			<constrainedvalues>
+				<enumerations>
+				<enumeration label="None" value="0"/>
+				<enumeration label="Noise (AM/FM)" value="1"/>
+				</enumerations>
+			</constrainedvalues>
+		</constrained>
+
+<!--		TRAFFIC_LOCATION = Local allora disabilito i parametri per gestire la seriale -->
+		<!--constrained object="DCE:99899c11-9320-4b06-8ac3-50097275e1cd" constraineddisabled="true"> 
+		    <constraining object="DCE:bedc0e73-f398-45a6-b196-aafe0fc83e40" constrainingtype="long"> 
+			<constrainingvalues>
+			    <constrainingvalue>0</constrainingvalue>
+			</constrainingvalues>
+		    </constraining>
+		</constrained>
+
+		<constrained object="DCE:32fa8e91-b2af-4d10-a498-a55da7039cfe" constraineddisabled="true"> 
+		    <constraining object="DCE:bedc0e73-f398-45a6-b196-aafe0fc83e40" constrainingtype="long"> 
+			<constrainingvalues>
+			    <constrainingvalue>0</constrainingvalue>
+			</constrainingvalues>
+		    </constraining>
+		</constrained>
+
+		<constrained object="DCE:551d3210-267a-4e6a-a018-eb276340c4e3" constraineddisabled="true"> 
+		    <constraining object="DCE:bedc0e73-f398-45a6-b196-aafe0fc83e40" constrainingtype="long"> 
+			<constrainingvalues>
+			    <constrainingvalue>0</constrainingvalue>
+			</constrainingvalues>
+		    </constraining>
+		</constrained>
+
+		<constrained object="DCE:6cc93268-a554-4016-8c15-15a5398ac449" constraineddisabled="true"> 
+		    <constraining object="DCE:bedc0e73-f398-45a6-b196-aafe0fc83e40" constrainingtype="long"> 
+			<constrainingvalues>
+			    <constrainingvalue>0</constrainingvalue>
+			</constrainingvalues>
+		    </constraining>
+		</constrained>
+
+		<constrained object="DCE:1d2a525f-a490-4d1d-ae90-d0b52f08e634" constraineddisabled="true"> 
+		    <constraining object="DCE:bedc0e73-f398-45a6-b196-aafe0fc83e40" constrainingtype="long"> 
+			<constrainingvalues>
+			    <constrainingvalue>0</constrainingvalue>
+			</constrainingvalues>
+		    </constraining>
+		</constrained>
+
+		<constrained object="DCE:3097745c-86d9-4154-9174-1a78ce998395" constraineddisabled="true"> 
+		    <constraining object="DCE:bedc0e73-f398-45a6-b196-aafe0fc83e40" constrainingtype="long"> 
+			<constrainingvalues>
+			    <constrainingvalue>0</constrainingvalue>
+			</constrainingvalues>
+		    </constraining>
+		</constrained>
+
+		<constrained object="DCE:a344e9bc-9d13-41d7-83c5-660a88f41b49" constraineddisabled="true"> 
+		    <constraining object="DCE:bedc0e73-f398-45a6-b196-aafe0fc83e40" constrainingtype="long"> 
+			<constrainingvalues>
+			    <constrainingvalue>0</constrainingvalue>
+			</constrainingvalues>
+		    </constraining>
+		</constrained>
+		
+		<constrained object="DCE:88c05889-6222-4730-89ca-46eda9faade5" constraineddisabled="true"> 
+		    <constraining object="DCE:bedc0e73-f398-45a6-b196-aafe0fc83e40" constrainingtype="long"> 
+			<constrainingvalues>
+			    <constrainingvalue>0</constrainingvalue>
+			</constrainingvalues>
+		    </constraining>
+		</constrained>
+		
+		<constrained object="DCE:159a8fea-024f-4d05-98f6-55aa8ffc04be" constraineddisabled="true"> 
+		    <constraining object="DCE:bedc0e73-f398-45a6-b196-aafe0fc83e40" constrainingtype="long"> 
+			<constrainingvalues>
+			    <constrainingvalue>0</constrainingvalue>
+			</constrainingvalues>
+		    </constraining>
+		</constrained-->
+
+		<constrained object="DCE:cb852a11-cf42-4b33-b6d9-27e115a9f9cd" constraineddisabled="true"> 
+		    <constraining object="DCE:52861107-823a-431d-8171-39246d4ef154" constrainingtype="ushort"> 
+			<constrainingvalues>
+			    <constrainingvalue>1</constrainingvalue>
+			</constrainingvalues>
+		    </constraining>
+		</constrained>
+
+		<constrained object="DCE:bbeca81b-512b-47fe-8cb2-f6d539b87fb9" constraineddisabled="true"> 
+		    <constraining object="DCE:52861107-823a-431d-8171-39246d4ef154" constrainingtype="ushort"> 
+			<constrainingvalues>
+			    <constrainingvalue>1</constrainingvalue>
+			</constrainingvalues>
+		    </constraining>
+		</constrained>
+
+		<constrained object="DCE:31b25926-04f3-4504-9f46-e9e75f5b3f3b" constraineddisabled="true"> 
+		    <constraining object="DCE:52861107-823a-431d-8171-39246d4ef154" constrainingtype="ushort"> 
+			<constrainingvalues>
+			    <constrainingvalue>1</constrainingvalue>
+			</constrainingvalues>
+		    </constraining>
+		</constrained>
+
+<!--	CRYPTO_ALGORITHM = W7NA allora il CRYPTO_PROTOCOL_TYPE puo' valere solo TSVCIS -->    
+		<constrained object="DCE:6d918dfb-ee4d-437d-9a11-09bdf020f77e" >
+			<constraining object="DCE:6d918dfb-ee4d-437d-9a11-09bdf020f780" constrainingtype="long">
+				<constrainingvalues>
+					<constrainingvalue>2</constrainingvalue> <!-- W7NA -->
+				</constrainingvalues>
+			</constraining>
+			<constrainedvalues>
+				<enumerations>
+				<enumeration label="TSVCIS" value="1" />
+				</enumerations>
+			</constrainedvalues>
+		</constrained>
+
+<!--	CRYPTO_MODE = CT allora abilito solo la visualizzazione ASK/FSK (VULOSSEC_SRS_374) -->
+		<constrained object="DCE:23be4d57-28de-46f5-9f4e-22415ea8c01a" >
+			<constraining object="DCE:6d918dfb-ee4d-437d-9a11-09bdf020f77d" constrainingtype="long">
+				<constrainingvalues>
+					<constrainingvalue>1</constrainingvalue> <!-- CT -->
+				</constrainingvalues>
+			</constraining>
+
+			<constrainedvalues>
+				<enumerations>
+				<enumeration label="FSK" value="2"/>
+				<enumeration label="ASK" value="8"/>
+				</enumerations>
+			</constrainedvalues>
+		</constrained>
+
+<!--	CRYPTO_MODE = CT allora disabilito la visualizzazione della selezione del trasparent flow (VULOSSEC_SRS_375) -->    
+		<constrained object="DCE:4a4aee28-84ed-4ec3-a805-56edb1f24edd" constraineddisabled="true"> 
+		    <constraining object="DCE:6d918dfb-ee4d-437d-9a11-09bdf020f77d" constrainingtype="long"> 
+			<constrainingvalues>
+			    <constrainingvalue>1</constrainingvalue> <!-- CT -->
+			</constrainingvalues>
+		    </constraining>
+		</constrained>
+
+<!--	CRYPTO_MODE = CT o CRYPTO_PROTOCOL_TYPE = TSVCIS allora disabilito campo selezione del CRYPTO_DIGITAL_VOICE -->    
+		<constrained object="DCE:6d918dfb-ee4d-437d-9a11-09bdf020faa1" constraineddisabled="true">
+			<OR> 
+			    <constraining object="DCE:6d918dfb-ee4d-437d-9a11-09bdf020f77d" constrainingtype="long"> 
+					<constrainingvalues>
+					    <constrainingvalue>1</constrainingvalue> <!-- CT -->
+					</constrainingvalues>
+			    </constraining>
+			    <constraining object="DCE:6d918dfb-ee4d-437d-9a11-09bdf020f77e" constrainingtype="long"> 
+					<constrainingvalues>
+					    <constrainingvalue>1</constrainingvalue> <!-- TSVCIS -->
+					</constrainingvalues>
+			    </constraining>
+			    
+			</OR>
+		</constrained>
+
+<!--	CRYPTO_MODE = CT allora disabilito campo selezione del CRYPTO_TEK_ID -->    
+		<constrained object="DCE:6d918dfb-ee4d-437d-9a11-09bdf020f77f" constraineddisabled="true"> 
+		    <constraining object="DCE:6d918dfb-ee4d-437d-9a11-09bdf020f77d" constrainingtype="long"> 
+			<constrainingvalues>
+			    <constrainingvalue>1</constrainingvalue> <!-- CT -->
+			</constrainingvalues>
+		    </constraining>
+		</constrained>
+
+<!--	CRYPTO_MODE = CT o CRYPTO_ALGORITHM = W7NA allora disabilito campo selezione del CRYPTO_PROTOCOL_TYPE -->    
+		<constrained object="DCE:6d918dfb-ee4d-437d-9a11-09bdf020f77e" constraineddisabled="true"> 
+			<OR> 		
+			    <constraining object="DCE:6d918dfb-ee4d-437d-9a11-09bdf020f77d" constrainingtype="long"> 
+				<constrainingvalues>
+				    <constrainingvalue>1</constrainingvalue> <!-- CT -->
+				</constrainingvalues>
+			    </constraining>
+			    <constraining object="DCE:6d918dfb-ee4d-437d-9a11-09bdf020f780" constrainingtype="long"> 
+				<constrainingvalues>
+				    <constrainingvalue>2</constrainingvalue> <!-- W7NA -->
+				</constrainingvalues>
+			    </constraining>
+			</OR> 
+		</constrained>
+
+<!--	CRYPTO_MODE = CT allora disabilito la visualizzazione dello Squelch "None" -->
+		<constrained object="DCE:c68f2f74-d7d1-40d1-9e09-570a1e7985f4" >
+			<constraining object="DCE:6d918dfb-ee4d-437d-9a11-09bdf020f77d" constrainingtype="long">
+				<constrainingvalues>
+					<constrainingvalue>1</constrainingvalue> <!-- CT -->
+				</constrainingvalues>
+			</constraining>
+
+			<constrainedvalues>
+				<enumerations>
+				<enumeration label="Noise (AM/FM)" value="1"/>
+				<enumeration label="Tone (FM)" value="2"/>
+				</enumerations>
+			</constrainedvalues>
+		</constrained>
+
+	</constraints>
+		    
+</waveforminterface>
+
+
+
+
+
+

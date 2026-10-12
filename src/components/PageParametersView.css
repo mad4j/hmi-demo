@@ -23,43 +23,9 @@
   margin: auto 0;
 }
 
-/* Default: 4 columns (800×600 and 1024×768) */
 .widget-grid > * {
   box-sizing: border-box;
-  flex: 0 0 calc(25% - 0.375rem);
-}
-
-/* 1920×1080: 6 columns */
-@media (min-width: 1920px) and (min-height: 1080px) {
-  .widget-grid > * {
-    flex: 0 0 calc(16.667% - 0.417rem);
-  }
-}
-
-/* Forced profile column overrides */
-html[data-resolution-profile='800x600'] .widget-grid > *,
-html[data-resolution-profile='1024x768'] .widget-grid > * {
-  flex: 0 0 calc(25% - 0.375rem);
-}
-html[data-resolution-profile='1920x1080'] .widget-grid > * {
-  flex: 0 0 calc(16.667% - 0.417rem);
-}
-html[data-resolution-profile='800x600'] .widget-grid--table > *,
-html[data-resolution-profile='1024x768'] .widget-grid--table > *,
-html[data-resolution-profile='1920x1080'] .widget-grid--table > * {
-  flex: 1 1 100%;
-}
-
-.widget-grid--table {
-  flex: 1 1 auto;
-  min-height: 0;
-  margin: 0;
-}
-
-.widget-grid--table > * {
-  flex: 1 1 100%;
-  min-width: 0;
-  min-height: 0;
+  flex: 0 0 calc((100% - (var(--hmi-columns, 4) - 1) * 0.5rem) / var(--hmi-columns, 4));
 }
 
 /* Panel dot indicators */
@@ -157,34 +123,32 @@ html[data-resolution-profile='1920x1080'] .widget-grid--table > * {
 
 .transaction-button--submit {
   background: color-mix(in srgb, var(--btn-active-border) 18%, var(--bg-btn));
-}
-
-.transaction-button--reset {
-  background: color-mix(in srgb, var(--btn-active-border) 18%, var(--bg-btn));
+  border-color: var(--border);
+  color: var(--text-primary);
 }
 
 .transaction-button--submit:not(:disabled) {
   border-color: var(--btn-active-border);
   color: var(--text-blue);
 }
-
-.transaction-button--reset:not(:disabled) {
-  border-color: var(--transaction-modified-border);
-  color: var(--transaction-modified-text);
+.transaction-button--reset {
+  background: color-mix(in srgb, var(--btn-active-border) 18%, var(--bg-btn));
+  border-color: var(--border);
+  color: var(--text-primary);
 }
+
 
 .transaction-button:not(:disabled):hover {
   filter: brightness(1.08);
 }
 
-@media (max-width: 599px) {
-  .widget-grid > * {
-    flex: 0 0 calc(33.333% - 0.3333rem);
-  }
+
+.transaction-actions--modified .transaction-button--reset {
+  border-color: var(--transaction-modified-border);
+  color: var(--transaction-modified-text);
 }
 
-@media (max-width: 399px) {
-  .widget-grid > * {
-    flex: 0 0 calc(50% - 0.25rem);
-  }
+.transaction-actions--modified .transaction-button--submit:not(:disabled) {
+  border-color: var(--btn-active-border);
 }
+

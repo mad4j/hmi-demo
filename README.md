@@ -1,8 +1,8 @@
-# hmi-demo
+# hmi-demo 
 
 Demo HMI sviluppata con Vue 3 e Vite per simulare un pannello veicolo 800x600 con menu gerarchici, widget parametro e stato apparato aggiornato in modo asincrono.
 
-## Stato attuale del progetto (Aprile 2026)
+## Stato attuale del progetto (Settembre 2026)
 
 - UI Vue 3 basata su composable singleton per menu, parametri, notifiche e tema.
 - Configurazione menu e pagine da YAML (`src/config/platform.yaml` + `includes`).
@@ -38,7 +38,7 @@ npm run build
 - `src/composables/useEquipmentGateway.js`: client async verso apparato via `NetworkAdapter`.
 - `src/adapters/NetworkAdapter.js`: adapter HTTP `/api/*`, con trasporto notifiche configurabile (`poll`, `sse`, `text-tail`).
 - `public/sw.js`: simulatore apparato in Service Worker, con routing API e coda aggiornamenti pending.
-- `src/components/`: widget, modali e icone usati dall'interfaccia.
+- `src/components/`: widget, modali e icone usati dall'interfenv ! accia.
 
 ## Diagramma architettura applicazione
 

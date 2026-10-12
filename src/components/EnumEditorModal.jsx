@@ -1,10 +1,10 @@
 import { useState, useRef, useEffect } from 'react'
 import './EnumEditorModal.css'
 
-export default function EnumEditorModal({ name, value, options, onConfirm, onCancel }) {
+export default function EnumEditorModal({ name, value, options, optionsValue, onConfirm, onCancel }) {
   const [focusedIndex, setFocusedIndex] = useState(Math.max(0, options.indexOf(value)))
   const itemRefs = useRef([])
-
+ 
   useEffect(() => {
     itemRefs.current[focusedIndex]?.focus()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
@@ -23,6 +23,15 @@ export default function EnumEditorModal({ name, value, options, onConfirm, onCan
     else if (e.key === 'Escape') { e.preventDefault(); onCancel() }
   }
 
+  const manageOption = (op) =>{
+   const index = options.findIndex(u => u == op)
+  
+  let res = index !== -1 ? optionsValue[index] : '';
+   return res;
+  }
+
+
+
   return (
     <div className="modal-backdrop" onClick={(e) => { if (e.target === e.currentTarget) onCancel() }}>
       <div className="modal" role="dialog" aria-label={`Select ${name}`} aria-modal="true">
@@ -36,8 +45,8 @@ export default function EnumEditorModal({ name, value, options, onConfirm, onCan
               role="option"
               aria-selected={option === value}
               tabIndex={index === focusedIndex ? 0 : -1}
-              onClick={() => onConfirm(option)}
-              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onConfirm(option) } }}
+              onClick={() => onConfirm(manageOption(option))}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onConfirm(manageOption(option)) } }}
               onFocus={() => setFocusedIndex(index)}
             >
               {option}

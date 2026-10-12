@@ -1,38 +1,430 @@
 pages:
-  - id: allarmi
-    label: Alarms
-    icon: "alarm"
-    parameters:
-      - id: allarme_batteria
-        name: Battery
-        type: boolean
-        readonly: true
-      - id: allarme_temp_motore
-        name: Engine Temp.
-        type: boolean
-        readonly: true
-      - id: allarme_pressione
-        name: Pressure
-        type: boolean
-        readonly: true
-      - id: allarme_olio
-        name: Engine Oil
-        type: boolean
-        readonly: true
-      - id: allarme_abs
-        name: ABS
-        type: boolean
-        readonly: true
-      - id: allarme_airbag
-        name: Airbag
-        type: boolean
-        readonly: true
-      - id: allarme_carburante
-        name: Fuel
-        type: boolean
-        readonly: true
-      - id: livello_carburante
-        name: Fuel Level
-        type: percentage
-        precision: 0
-        readonly: true
+- id: allarmi
+  label: Alarms
+  icon: alarm
+  parameters:
+  - id: crypto_unit_memory_error
+    name: Crypto Unit memory error
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: crypto_unit_ds3640_serial_number
+    name: Crypto Unit DS3640 serial number
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: crypto_unit_ds3640_over_temperature
+    name: Crypto Unit DS3640 over temperature
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: crypto_unit_ds3640_rtc_fault
+    name: Crypto Unit DS3640 RTC fault
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: crypto_unit_eeprom_fault
+    name: Crypto Unit EEPROM fault
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: crypto_unit_flash_memory_fault
+    name: Crypto Unit flash memory fault
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: crypto_unit_crypto_keys_fill_fault
+    name: Crypto Unit crypto keys fill fault
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: crypto_unit_supervisor_board_fpga_fault
+    name: Crypto Unit Supervisor board FPGA fault
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: crypto_unit_engine_board_fpga_fault
+    name: Crypto Unit Engine board FPGA fault
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: crypto_unit_engine_board_fpga_tx2rx_module_fault
+    name: Crypto Unit Engine board FPGA TX2RX module fault
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: crypto_unit_engine_board_fpga_lsblk_module_fault
+    name: Crypto Unit Engine board FPGA LSBLK module fault
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: crypto_unit_database_fault
+    name: Crypto Unit Database fault
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: crypto_unit_inserted_cik_status_fault
+    name: Crypto Unit inserted CIK status fault
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: crypto_unit_random_number_generator_fpga_fault
+    name: Crypto Unit Random Number Generator FPGA fault
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: crypto_unit_engine_board_junction_temperature
+    name: Crypto Unit Engine board junction temperature
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: crypto_unit_auxiliary_battery_for_rtc_and_ds3640_memory_fault
+    name: Crypto Unit auxiliary battery for RTC and DS3640 memory fault
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: crypto_unit_auxiliary_battery_for_engine_board_fault
+    name: Crypto Unit auxiliary battery for Engine board fault
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: crypto_unit_battery_low_level
+    name: Crypto Unit battery low level
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: netsec_auxiliary_battery_low_level
+    name: NETSEC auxiliary battery low level
+    type: boolean
+    readonly: true
+    visibility: 
+  - id: pll_gpio_4_fault
+    name: PLL GPIO 4 fault
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: pll_1_lock_status_fault
+    name: PLL 1 lock status fault
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: pll_2_lock_status_fault
+    name: PLL 2 lock status fault
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: dsp_srio_link_status_fault
+    name: DSP SRIO link status fault
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: external_srio_link_status_fault
+    name: External SRIO link status fault
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: adc_jesd204b_link_status_fault
+    name: ADC JESD204B link status fault
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: dac_jesd204b_link_status_fault
+    name: DAC JESD204B link status fault
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: black_ethernet_status_fault
+    name: Black Ethernet status fault
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: sincgars_ethernet_status_fault
+    name: SINCGARS Ethernet status fault
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: temperature_alert
+    name: Temperature alert
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: over_current
+    name: Over current
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: power_supply_fault
+    name: Power supply fault
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: rf_reflected_power_level_alert
+    name: RF reflected power level alert
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: etr_alarm_fault
+    name: ETR ALARM fault
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: e2prom_fault
+    name: E2PROM fault
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: internal_gnss_receiver_pps_in_warning
+    name: Internal GNSS receiver PPS IN warning
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: gnss_receiver_data_input_fault
+    name: GNSS receiver data input fault
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: internal_gnss_receiver_fpga_read_register_fault
+    name: Internal GNSS receiver FPGA read register fault
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: file_auditlog_threshold_length_is_almost_exceeded_60
+    name: file AuditLog threshold length is almost exceeded 60 %
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: file_auditlog_threshold_length_is_almost_exceeded_70
+    name: file AuditLog threshold length is almost exceeded 70 %
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: file_auditlog_threshold_length_is_almost_exceeded_80
+    name: file AuditLog threshold length is almost exceeded 80 %
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: file_auditlog_threshold_length_is_almost_exceeded_90
+    name: file AuditLog threshold length is almost exceeded 90 %
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: file_auditlog_threshold_length_is_full
+    name: file AuditLog threshold length is full
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: vswr_protection
+    name: VSWR Protection
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: file_logfile_threshold_length_is_almost_exceeded_60
+    name: file LogFile threshold length is almost exceeded 60 %
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: file_logfile_threshold_length_is_almost_exceeded_70
+    name: file LogFile threshold length is almost exceeded 70 %
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: file_logfile_threshold_length_is_almost_exceeded_80
+    name: file LogFile threshold length is almost exceeded 80 %
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: file_logfile_threshold_length_is_almost_exceeded_90
+    name: file LogFile threshold length is almost exceeded 90 %
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: file_logfile_threshold_length_is_full
+    name: file LogFile threshold length is full
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: file_faultlog_threshold_length_is_almost_exceeded_60
+    name: file FaultLog threshold length is almost exceeded 60 %
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: file_faultlog_threshold_length_is_almost_exceeded_70
+    name: file FaultLog threshold length is almost exceeded 70 %
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: file_faultlog_threshold_length_is_almost_exceeded_80
+    name: file FaultLog threshold length is almost exceeded 80 %
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: file_faultlog_threshold_length_is_almost_exceeded_90
+    name: file FaultLog threshold length is almost exceeded 90 %
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: file_faultlog_threshold_length_is_full
+    name: file FaultLog threshold length is full
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: css_bitlog_file_threshold_length_is_almost_exceeded_90
+    name: CSS Bitlog file threshold length is almost exceeded 90 %
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: css_bitlog_file_threshold_length_is_full
+    name: CSS Bitlog file threshold length is full
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: css_alarms_file_threshold_length_is_almost_exceeded_50
+    name: CSS Alarms file threshold length is almost exceeded 50 %
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: css_alarms_file_threshold_length_is_almost_exceeded_60
+    name: CSS Alarms file threshold length is almost exceeded 60 %
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: css_alarms_file_threshold_length_is_almost_exceeded_70
+    name: CSS Alarms file threshold length is almost exceeded 70 %
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: css_alarms_file_threshold_length_is_almost_exceeded_80
+    name: CSS Alarms file threshold length is almost exceeded 80 %
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: css_alarms_file_threshold_length_is_full
+    name: CSS Alarms file threshold length is full
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: css_audit_file_threshold_length_is_almost_exceeded_50
+    name: CSS Audit file threshold length is almost exceeded 50 %
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: css_audit_file_threshold_length_is_almost_exceeded_60
+    name: CSS Audit file threshold length is almost exceeded 60 %
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: css_audit_file_threshold_length_is_almost_exceeded_70
+    name: CSS Audit file threshold length is almost exceeded 70 %
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: css_audit_file_threshold_length_is_almost_exceeded_80
+    name: CSS Audit file threshold length is almost exceeded 80 %
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: css_audit_file_threshold_length_is_full
+    name: CSS Audit file threshold length is full
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: css_common_alarms_file_threshold_length_is_almost_exceeded_50
+    name: CSS Common Alarms file threshold length is almost exceeded 50 %
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: css_common_alarms_file_threshold_length_is_almost_exceeded_60
+    name: CSS Common Alarms file threshold length is almost exceeded 60 %
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: css_common_alarms_file_threshold_length_is_almost_exceeded_70
+    name: CSS Common Alarms file threshold length is almost exceeded 70 %
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: css_common_alarms_file_threshold_length_is_almost_exceeded_80
+    name: CSS Common Alarms file threshold length is almost exceeded 80 %
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: css_common_alarms_file_threshold_length_is_full
+    name: CSS Common Alarms file threshold length is full
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: css_common_audit_file_threshold_length_is_almost_exceeded_50
+    name: CSS Common Audit file threshold length is almost exceeded 50 %
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: css_common_audit_file_threshold_length_is_almost_exceeded_60
+    name: CSS Common Audit file threshold length is almost exceeded 60 %
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: css_common_audit_file_threshold_length_is_almost_exceeded_70
+    name: CSS Common Audit file threshold length is almost exceeded 70 %
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: css_common_audit_file_threshold_length_is_almost_exceeded_80
+    name: CSS Common Audit file threshold length is almost exceeded 80 %
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: css_common_audit_file_threshold_length_is_full
+    name: CSS Common Audit file threshold length is full
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: vq1_m_red_oe_integrity_check
+    name: VQ1-M RED OE Integrity check
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: vq1_m_black_oe_integrity_check
+    name: VQ1-M BLACK OE Integrity check
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: vq1_m_red_oe_pps_counter_register_blocked
+    name: VQ1-M RED OE PPS counter register blocked
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: vq1_m_red_oe_read_pps_counter_register_fault
+    name: VQ1-M RED OE read PPS counter register fault
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: vq1_m_black_oe_pps_counter_register_blocked
+    name: VQ1-M BLACK OE PPS counter register blocked
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: vq1_m_black_oe_read_pps_counter_register_fault
+    name: VQ1-M BLACK OE read PPS counter register fault
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: dac_not_programmed
+    name: DAC not programmed
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: eeprom_memory_not_accessible
+    name: EEPROM memory not accessible
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: eeprom_memory_never_initialized
+    name: EEPROM memory never initialized
+    type: boolean
+    readonly: true
+    visibility: hidden
+  - id: asfe_spi_not_working
+    name: ASFE SPI not working
+    type: boolean
+    readonly: true
+    visibility: hidden

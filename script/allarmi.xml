@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<FAULTREGISTER>
+    <Fault FIC="1">
+        <Element Description="Crypto Unit memory error" Severity="High" BIT_Phases="PI" LRU_ID="NETSEC" SRU_ID="MCCE" BOARD_ID="MCCE"/>
+    </Fault>
+    <Fault FIC="2">
+        <Element Description="Crypto Unit DS3640 serial number" Severity="High" BIT_Phases="PCI" LRU_ID="NETSEC" SRU_ID="MCCE" BOARD_ID="MCCE"/>
+    </Fault>
+    <Fault FIC="3">
+        <Element Description="Crypto Unit DS3640 over temperature" Severity="Warning" BIT_Phases="PI" LRU_ID="NETSEC" SRU_ID="MCCE" BOARD_ID="MCCE"/>
+    </Fault>
+    <Fault FIC="4">
+        <Element Description="Crypto Unit DS3640 RTC fault" Severity="High" BIT_Phases="PI" LRU_ID="NETSEC" SRU_ID="MCCE" BOARD_ID="MCCE"/>
+    </Fault>
+    <Fault FIC="5">
+        <Element Description="Crypto Unit EEPROM fault" Severity="High" BIT_Phases="PI" LRU_ID="NETSEC" SRU_ID="MCCE" BOARD_ID="MCCE"/>
+    </Fault>
+    <Fault FIC="6">
+        <Element Description="Crypto Unit flash memory fault" Severity="High" BIT_Phases="PI" LRU_ID="NETSEC" SRU_ID="MCCE" BOARD_ID="MCCE"/>
+    </Fault>
+    <Fault FIC="7">
+        <Element Description="Crypto Unit crypto keys fill fault" Severity="High" BIT_Phases="PI" LRU_ID="NETSEC" SRU_ID="MCCE" BOARD_ID="MCCE"/>
+    </Fault>
+    <Fault FIC="8">
+        <Element Description="Crypto Unit Supervisor board FPGA fault" Severity="High" BIT_Phases="PI" LRU_ID="NETSEC" SRU_ID="MCCE" BOARD_ID="MCCE"/>
+    </Fault>
+    <Fault FIC="9">
+        <Element Description="Crypto Unit Engine board FPGA fault" Severity="High" BIT_Phases="PI" LRU_ID="NETSEC" SRU_ID="MCCE" BOARD_ID="MCCE"/>
+    </Fault>
+    <Fault FIC="10">
+        <Element Description="Crypto Unit Engine board FPGA TX2RX module fault" Severity="High" BIT_Phases="PI" LRU_ID="NETSEC" SRU_ID="MCCE" BOARD_ID="MCCE"/>
+    </Fault>
+    <Fault FIC="11">
+        <Element Description="Crypto Unit Engine board FPGA LSBLK module fault" Severity="High" BIT_Phases="PI" LRU_ID="NETSEC" SRU_ID="MCCE" BOARD_ID="MCCE"/>
+    </Fault>
+    <Fault FIC="12">
+        <Element Description="Crypto Unit Database fault" Severity="High" BIT_Phases="PI" LRU_ID="NETSEC" SRU_ID="MCCE" BOARD_ID="MCCE"/>
+    </Fault>
+    <Fault FIC="13">
+        <Element Description="Crypto Unit inserted CIK status fault" Severity="High" BIT_Phases="PI" LRU_ID="NETSEC" SRU_ID="MCCE" BOARD_ID="MCCE"/>
+    </Fault>
+    <Fault FIC="14">
+        <Element Description="Crypto Unit Random Number Generator FPGA fault" Severity="High" BIT_Phases="PCI" LRU_ID="NETSEC" SRU_ID="MCCE" BOARD_ID="MCCE"/>
+    </Fault>
+    <Fault FIC="15">
+        <Element Description="Crypto Unit Engine board junction temperature" Severity="Warning" BIT_Phases="PI" LRU_ID="NETSEC" SRU_ID="MCCE" BOARD_ID="MCCE"/>
+    </Fault>
+    <Fault FIC="16">
+        <Element Description="Crypto Unit auxiliary battery for RTC and DS3640 memory fault" Severity="High" BIT_Phases="PI" LRU_ID="NETSEC" SRU_ID="MCCE" BOARD_ID="MCCE"/>
+    </Fault>
+    <Fault FIC="17">
+        <Element Description="Crypto Unit auxiliary battery for Engine board fault" Severity="High" BIT_Phases="PI" LRU_ID="NETSEC" SRU_ID="MCCE" BOARD_ID="MCCE"/>
+    </Fault>
+    <Fault FIC="18">
+        <Element Description="Crypto Unit battery low level" Severity="Warning" BIT_Phases="PI" LRU_ID="NETSEC" SRU_ID="MCCE" BOARD_ID="MCCE"/>
+    </Fault>	
+    <Fault FIC="19">
+        <Element Description="NETSEC auxiliary battery low level" Severity="Warning" BIT_Phases="PI" LRU_ID="NETSEC" SRU_ID="MCCE" BOARD_ID="MCCE"/>
+    </Fault>
+    <Fault FIC="20">
+        <Element Description="PLL GPIO 4 fault" Severity="High" BIT_Phases="AC" LRU_ID="TRANSCEIVER" SRU_ID="DRE NG-M" BOARD_ID="DRE NG-M"/>
+    </Fault>
+    <Fault FIC="21">
+        <Element Description="PLL 1 lock status fault" Severity="High" BIT_Phases="AC" LRU_ID="TRANSCEIVER" SRU_ID="DRE NG-M" BOARD_ID="DRE NG-M"/>
+    </Fault>
+    <Fault FIC="22">
+        <Element Description="PLL 2 lock status fault" Severity="High" BIT_Phases="AC" LRU_ID="TRANSCEIVER" SRU_ID="DRE NG-M" BOARD_ID="DRE NG-M"/>
+    </Fault>
+    <Fault FIC="23">
+        <Element Description="DSP SRIO link status fault" Severity="High" BIT_Phases="ACI" LRU_ID="TRANSCEIVER" SRU_ID="DRE NG-M" BOARD_ID="DRE NG-M"/>
+    </Fault>
+    <Fault FIC="24">
+        <Element Description="External SRIO link status fault" Severity="High" BIT_Phases="CI" LRU_ID="TRANSCEIVER" SRU_ID="DRE NG-M" BOARD_ID="DRE NG-M"/>
+    </Fault>
+    <Fault FIC="25">
+        <Element Description="ADC JESD204B link status fault" Severity="High" BIT_Phases="AP" LRU_ID="TRANSCEIVER" SRU_ID="DRE NG-M" BOARD_ID="DRE NG-M"/>
+    </Fault>
+    <Fault FIC="26">
+        <Element Description="DAC JESD204B link status fault" Severity="High" BIT_Phases="AP" LRU_ID="TRANSCEIVER" SRU_ID="DRE NG-M" BOARD_ID="DRE NG-M"/>
+    </Fault>
+    <Fault FIC="27">
+        <Element Description="Black Ethernet status fault" Severity="High" BIT_Phases="CI" LRU_ID="TRANSCEIVER" SRU_ID="DRE NG-M" BOARD_ID="DRE NG-M"/>
+    </Fault>
+    <Fault FIC="28">
+        <Element Description="SINCGARS Ethernet status fault" Severity="High" BIT_Phases="CI" LRU_ID="TRANSCEIVER" SRU_ID="DRE NG-M" BOARD_ID="DRE NG-M"/>
+    </Fault>
+    <Fault FIC="29">
+        <Element Description="Temperature alert" Severity="High" BIT_Phases="APCI" LRU_ID="TRANSCEIVER" SRU_ID="ASFE-M" BOARD_ID="ASFE-M"/>
+    </Fault>
+    <Fault FIC="30">
+        <Element Description="Over current" Severity="High" BIT_Phases="APCI" LRU_ID="TRANSCEIVER" SRU_ID="ASFE-M" BOARD_ID="ASFE-M"/>
+    </Fault>
+    <Fault FIC="31">
+        <Element Description="Power supply fault" Severity="High" BIT_Phases="APCI" LRU_ID="TRANSCEIVER" SRU_ID="ASFE-M" BOARD_ID="ASFE-M"/>
+    </Fault>
+    <Fault FIC="32">
+        <Element Description="RF reflected power level alert" Severity="Warning" BIT_Phases="APCI" LRU_ID="TRANSCEIVER" SRU_ID="ASFE-M" BOARD_ID="ASFE-M"/>
+    </Fault>
+    <Fault FIC="33">
+        <Element Description="ETR ALARM fault" Severity="High" BIT_Phases="PCI" LRU_ID="VEHICULAR ADAPTER" SRU_ID="GNSS Board" BOARD_ID="GNSS Board"/>
+    </Fault>
+    <Fault FIC="34">
+        <Element Description="E2PROM fault" Severity="High" BIT_Phases="PCI" LRU_ID="VEHICULAR ADAPTER" SRU_ID="GNSS Board" BOARD_ID="GNSS Board"/>
+    </Fault>
+    <Fault FIC="35">
+        <Element Description="Internal GNSS receiver PPS IN warning" Severity="Warning" BIT_Phases="CI" LRU_ID="VEHICULAR ADAPTER" SRU_ID="GNSS Board" BOARD_ID="GNSS Board"/>
+    </Fault>
+    <Fault FIC="36">
+        <Element Description="GNSS receiver data input fault" Severity="High" BIT_Phases="CI" LRU_ID="NETSEC" SRU_ID="MCCE" BOARD_ID="MCCE"/>
+    </Fault>
+	<Fault FIC="37">
+        <Element Description="Internal GNSS receiver FPGA read register fault" Severity="High" BIT_Phases="PCI" LRU_ID="NETSEC" SRU_ID="MCCE" BOARD_ID="MCCE"/>
+    </Fault>
+	<Fault FIC="38">
+        <Element Description="file AuditLog threshold length is almost exceeded 60 %" Severity="Warning" BIT_Phases="A" LRU_ID="TRANSCEIVER" SRU_ID="DRE NG-M" BOARD_ID="DRE NG-M"/>
+    </Fault>
+    <Fault FIC="39">
+        <Element Description="file AuditLog threshold length is almost exceeded 70 %" Severity="Warning" BIT_Phases="A" LRU_ID="TRANSCEIVER" SRU_ID="DRE NG-M" BOARD_ID="DRE NG-M"/>
+    </Fault>
+    <Fault FIC="40">
+        <Element Description="file AuditLog threshold length is almost exceeded 80 %" Severity="Warning" BIT_Phases="A" LRU_ID="TRANSCEIVER" SRU_ID="DRE NG-M" BOARD_ID="DRE NG-M"/>
+    </Fault>
+    <Fault FIC="41">
+        <Element Description="file AuditLog threshold length is almost exceeded 90 %" Severity="Warning" BIT_Phases="A" LRU_ID="TRANSCEIVER" SRU_ID="DRE NG-M" BOARD_ID="DRE NG-M"/>
+    </Fault>
+    <Fault FIC="42">
+        <Element Description="file AuditLog threshold length is full" Severity="High" BIT_Phases="A" LRU_ID="TRANSCEIVER" SRU_ID="DRE NG-M" BOARD_ID="DRE NG-M"/>
+    </Fault>
+    <Fault FIC="43">
+		<Element Description="VSWR Protection" Severity="High" BIT_Phases="APCI" LRU_ID="TRANSCEIVER" SRU_ID="ASFE-M" BOARD_ID="ASFE-M"/>
+    </Fault>
+    <Fault FIC="44">
+        <Element Description="file LogFile threshold length is almost exceeded 60 %" Severity="Warning" BIT_Phases="A" LRU_ID="TRANSCEIVER" SRU_ID="DRE NG-M" BOARD_ID="DRE NG-M"/>
+    </Fault>
+    <Fault FIC="45">
+        <Element Description="file LogFile threshold length is almost exceeded 70 %" Severity="Warning" BIT_Phases="A" LRU_ID="TRANSCEIVER" SRU_ID="DRE NG-M" BOARD_ID="DRE NG-M"/>
+    </Fault>
+    <Fault FIC="46">
+        <Element Description="file LogFile threshold length is almost exceeded 80 %" Severity="Warning" BIT_Phases="A" LRU_ID="TRANSCEIVER" SRU_ID="DRE NG-M" BOARD_ID="DRE NG-M"/>
+    </Fault>
+    <Fault FIC="47">
+        <Element Description="file LogFile threshold length is almost exceeded 90 %" Severity="Warning" BIT_Phases="A" LRU_ID="TRANSCEIVER" SRU_ID="DRE NG-M" BOARD_ID="DRE NG-M"/>
+    </Fault>
+    <Fault FIC="48">
+        <Element Description="file LogFile threshold length is full" Severity="High" BIT_Phases="A" LRU_ID="TRANSCEIVER" SRU_ID="DRE NG-M" BOARD_ID="DRE NG-M"/>
+    </Fault>
+    <Fault FIC="49">
+        <Element Description="file FaultLog threshold length is almost exceeded 60 %" Severity="Warning" BIT_Phases="A" LRU_ID="TRANSCEIVER" SRU_ID="DRE NG-M" BOARD_ID="DRE NG-M"/>
+    </Fault>
+    <Fault FIC="50">
+        <Element Description="file FaultLog threshold length is almost exceeded 70 %" Severity="Warning" BIT_Phases="A" LRU_ID="TRANSCEIVER" SRU_ID="DRE NG-M" BOARD_ID="DRE NG-M"/>
+    </Fault>
+    <Fault FIC="51">
+        <Element Description="file FaultLog threshold length is almost exceeded 80 %" Severity="Warning" BIT_Phases="A" LRU_ID="TRANSCEIVER" SRU_ID="DRE NG-M" BOARD_ID="DRE NG-M"/>
+    </Fault>
+    <Fault FIC="52">
+        <Element Description="file FaultLog threshold length is almost exceeded 90 %" Severity="Warning" BIT_Phases="A" LRU_ID="TRANSCEIVER" SRU_ID="DRE NG-M" BOARD_ID="DRE NG-M"/>
+    </Fault>
+    <Fault FIC="53">
+        <Element Description="file FaultLog threshold length is full" Severity="High" BIT_Phases="A" LRU_ID="TRANSCEIVER" SRU_ID="DRE NG-M" BOARD_ID="DRE NG-M"/>
+    </Fault>
+    <Fault FIC="54">
+        <Element Description="CSS Bitlog file threshold length is almost exceeded 90 %" Severity="Warning" BIT_Phases="A" LRU_ID="NETSEC" SRU_ID="MCCE" BOARD_ID="MCCE"/>
+    </Fault>
+    <Fault FIC="55">
+        <Element Description="CSS Bitlog file threshold length is full" Severity="High" BIT_Phases="A" LRU_ID="NETSEC" SRU_ID="MCCE" BOARD_ID="MCCE"/>
+    </Fault>
+    <Fault FIC="56">
+        <Element Description="CSS Alarms file threshold length is almost exceeded 50 %" Severity="Warning" BIT_Phases="A" LRU_ID="NETSEC" SRU_ID="MCCE" BOARD_ID="MCCE"/>
+    </Fault>
+    <Fault FIC="57">
+        <Element Description="CSS Alarms file threshold length is almost exceeded 60 %" Severity="Warning" BIT_Phases="A" LRU_ID="NETSEC" SRU_ID="MCCE" BOARD_ID="MCCE"/>
+    </Fault>
+    <Fault FIC="58">
+        <Element Description="CSS Alarms file threshold length is almost exceeded 70 %" Severity="Warning" BIT_Phases="A" LRU_ID="NETSEC" SRU_ID="MCCE" BOARD_ID="MCCE"/>
+    </Fault>
+    <Fault FIC="59">
+        <Element Description="CSS Alarms file threshold length is almost exceeded 80 %" Severity="Warning" BIT_Phases="A" LRU_ID="NETSEC" SRU_ID="MCCE" BOARD_ID="MCCE"/>
+    </Fault>
+    <Fault FIC="60">
+        <Element Description="CSS Alarms file threshold length is full" Severity="High" BIT_Phases="A" LRU_ID="NETSEC" SRU_ID="MCCE" BOARD_ID="MCCE"/>
+    </Fault>
+    <Fault FIC="61">
+        <Element Description="CSS Audit file threshold length is almost exceeded 50 %" Severity="Warning" BIT_Phases="A" LRU_ID="NETSEC" SRU_ID="MCCE" BOARD_ID="MCCE"/>
+    </Fault>
+    <Fault FIC="62">
+        <Element Description="CSS Audit file threshold length is almost exceeded 60 %" Severity="Warning" BIT_Phases="A" LRU_ID="NETSEC" SRU_ID="MCCE" BOARD_ID="MCCE"/>
+    </Fault>
+    <Fault FIC="63">
+        <Element Description="CSS Audit file threshold length is almost exceeded 70 %" Severity="Warning" BIT_Phases="A" LRU_ID="NETSEC" SRU_ID="MCCE" BOARD_ID="MCCE"/>
+    </Fault>
+    <Fault FIC="64">
+        <Element Description="CSS Audit file threshold length is almost exceeded 80 %" Severity="Warning" BIT_Phases="A" LRU_ID="NETSEC" SRU_ID="MCCE" BOARD_ID="MCCE"/>
+    </Fault>
+    <Fault FIC="65">
+        <Element Description="CSS Audit file threshold length is full" Severity="High" BIT_Phases="A" LRU_ID="NETSEC" SRU_ID="MCCE" BOARD_ID="MCCE"/>
+    </Fault>    
+    <Fault FIC="66">
+        <Element Description="CSS Common Alarms file threshold length is almost exceeded 50 %" Severity="Warning" BIT_Phases="A" LRU_ID="NETSEC" SRU_ID="MCCE" BOARD_ID="MCCE"/>
+    </Fault>
+    <Fault FIC="67">
+        <Element Description="CSS Common Alarms file threshold length is almost exceeded 60 %" Severity="Warning" BIT_Phases="A" LRU_ID="NETSEC" SRU_ID="MCCE" BOARD_ID="MCCE"/>
+    </Fault>
+    <Fault FIC="68">
+        <Element Description="CSS Common Alarms file threshold length is almost exceeded 70 %" Severity="Warning" BIT_Phases="A" LRU_ID="NETSEC" SRU_ID="MCCE" BOARD_ID="MCCE"/>
+    </Fault>
+    <Fault FIC="69">
+        <Element Description="CSS Common Alarms file threshold length is almost exceeded 80 %" Severity="Warning" BIT_Phases="A" LRU_ID="NETSEC" SRU_ID="MCCE" BOARD_ID="MCCE"/>
+    </Fault>
+    <Fault FIC="70">
+        <Element Description="CSS Common Alarms file threshold length is full" Severity="High" BIT_Phases="A" LRU_ID="NETSEC" SRU_ID="MCCE" BOARD_ID="MCCE"/>
+    </Fault>
+    <Fault FIC="71">
+        <Element Description="CSS Common Audit file threshold length is almost exceeded 50 %" Severity="Warning" BIT_Phases="A" LRU_ID="NETSEC" SRU_ID="MCCE" BOARD_ID="MCCE"/>
+    </Fault>
+    <Fault FIC="72">
+        <Element Description="CSS Common Audit file threshold length is almost exceeded 60 %" Severity="Warning" BIT_Phases="A" LRU_ID="NETSEC" SRU_ID="MCCE" BOARD_ID="MCCE"/>
+    </Fault>
+    <Fault FIC="73">
+        <Element Description="CSS Common Audit file threshold length is almost exceeded 70 %" Severity="Warning" BIT_Phases="A" LRU_ID="NETSEC" SRU_ID="MCCE" BOARD_ID="MCCE"/>
+    </Fault>
+    <Fault FIC="74">
+        <Element Description="CSS Common Audit file threshold length is almost exceeded 80 %" Severity="Warning" BIT_Phases="A" LRU_ID="NETSEC" SRU_ID="MCCE" BOARD_ID="MCCE"/>
+    </Fault>
+    <Fault FIC="75">
+        <Element Description="CSS Common Audit file threshold length is full" Severity="High" BIT_Phases="A" LRU_ID="NETSEC" SRU_ID="MCCE" BOARD_ID="MCCE"/>
+    </Fault>
+        <Fault FIC="76">
+        <Element Description="VQ1-M RED OE Integrity check" Severity="High" BIT_Phases="P" LRU_ID="NETSEC" SRU_ID="MCCE" BOARD_ID="MCCE"/>
+    </Fault>
+    <Fault FIC="77">
+        <Element Description="VQ1-M BLACK OE Integrity check" Severity="High" BIT_Phases="P" LRU_ID="TRANSCEIVER" SRU_ID="DRE NG-M" BOARD_ID="DRE NG-M"/>
+    </Fault>
+    <Fault FIC="78">
+        <Element Description="VQ1-M RED OE PPS counter register blocked" Severity="High" BIT_Phases="PCI" LRU_ID="NETSEC" SRU_ID="MCCE" BOARD_ID="MCCE"/>
+    </Fault>
+    <Fault FIC="79">
+        <Element Description="VQ1-M RED OE read PPS counter register fault" Severity="High" BIT_Phases="PCI" LRU_ID="NETSEC" SRU_ID="MCCE" BOARD_ID="MCCE"/>
+    </Fault>    
+    <Fault FIC="80">
+        <Element Description="VQ1-M BLACK OE PPS counter register blocked" Severity="High" BIT_Phases="PCI" LRU_ID="TRANSCEIVER" SRU_ID="DRE NG-M" BOARD_ID="DRE NG-M"/>
+    </Fault>
+    <Fault FIC="81">
+        <Element Description="VQ1-M BLACK OE read PPS counter register fault" Severity="High" BIT_Phases="PCI" LRU_ID="TRANSCEIVER" SRU_ID="DRE NG-M" BOARD_ID="DRE NG-M"/>
+    </Fault>
+    <Fault FIC="82">
+        <Element Description="DAC not programmed" Severity="High" BIT_Phases="P" LRU_ID="TRANSCEIVER" SRU_ID="DRE NG-M" BOARD_ID="DRE NG-M"/>
+    </Fault>
+    <Fault FIC="83">
+        <Element Description="EEPROM memory not accessible" Severity="Warning" BIT_Phases="PIA" LRU_ID="TRANSCEIVER" SRU_ID="DRE NG-M" BOARD_ID="DRE NG-M"/>
+    </Fault>
+    <Fault FIC="84">
+        <Element Description="EEPROM memory never initialized" Severity="Warning" BIT_Phases="PI" LRU_ID="TRANSCEIVER" SRU_ID="DRE NG-M" BOARD_ID="DRE NG-M"/>
+    </Fault>
+    <Fault FIC="85">
+        <Element Description="ASFE SPI not working" Severity="High" BIT_Phases="PCI" LRU_ID="TRANSCEIVER" SRU_ID="DRE NG-M" BOARD_ID="DRE NG-M"/>
+    </Fault> 	
+</FAULTREGISTER>

@@ -1,85 +1,45 @@
 import { useParameterStore } from './useParameterStore.js'
-import { createDefaultTransactionPagePolicies } from '../features/transaction/transactionPagePolicies.js'
 import { useTransactionPageState } from '../features/transaction/useTransactionPageState.js'
-import { useTransactionSubmitFlow } from '../features/transaction/useTransactionSubmitFlow.js'
 
-export const useTransactionPageActions = ({
-  currentPage,
-  notifications,
-  navigation,
-  pagePolicies,
-}) => {
+export const useTransactionPageActions = ({ currentPage }) => {
   const {
     parameterValues,
     toggleParameter,
-    setParameterValue,
-    toggleTransactionParameter,
-    setTransactionParameterValue,
-    getTransactionDisplayValues,
-    getTransactionModifiedIds,
-    hasTransactionChanges,
-    resetTransactionPage,
-    commitTransactionPage,
+    setParametersValues,
     refreshParameters,
   } = useParameterStore()
 
-  const resolvedPagePolicies = pagePolicies
-    ?? createDefaultTransactionPagePolicies({
-      refreshParameters,
-      parameterValues,
-      setNotification: notifications.setNotification,
-    })
-
-  const {
-    isTransactionPage,
-    currentPageValues,
-    currentPageModifiedIds,
-    canSubmitTransaction,
-  } = useTransactionPageState({
+  const { currentPageValues } = useTransactionPageState({
     currentPage,
     parameterValues,
-    getTransactionDisplayValues,
-    getTransactionModifiedIds,
-    hasTransactionChanges,
   })
 
-  const { handleSubmitTransaction } = useTransactionSubmitFlow({
-    currentPage,
-    commitTransactionPage,
-    setNotification: notifications.setNotification,
-    navigation,
-    pagePolicies: resolvedPagePolicies,
-  })
+  const pageParameters =
+    Array.isArray(currentPage?.panels) && currentPage.panels.length > 0
+      ? currentPage.panels.flatMap((p) => p.parameters ?? [])
+      : (currentPage?.parameters ?? [])
 
   const handleToggleParameter = (id) => {
-    if (isTransactionPage) {
-      toggleTransactionParameter(currentPage.id, id)
-      return
-    }
     toggleParameter(id)
   }
 
-  const handleSetParameterValue = (id, value) => {
-    if (isTransactionPage) {
-      setTransactionParameterValue(currentPage.id, id, value)
-      return
-    }
-    setParameterValue(id, value)
+  // payload = [{ id, value }, ...] arriva da PageParametersView al submit
+  const handleSubmitTransaction = async (payload) => {
+    await setParametersValues(payload)
   }
 
-  const handleResetTransaction = () => {
-    if (!isTransactionPage) return
-    resetTransactionPage(currentPage.id)
+  // visibleIds = [id, ...] arriva da PageParametersView al reset
+  const handleRefreshParameters = (visibleIds) => {
+    const ids = pageParameters
+      .filter((p) => visibleIds.includes(p.id))
+      .map((p) => ({ id: p.id, field: p.field }))
+    if (ids.length > 0) refreshParameters(ids)
   }
 
   return {
-    isTransactionPage,
-    currentPageValues,
-    currentPageModifiedIds,
-    canSubmitTransaction,
+    currentPageValues,  
     handleToggleParameter,
-    handleSetParameterValue,
-    handleResetTransaction,
     handleSubmitTransaction,
+    handleRefreshParameters,
   }
 }

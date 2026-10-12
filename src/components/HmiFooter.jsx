@@ -2,6 +2,8 @@ import './HmiFooter.css'
 import AppIcon from './AppIcon.jsx'
 
 export default function HmiFooter({ level1Items, activeLevel1Id, isAtHome, canGoToPreviousPage, onGoBack, onGoHome, onSelectItem }) {
+
+
   return (
     <footer className="bar bottom-bar">
       <button
@@ -11,7 +13,7 @@ export default function HmiFooter({ level1Items, activeLevel1Id, isAtHome, canGo
         disabled={!canGoToPreviousPage}
         onClick={onGoBack}
       >
-        <AppIcon name="back" size={32} />
+        <AppIcon name="back" size={50} />
       </button>
       <button
         className={`tab-button tab-button--home${isAtHome ? ' tab-button--active' : ''}`}

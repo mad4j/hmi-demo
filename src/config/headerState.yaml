@@ -1,0 +1,44 @@
+HeaderState:
+  system_time:
+    id: ora_sistema
+    default: "--:--:--"
+
+  timezone:
+    id: timezone_riferimento
+    default: "TMZ"
+
+  waveform:
+    id: active_waveform_name
+    default: "—"
+
+  preset:
+    id: active_preset_name
+    default: "—"
+
+  channel:
+    id: active_channel_number
+    default: null
+
+  crypto_algorithm:
+    id: crypto_algorithm
+    default: "—"
+
+  crypto_key_id:
+    id: crypto_key_id
+    default: "—"
+
+  crypto_context:
+    id: crypto_context
+    default: "—"
+
+  comm_radio_silence:
+    id: comm_radio_silence
+    default: false
+
+  comm_state:
+    id: comm_state
+    default: IDLE
+
+  comm_mode:
+    id: comm_mode
+    default: CT

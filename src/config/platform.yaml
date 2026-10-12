@@ -1,8 +1,9 @@
-title: HMI Demo
+title: VQ1-M
 includes:
+  - application.yaml
   - platform-status-icons.yaml
   - platform-pages-menu.yaml
   - platform-pages-allarmi.yaml
-  - platform-pages-info.yaml
+  - platform-pages-security.yaml
   - platform-pages-impostazioni.yaml
   - platform-pages-waveform.yaml

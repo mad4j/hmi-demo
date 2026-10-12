@@ -8,67 +8,10 @@ pages:
         label: Theme
         icon: "theme"
         parameters: []
-      - id: schermo
+      - id: screen
         label: Screen
-        icon: "screen"
-        parameters:
-          - id: ui_screen_profile
-            name: Dimensione Profilo
-            type: enum
-            options: [COMPACT, STANDARD, EXPANDED]
-      - id: gps
-        label: GPS
-        icon: "gps"
-        parameters:
-          - id: gps_stato
-            name: Status
-            type: enum
-            options: [LOCKED, SEARCHING, ERROR, INACTIVE]
-            readonly: true
-          - id: gps_satelliti
-            name: Satellites
-            type: number
-            unit: "sat"
-            precision: 0
-            readonly: true
-          - id: gps_latitudine
-            name: Latitude
-            type: number
-            unit: "°"
-            precision: 5
-            readonly: true
-          - id: gps_longitudine
-            name: Longitude
-            type: number
-            unit: "°"
-            precision: 5
-            readonly: true
-          - id: gps_altitudine
-            name: Altitude
-            type: number
-            unit: "m"
-            precision: 0
-            readonly: true
-          - id: gps_notes
-            name: Notes
-            type: text
-            readonly: false
-          - id: gps_velocita
-            name: Speed
-            type: number
-            unit: "km/h"
-            precision: 1
-            readonly: true
-          - id: gps_accuratezza
-            name: Accuracy
-            type: number
-            unit: "m"
-            precision: 1
-            readonly: true
-          - id: gps_modalita
-            name: Mode
-            type: enum
-            options: [AUTO, MANUAL, INACTIVE]
+        icon: "settings"
+        parameters: []
       - id: login
         label: Login
         icon: "login"
@@ -89,3 +32,42 @@ pages:
         visibility: hidden
         goOnApply: STAY_HERE
         parameters: []
+      - id: Report
+        label: Report
+        panels:
+        - label: LogFile
+          parameters:
+            - id: LogFile
+              name: LogFile
+              type: boolean
+        - label: FaultLogFile
+          parameters:
+            - id: FaultLogFile
+              name: FaultLogFile
+              type: boolean
+        - label: AuditFile
+          parameters:
+            - id: AuditFile
+              name: AuditFile
+              type: boolean
+        - label: CSSFile
+          parameters:
+            - id: CSSFile
+              name: CSSFile
+              type: boolean
+      - id: waveform-XCVR
+        label: XCVR
+        icon: "settings"
+        parameters:
+          - id: XCVR
+            name: XCVR
+            type: enum
+            options: [NATO-BASELINE, NAZ-OPS, TRAINING, EMERGENCY, CUSTOM-1, CUSTOM-2]
+            readonly: false
+         
+                        
+        
+      
+      
+
+      

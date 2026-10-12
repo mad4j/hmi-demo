@@ -1,194 +1,548 @@
-name: HMI Demo Application
 pages:
-  - id: demo_table
-    label: Demo Table
-    icon: "menu"
+- id: waveform waveform
+  label: Waveform
+  icon: settings
+  parameters: []
+  panels:
+  - label: Waveform
     parameters:
-      - id: tabella_eventi_demo
-        name: Eventi Missione
-        type: table
+    - id: DCE:d446c8dc-fa48-429e-b19c-e0f5a790df24
+      name: Channel
+      field: octet
+      type: text
+      clearOnApply: true
+    - id: DCE:59d79625-bc9a-40eb-bcfd-2732941a2435
+      name: Caller Identity 1
+      field: string
+      type: text
+      readonly: true
+      clearOnApply: true
+    - id: DCE:672bf46c-4945-4dcb-9c3f-b0c9a3de96d7
+      name: Caller Identity 2
+      field: string
+      type: text
+      readonly: true
+      clearOnApply: true
+  - label: Waveform Menu
+    submenus:
+    - id: '1'
+      label: RF Control
+      icon: rf control
+      parameters:
+      - id: DCE:d446c8dc-fa48-429e-b19c-e0f5a790df24
+        name: Channel
+        field: octet
+        type: text
+        clearOnApply: true
+      - id: DCE:133c3822-808e-4ec6-942d-df2bf795da52
+        name: Tx Power
+        description: Tipo di traffico
+        field: long
+        type: enum
+        optionsLabel: [Full, Half, One Tenth, Minimum]
+        optionsValue: [0, 1, 2, 3]
+    - id: '2'
+      label: Local Info
+      icon: local info
+      parameters:
+      - id: DCE:46cee676-32a3-4911-a958-c25ad2aba840
+        name: Own Nickname
+        field: string
+        type: text
+        clearOnApply: true
+      - id: DCE:cac0412a-8560-499b-803e-e251f00d0066
+        name: Soft Unit ID
+        field: octet
+        type: text
         readonly: true
-  - id: app-configurazione
-    label: Configuration
-    icon: "settings"
-    panels:
-      - label: Clima
+        clearOnApply: true
+      - id: DCE:bf5a09b6-3118-4737-99bf-d1b82621bcfe
+        name: Hard Unit ID
+        field: ulong
+        type: number
+        readonly: true
+        precision: 9
+      - id: DCE:b9ab5481-2632-4d33-8e55-9ce52175b6bb
+        name: WF Status
+        field: long
+        type: enum
+        readonly: true
+        optionsLabel: [Idle, Init, Locked, Active]
+        optionsValue: [1, 2, 3, 4]
+    - id: '3'
+      label: PTT Control
+      icon: ptt control
+      panels:
+      - label: Upper PTT
         parameters:
-          - id: temp_abitacolo
-            name: Temp. Abitacolo
-            type: number
-            unit: "°C"
-            precision: 1
-            readonly: true
-          - id: temp_impostata
-            name: Set Temp.
-            type: number
-            unit: "°C"
-            precision: 1
-          - id: temp_esterna
-            name: Temp. Esterna
-            type: number
-            unit: "°C"
-            precision: 1
-            readonly: true
-          - id: umidita
-            name: Umidità
-            type: percentage
-            precision: 0
-            readonly: true
-          - id: modalita_clima
-            name: Modalità
-            type: enum
-            options: [AUTO, MANUAL, ECO, SPORT]
-          - id: ventilazione_attiva
-            name: Ventilazione
-            type: boolean
-          - id: aria_ricircolo
-            name: Ricircolo
-            type: boolean
-          - id: velocita_ventola
-            name: Velocità Ventola
-            type: number
-            unit: "lv"
-            precision: 0
-      - label: Porte
+        - id: DCE:28ca8731-f770-4cf1-9b9f-fed4d1fdb602
+          name: Destination Group
+          field: long
+          type: enum
+          optionsLabel: [None, '01', '02', '03', '04', '05', '06', '07', 08, 09]
+          optionsValue: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+        - id: DCE:410dd685-97bb-4432-b23a-e834251b2772
+          name: Commander Enabled
+          field: boolean
+          type: enum
+          optionsLabel: ['ON', 'OFF']
+          optionsValue: [1, 0]
+      - label: Lower PTT
         parameters:
-          - id: porta_ant_sx
-            name: Ant. Sx
-            type: boolean
-          - id: porta_ant_dx
-            name: Ant. Dx
-            type: boolean
-          - id: porta_post_sx
-            name: Post. Sx
-            type: boolean
-          - id: porta_post_dx
-            name: Post. Dx
-            type: boolean
-          - id: blocco_centrale
-            name: Blocco Centrale
-            type: boolean
-          - id: cofano
-            name: Cofano
-            type: boolean
-          - id: portabagagli
-            name: Portabagagli
-            type: boolean
-          - id: portellone
-            name: Portellone
-            type: boolean
-      - label: Motore
+        - id: DCE:27fc3e4e-6bfe-4621-9647-e0690315e67f
+          name: Destination Group
+          field: long
+          type: enum
+          optionsLabel: [None, '01', '02', '03', '04', '05', '06', '07', 08, 09]
+          optionsValue: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+        - id: DCE:0f10c5c9-1d99-48b1-946d-2bdd832ed19c
+          name: Commander Enabled
+          field: boolean
+          type: enum
+          optionsLabel: ['ON', 'OFF']
+          optionsValue: [1, 0]
+    - id: '6'
+      label: Network Info
+      icon: network info
+      panels:
+      - label: Nodes Properties
         parameters:
-          - id: test_viz_temp_motore
-            name: Temp. Motore
-            type: number
-            unit: "°C"
-            precision: 1
-            readonly: true
-          - id: test_viz_press_turbo
-            name: Press. Turbo
-            type: number
-            unit: "bar"
-            precision: 2
-            readonly: true
-          - id: test_viz_ventola_motore
-            name: Ventola Motore
-            type: number
-            unit: "rpm"
-            precision: 0
-            readonly: true
-          - id: test_viz_ventola_hmi
-            name: Ventola HMI
-            type: number
-            unit: "rpm"
-            precision: 0
-            readonly: true
-          - id: test_viz_freno_usura
-            name: Usura Freni
-            type: percentage
-            precision: 0
-            readonly: true
-          - id: test_viz_cpu_load
-            name: CPU Load
-            type: percentage
-            precision: 0
-            readonly: true
-      - label: Elettrico
+        - id: DCE:a8976fd5-aa41-4018-8fe1-48b7a5c51fa6
+          name: Monitor Interval
+          field: octet
+          type: text
+          clearOnApply: true
+        - id: DCE:cac0412a-8560-499b-803e-e251f00d0066
+          name: Soft Unit ID
+          field: octet
+          type: text
+          readonly: true
+          clearOnApply: true
+        - id: DCE:5140e091-0876-480b-ac0e-7ea21d35ec6b
+          name: Who Is Master
+          field: octet
+          type: text
+          readonly: true
+          clearOnApply: true
+        - id: DCE:45452b64-a401-486b-9cff-27c010d5e893
+          name: Max Nodes In Network
+          field: ushort
+          type: number
+          readonly: true
+          precision: 2
+        - id: DCE:173d981c-4af0-4fb4-89d3-2fda229818ed
+          name: No. Nodes in Network
+          field: octet
+          type: text
+          readonly: true
+          clearOnApply: true
+      - label: Node Report
         parameters:
-          - id: tensione_batteria
-            name: Tensione Batt.
-            type: number
-            unit: "V"
-            precision: 1
-            readonly: true
-          - id: test_viz_corrente
-            name: Corrente
-            type: number
-            unit: "A"
-            precision: 1
-            readonly: true
-          - id: test_viz_tensione_aux
-            name: Tensione Aux
-            type: number
-            unit: "V"
-            precision: 1
-            readonly: true
-          - id: test_viz_memoria_libera
-            name: Memoria Libera
-            type: percentage
-            precision: 0
-            readonly: true
-      - label: Stato
+        - id: DCE:41c3a611-bb6d-4900-92fd-14d85d12eab6
+          name: Node Selected
+          field: string
+          type: text
+          readonly: true
+          clearOnApply: true
+        - id: DCE:ac18b8b6-68f6-4216-a645-d9d199c1a382
+          name: ->Received UMF
+          field: octet
+          type: text
+          readonly: true
+          clearOnApply: true
+        - id: DCE:9fdc4cf8-f065-487f-a514-47d1222c24ef
+          name: ->Last link quality
+          field: ushort
+          type: number
+          readonly: true
+          precision: 3
+        - id: DCE:414e7193-627c-470c-9f82-24fd4770acc3
+          name: ->Is master
+          field: boolean
+          type: enum
+          optionsLabel: ['ON', 'OFF']
+          optionsValue: [1, 0]
+          readonly: true
+        - id: DCE:98c1d28a-28f2-4c78-821a-43b6523acc2a
+          name: ->Is relay
+          field: boolean
+          type: enum
+          optionsLabel: ['ON', 'OFF']
+          optionsValue: [1, 0]
+          readonly: true
+        - id: DCE:65313131-9026-4f2e-8a74-c2f9bf214d14
+          name: ->Is seen directly
+          field: boolean
+          type: enum
+          optionsLabel: ['ON', 'OFF']
+          optionsValue: [1, 0]
+          readonly: true
+        - id: DCE:9dfa6c4a-770d-4495-99d8-e36018d0144a
+          name: ->Is seen relayed
+          field: boolean
+          type: enum
+          optionsLabel: ['ON', 'OFF']
+          optionsValue: [1, 0]
+          readonly: true
+      - label: Parameters
         parameters:
-          - id: test_viz_stato_bus
-            name: Stato Bus
-            type: enum
-            options: [OK, DEGRADED, OFFLINE]
-            readonly: true
-          - id: test_viz_profilo_guida
-            name: Profilo Guida
-            type: enum
-            options: [CITY, TOURING, TRACK, ECO]
-          - id: test_viz_manutenzione
-            name: Manutenzione
-            type: enum
-            options: [NONE, SOON, DUE, OVERDUE]
-            readonly: true
-          - id: test_viz_revisione_cfg
-            name: Rev. Config.
-            type: text
-            readonly: true
-          - id: test_viz_build_number
-            name: Build Number
-            type: text
-            readonly: true
-      - label: Manutenzione
+        - id: DCE:a752ce5e-fa47-453b-b3a4-0a5a1a8096aa
+          name: ->RSSI 0
+          field: ushort
+          type: number
+          precision: 5
+        - id: DCE:ac436f39-bb1a-4dd2-9a9f-2341923939f1
+          name: ->RSSI 1
+          field: ushort
+          type: number
+          precision: 5
+        - id: DCE:d34c2255-e321-4f8e-aa90-b9d2c50d6ee6
+          name: ->RSSI 2
+          field: ushort
+          type: number
+          precision: 5
+        - id: DCE:908f6d93-1ed1-4be6-b53b-1c3c3364b07a
+          name: ->RSSI 3
+          field: ushort
+          type: number
+          precision: 5
+        - id: DCE:8f23a1b3-5cc7-4d33-8b13-572a0e004971
+          name: ->RSSI AVG
+          field: ulong
+          type: number
+          precision: 5
+          min: 0
+          max: 50
+        - id: DCE:5e2e904f-4f58-41c0-96ab-8b546b78146c
+          name: Low Hysteresis
+          field: boolean
+          type: enum
+          optionsLabel: ['ON', 'OFF']
+          optionsValue: [1, 0]
+    - id: '10'
+      label: Radio Silence
+      icon: radio silence
+      parameters:
+      - id: DCE:2b4f5371-3211-4d69-be60-463305be8273
+        name: Radio Silence
+        field: boolean
+        type: enum
+        optionsLabel: ['ON', 'OFF']
+        optionsValue: [1, 0]
+    - id: '11'
+      label: Power Saving
+      icon: power saving
+      parameters:
+      - id: DCE:416aca19-ce04-4177-a438-4df170a7447c
+        name: Standby
+        field: boolean
+        type: enum
+        optionsLabel: ['ON', 'OFF']
+        optionsValue: [1, 0]
+      - id: DCE:9aa5a466-b56f-4737-9324-67a5a84a2714
+        name: Idle/Active period
+        field: ushort
+        type: number
+        precision: 5
+        min: 0
+        max: 1000
+    - id: '12'
+      label: Voice Parameters
+      icon: voice parameters
+      parameters:
+      - id: DCE:6bc8e72f-a2cf-488a-9e1a-d25b48976ef8
+        name: Call Status
+        field: long
+        type: enum
+        readonly: true
+        optionsLabel: [No Call, Connecting, Destination Busy, No Destination, Destination
+            Out Of Range, Connected, Incoming Call, Call Ended, Error, Emergency Call,
+          Call Aborted, Destination Free, Emergency Call Ended, Guard Channel, Guard
+            Channel Ended, No Resource, No Resource Ended]
+        optionsValue: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+      - id: DCE:59d79625-bc9a-40eb-bcfd-2732941a2435
+        name: Caller Identity 1
+        field: string
+        type: text
+        readonly: true
+        clearOnApply: true
+      - id: DCE:672bf46c-4945-4dcb-9c3f-b0c9a3de96d7
+        name: Caller Identity 2
+        field: string
+        type: text
+        readonly: true
+        clearOnApply: true
+      - id: DCE:5f9f37d9-1a8d-4c66-a55a-d9e63f88db49
+        name: Audio Mix
+        field: long
+        type: enum
+        optionsLabel: [Mix On, Prio Upper Ptt, Prio Lower Ptt]
+        optionsValue: [0, 1, 2]
+      - id: DCE:31405b05-1271-4c5e-9449-0ee362eb72e0
+        name: Conversation Timeout
+        field: ushort
+        type: number
+        precision: 5
+        min: 0
+        max: 5000
+      - id: DCE:ad36e639-dba7-4e98-9089-36316ce41408
+        name: Listen Only
+        field: boolean
+        type: enum
+        optionsLabel: ['ON', 'OFF']
+        optionsValue: [1, 0]
+      - id: DCE:92da5026-9640-403b-a0e6-3c0cb1990b30
+        name: Sidetone Enable
+        description: Abilitazione sidetone
+        field: boolean
+        type: enum
+        optionsLabel: ['ON', 'OFF']
+        optionsValue: [1, 0]
+      - id: DCE:69c51a12-16cd-4264-b4a6-f1d2a5d741f6
+        name: Audio Volume
+        description: Volume dell'audio in uscita
+        field: long
+        type: enum
+        optionsLabel: [MUTE, '1', '2', '3', '4', '5', '6', '7', '8', '9', MAX]
+        optionsValue: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+      - id: DCE:2ac5ea49-6934-4a59-9095-1a5de93472e1
+        name: Audio Input Gain
+        description: Guadagno in dB dell'audio in ingresso (rispetto al valore nominale)
+        field: float
+        type: number
+        precision: 5
+        min: -10
+        max: 30
+    - id: '13'
+      label: Data Parameters
+      icon: data parameters
+    - id: '14'
+      label: BER Test
+      icon: ber test
+      parameters:
+      - id: DCE:51e2e93f-b052-48b7-b6a7-f1998d643c5e
+        name: Activation Mode
+        field: long
+        type: enum
+        optionsLabel: ['Off', Tx Mode, Rx Mode]
+        optionsValue: [0, 1, 2]
+      - id: DCE:1a00d282-7630-467d-b4b4-981b2aa02c30
+        name: ->Barkers
+        field: ushort
+        type: number
+        readonly: true
+        precision: 5
+      - id: DCE:9e191986-9359-46f2-8227-b993671b2a36
+        name: ->Errors
+        field: ulong
+        type: number
+        readonly: true
+        precision: 5
+      - id: DCE:4b4cd092-3986-4969-976c-1cd985f69ade
+        name: ->Link Quality Level
+        field: ushort
+        type: number
+        readonly: true
+        precision: 3
+    - id: '15'
+      label: Crypto Control
+      icon: crypto control
+    - id: '17'
+      label: Statistics Info
+      icon: statistics info
+      panels:
+      - label: Configuration
         parameters:
-          - id: test_viz_last_service
-            name: Ultimo Servizio
-            type: date
-            readonly: true
-          - id: test_viz_next_service
-            name: Prossimo Servizio
-            type: date
-          - id: test_viz_note_officina
-            name: Note Officina
-            type: text
-          - id: test_viz_codice_intervento
-            name: Codice Intervento
-            type: text
-      - label: Accesso
+        - id: DCE:158d9fd0-1e1a-4d54-9c68-cae388ac087b
+          name: Enable
+          field: boolean
+          type: enum
+          optionsLabel: ['ON', 'OFF']
+          optionsValue: [1, 0]
+        - id: DCE:a46bcf7c-5b73-4fad-a417-2ab34a4713ac
+          name: Reset Counters
+          field: boolean
+          type: enum
+          optionsLabel: ['ON', 'OFF']
+          optionsValue: [1, 0]
+      - label: Report
         parameters:
-          - id: test_trx_username
-            name: Utente
-            type: text
-          - id: test_trx_password
-            name: Password
-            type: password
-          - id: test_trx_ruolo
-            name: Ruolo
-            type: enum
-            options: [OPERATOR, SUPERVISOR, MAINTAINER]
-          - id: test_trx_data_validita
-            name: Validità
-            type: date
+        - id: DCE:4f7a40b3-e044-46a9-b1b9-eb5f88d1a241
+          name: Voice Packets Tx
+          field: ulong
+          type: number
+          readonly: true
+          precision: 8
+        - id: DCE:bb08fdb8-5000-412c-9c57-6c9eb7fe62bb
+          name: Voice Packets Rx
+          field: ulong
+          type: number
+          readonly: true
+          precision: 8
+        - id: DCE:374520c5-51d7-4c0a-9ba0-235915a43ffd
+          name: Data Packets Tx
+          field: ulong
+          type: number
+          readonly: true
+          precision: 8
+        - id: DCE:7131d8b6-da07-4747-945c-8fef350f7bc8
+          name: Data Packets Rx
+          field: ulong
+          type: number
+          readonly: true
+          precision: 8
+        - id: DCE:7de25675-61db-41fd-ba2b-efa97314f3f7
+          name: Packets/s Tx
+          field: ushort
+          type: number
+          readonly: true
+          precision: 8
+        - id: DCE:6689ccf5-3e88-458f-8209-cd04ff820f74
+          name: Packets/s Rx
+          field: ushort
+          type: number
+          readonly: true
+          precision: 8
+        - id: DCE:b91c441f-836f-4ed7-9986-d5add2d2c1d8
+          name: Kbit/s Tx
+          field: ushort
+          type: number
+          readonly: true
+          precision: 8
+        - id: DCE:24461572-f12b-42f5-99cd-9811636cae05
+          name: Kbit/s Rx
+          field: ulong
+          type: number
+          readonly: true
+          precision: 8
+        - id: DCE:8edd29a1-2bd5-4948-85b4-3751cf7efc19
+          name: '! Tx Timeout'
+          field: ulong
+          type: number
+          readonly: true
+          precision: 8
+        - id: DCE:6660d2bc-db52-4853-9d10-04e45e961566
+          name: '! Tx Queue Full'
+          field: ulong
+          type: number
+          readonly: true
+          precision: 8
+        - id: DCE:310f0b22-f8e3-47ab-942a-c2940e6b1ff6
+          name: '! Tx Nack'
+          field: ulong
+          type: number
+          readonly: true
+          precision: 8
+        - id: DCE:ef182aaa-d797-4b06-8e16-9c5de4965ec5
+          name: '! Error Rx CRC'
+          field: ulong
+          type: number
+          readonly: true
+          precision: 8
+        - id: DCE:238053be-032a-41f2-9880-e5a19d8ab75a
+          name: Tot Bytes Tx
+          field: ulong
+          type: number
+          readonly: true
+          precision: 8
+        - id: DCE:01b35d5d-ab2d-4e81-a919-47d37e306f24
+          name: Tot Bytes Rx
+          field: ulong
+          type: number
+          readonly: true
+          precision: 8
+    - id: '20'
+      label: Tones Control
+      icon: tones control
+      parameters:
+      - id: DCE:943b4a7f-0666-405d-b1a2-c719d1d45929
+        name: Tx tones enable
+        field: boolean
+        type: enum
+        optionsLabel: ['ON', 'OFF']
+        optionsValue: [1, 0]
+      - id: DCE:5fc8b0b0-d6bb-440a-af02-313c556bc86c
+        name: Rx tones enable
+        field: boolean
+        type: enum
+        optionsLabel: ['ON', 'OFF']
+        optionsValue: [1, 0]
+    - id: '21'
+      label: Audio Compressor
+      icon: audio compressor
+      parameters:
+      - id: DCE:b5f2f316-0325-46bf-813c-27dbd022a2ff
+        name: Enable
+        description: Abilitazione compressore audio tx (ACP)
+        field: boolean
+        type: enum
+        optionsLabel: ['ON', 'OFF']
+        optionsValue: [1, 0]
+      - id: DCE:c5b02a52-5e0a-4912-b317-ed99b02180e6
+        name: Min Threshold
+        description: Soglia  minima del compressore audio (dBm)
+        field: long
+        type: enum
+        optionsLabel: [-5 dBm, -15 dBm, -25 dBm]
+        optionsValue: [0, 1, 2]
+      - id: DCE:cb852a11-cf42-4b33-b6d9-27e115a9f9cd
+        name: Attack Time
+        description: Tempo di attacco del compressore audio tx (ms)
+        field: ushort
+        type: number
+        unit: ms
+        precision: 2
+        min: 5
+        max: 50
+      - id: DCE:bbeca81b-512b-47fe-8cb2-f6d539b87fb9
+        name: Hold Time
+        description: Tempo di tenuta del compressore audio tx (ms)
+        field: ushort
+        type: number
+        unit: ms
+        precision: 4
+        min: 5
+        max: 5000
+      - id: DCE:31b25926-04f3-4504-9f46-e9e75f5b3f3b
+        name: Release Time
+        description: Tempo di rilascio del compressore audio tx (ms)
+        field: ushort
+        type: number
+        unit: ms
+        precision: 3
+        min: 5
+        max: 500
+    - id: '22'
+      label: WF Release Info
+      icon: wf release info
+      parameters:
+      - id: DCE:f3579812-eeac-4b23-95e7-f7440532b5aa
+        name: 'WF Part Number:'
+        field: string
+        type: text
+        readonly: true
+        clearOnApply: true
+      - id: DCE:d06d9c92-d1fd-4815-996b-e0ae85351d17
+        name: 'WF Version:'
+        field: string
+        type: text
+        readonly: true
+        clearOnApply: true
+      - id: DCE:278bf8c5-9cec-432f-bdf2-cb5ff6e57f5a
+        name: 'SW Part Number:'
+        field: string
+        type: text
+        readonly: true
+        clearOnApply: true
+      - id: DCE:f3de5d5b-7c14-4748-a995-2b4697680c2d
+        name: 'SW Version:'
+        field: string
+        type: text
+        readonly: true
+        clearOnApply: true
+      - id: DCE:43c3c004-5ecc-440b-8150-5773770cb189
+        name: 'MAC: '
+        field: string
+        type: text
+        readonly: true
+        clearOnApply: true

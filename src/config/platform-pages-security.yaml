@@ -1,0 +1,31 @@
+pages:
+  - id: security
+    label: Security
+    icon: "lock"
+    parameters:
+    submenus:
+      - id: fill
+        label: Fill
+        icon: "fillKey"
+        mode: transaction
+        goOnApply: GO_BACK
+      - id: zeroize
+        label: Zeroize
+        icon: "zeta"
+        mode: transaction
+        goOnApply: GO_BACK
+      - id: remote control
+        label: Remote Control
+        icon: "remote"
+        mode: transaction
+        goOnApply: GO_BACK
+        parameters:
+          - id: login_name
+            name: Name
+            type: text
+            clearOnApply: true
+          - id: login_password
+            name: Password
+            type: password
+            clearOnApply: true
+

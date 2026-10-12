@@ -1,272 +1,235 @@
 import { useSyncExternalStore } from 'react'
 import { flattenSelectablePages, menuConfig } from './menuConfig.js'
-import { useEquipmentGateway } from './useEquipmentGateway.js'
+import { useRadioGateway } from './useRadioGateway.js'
 
-// ── Singleton state ───────────────────────────────────────
-const seenParameterIds = new Set()
-const uniqueParameters = flattenSelectablePages(menuConfig.pages)
-  .flatMap((page) =>
-    Array.isArray(page.panels) && page.panels.length > 0
-      ? page.panels.flatMap((panel) => panel.parameters ?? [])
-      : (page.parameters ?? []),
-  )
+const { getParameters, setParameters, notifyParameters, sendCommand } =
+  useRadioGateway()
+
+// ── PAGE PARAMETERS ──────────────────────────────────────
+const seen = new Set()
+
+
+const allPages = [
+  menuConfig.homePage,
+  ...(menuConfig.pages ?? []),
+].filter(Boolean)   // ← rimuove undefined se homePage manca
+
+console.log("All",allPages)
+const getPageParameters = (page) => {
+  // CASE 1: panels object (nuovo formato)
+  if (Array.isArray(page.panels) && page.panels.length > 0) {
+    return page.panels.flatMap((panel) => panel.parameters ?? [])
+  }
+
+  // CASE 2: parameters diretti (fallback vecchio formato)
+  if (Array.isArray(page.parameters)) {
+    return page.parameters
+  }
+
+  return []
+}
+
+const getLeafPages = (nodes) => {
+  let leaves = [];
+
+  if (!nodes || !Array.isArray(nodes)) return leaves;
+
+  nodes.forEach(node => {
+    // CONDIZIONE FOGLIA: Se "parameters" esiste ed è pieno, salviamo l'intera pagina
+    if (node.parameters && node.parameters.length > 0) {
+      leaves.push(node);
+    }
+    
+    // Continuiamo a cercare in profondità nei sottomenù
+    if (node.submenus && node.submenus.length > 0) {
+      leaves.push(...getLeafPages(node.submenus));
+    }
+
+    // Continuiamo a cercare in profondità nei pannelli (se presenti)
+    if (node.panels && node.panels.length > 0) {
+      leaves.push(...getLeafPages(node.panels));
+    }
+  });
+
+  return leaves;
+};
+
+// Esecuzione
+const pagesWithParameters = getLeafPages(allPages).map(pag => pag.parameters)
+console.log(pagesWithParameters);
+
+const uniqueParameters = //flattenSelectablePages(allPages)
+  //.flatMap(getPageParameters)
+  pagesWithParameters
   .filter((p) => {
-    if (seenParameterIds.has(p.id)) return false
-    seenParameterIds.add(p.id)
+    if (!p?.id) return false
+    if (seen.has(p.id)) return false
+    seen.add(p.id)
     return true
   })
+const parameterById = new Map(uniqueParameters.map((p) => [p.id, p]))
 
-const parameterById = new Map(uniqueParameters.map((param) => [param.id, param]))
+const paramToApplyConfMap = new Map()
 
-const getParameterDefaultValue = (param) => {
-  if (param?.type === 'text' || param?.type === 'password') return ''
-  return null
-}
+  pagesWithParameters.forEach((page) => {
+ 
+  console.log("pagex",page)
+  // Cerchiamo il parametro di applicazione (nascosto e required: true)
+  const applyConfParam = page.find(
+    (p) => p.visibility === 'hidden' && p.required === true
+  )
 
-const shouldClearValueOnApply = (id) => {
-  const param = parameterById.get(id)
-  return Boolean(param && (param.type === 'text' || param.type === 'password') && param.clearOnApply)
-}
+  if (applyConfParam) {
+    // Mappiamo tutti gli ALTRI parametri di questa pagina al suo "Apply"
+    page.forEach((p) => {
+      if (p.id !== applyConfParam.id) {
+        paramToApplyConfMap.set(p.id, applyConfParam)
+      }
 
-// Mutable plain objects (not Vue reactive)
-const _paramValues = Object.fromEntries([
-  ...uniqueParameters.map((p) => [p.id, getParameterDefaultValue(p)]),
-  ...menuConfig.statusIcons.map((ic) => [ic.parameterId, 'off']),
-  ...(menuConfig.headerParams ?? []).map((p) => [p.id, null]),
-])
+    })
 
-const _transactionDrafts = {}
+    console.log("------------")
+  }
+})
+console.log(paramToApplyConfMap)
 
-// Store subscription
+const getDefaultValue = (p) =>
+  p?.type === 'text' || p?.type === 'password' ? '' : null
+
+let _paramValues = Object.fromEntries(
+  uniqueParameters.map((p) => [p.id, getDefaultValue(p)])
+)
+
+
+// ── STORE CORE ───────────────────────────────────────────
 let _version = 0
 const _listeners = new Set()
-const _subscribe = (l) => { _listeners.add(l); return () => _listeners.delete(l) }
-const _getSnapshot = () => _version
-const _notify = () => { _version++; _listeners.forEach((l) => l()) }
 
-// ── Connect to apparatus via device client ────────────────
-const { getParameters, setParameters, sendCommand, notifyParameters } = useEquipmentGateway()
-
-const allParameterIds = [
-  ...uniqueParameters.map((p) => p.id),
-  ...menuConfig.statusIcons.map((ic) => ic.parameterId),
-  ...(menuConfig.headerParams ?? []).map((p) => p.id),
-]
-
-const doInitialFetch = () => {
-  getParameters(allParameterIds).then((result) => {
-    if (!result.ok) return
-    let changed = false
-    Object.entries(result.values).forEach(([id, value]) => {
-      if (id in _paramValues) { _paramValues[id] = value; changed = true }
-    })
-    if (changed) _notify()
-  })
+const _subscribe = (l) => {
+  _listeners.add(l)
+  return () => _listeners.delete(l)
 }
 
-if ('serviceWorker' in navigator) {
-  if (navigator.serviceWorker.controller) {
-    doInitialFetch()
-  } else {
-    navigator.serviceWorker.addEventListener('controllerchange', doInitialFetch, { once: true })
-  }
-} else {
-  doInitialFetch()
+const _notify = () => {
+  _version++
+  _listeners.forEach((l) => l())
 }
 
+// ── LIVE UPDATES ─────────────────────────────────────────
 notifyParameters((updates) => {
   let changed = false
-  Object.entries(updates).forEach(([id, value]) => {
-    if (id in _paramValues) { _paramValues[id] = value; changed = true }
-  })
+  for (const [k, v] of Object.entries(updates)) {
+    if (k in _paramValues) {
+      _paramValues[k] = v
+      changed = true
+    }
+  }
   if (changed) _notify()
 })
 
-// ── Exported composable ───────────────────────────────────
+// ── API ───────────────────────────────────────────────────
 export const useParameterStore = () => {
-  // Subscribe so the component re-renders when _notify() is called
-  useSyncExternalStore(_subscribe, _getSnapshot)
+  useSyncExternalStore(_subscribe, () => _version)
 
-  const ensurePageDraft = (pageId) => {
-    if (!_transactionDrafts[pageId]) _transactionDrafts[pageId] = {}
-    return _transactionDrafts[pageId]
-  }
+  // ids = [{ id, field }]
+  const refreshParameters = async (ids) => {
+        console.log("pre_Param",_paramValues)
+    const result = await getParameters(ids)
+    if (!result.ok) return
 
-  const cleanupPageDraft = (pageId) => {
-    if (_transactionDrafts[pageId] && Object.keys(_transactionDrafts[pageId]).length === 0) {
-      delete _transactionDrafts[pageId]
-    }
-  }
-
-  const stageTransactionValue = (pageId, id, value) => {
-    if (!pageId || !(id in _paramValues)) return
-    const pageDraft = ensurePageDraft(pageId)
-    const existing = pageDraft[id]
-    if (!existing) {
-      pageDraft[id] = { originalValue: _paramValues[id], currentValue: value }
-    } else {
-      existing.currentValue = value
-    }
-    const nextEntry = pageDraft[id]
-    if (Object.is(nextEntry.currentValue, nextEntry.originalValue)) {
-      delete pageDraft[id]
-      cleanupPageDraft(pageId)
-    }
+  
+    _paramValues ={...result.values}
+    console.log("pre_Param",_paramValues)
     _notify()
   }
 
-  const toggleTransactionParameter = (pageId, id) => {
-    if (!(id in _paramValues)) return
-    const param = uniqueParameters.find((p) => p.id === id)
-    const displayValue = getTransactionDisplayValue(pageId, id)
-    if (typeof displayValue === 'boolean') {
-      stageTransactionValue(pageId, id, !displayValue)
+ 
+  const setParametersValues = async (params) => {
+
+    // 1. Prepariamo la lista finale dei parametri da inviare
+    const finalParams = [...params]
+    const applyParamsToAdd = new Map()
+
+    // 2. Scopriamo se i parametri modificati richiedono un trigger "Apply"
+    for (const { id } of params) {
+      const applyConfParam = paramToApplyConfMap.get(id)
+
+      if (applyConfParam) {
+        // Prende il valore di ON (es. 1) se esiste optionsValue, altrimenti usa true
+        const triggerValue =  true
+        
+        applyParamsToAdd.set(applyConfParam.id, {
+          id: applyConfParam.id,
+          value: triggerValue,
+          field: applyConfParam.field,
+        })
+      }
+    }
+
+    // 3. Aggiungiamo i trigger "Apply" alla coda di invio (senza duplicati)
+    applyParamsToAdd.forEach((applyParam) => {
+      if (!finalParams.some((p) => p.id === applyParam.id)) {
+        finalParams.push(applyParam)
+      }
+    })
+
+    // Salvataggio locale di tutti i parametri (incluso il trigger)
+    const prevValues = {}
+    console.log("_paramValuesX",_paramValues)
+    for (const { id, value } of finalParams) {
+      prevValues[id] = _paramValues[id]
+      _paramValues[id] = value
+    }
+    _notify()
+    
+   
+
+    // Invio al server
+    const result = await setParameters(finalParams)
+
+
+
+    if (!result.ok) {
+      // Rollback
+      for (const { id } of finalParams) {
+        _paramValues[id] = prevValues[id]
+      }
+      _notify()
       return
     }
-    if (param?.type === 'enum' && param.options?.length > 0) {
-      const currentIndex = param.options.indexOf(String(displayValue))
-      const nextIndex = currentIndex === -1 ? 0 : (currentIndex + 1) % param.options.length
-      stageTransactionValue(pageId, id, param.options[nextIndex])
-    }
-  }
 
-  const setTransactionParameterValue = (pageId, id, value) => {
-    stageTransactionValue(pageId, id, value)
-  }
-
-  const getPageDraft = (pageId) => _transactionDrafts[pageId] ?? {}
-
-  const getTransactionDisplayValue = (pageId, id) => {
-    const entry = getPageDraft(pageId)[id]
-    return entry ? entry.currentValue : _paramValues[id]
-  }
-
-  const getTransactionDisplayValues = (pageId) => {
-    const pageDraft = getPageDraft(pageId)
-    const overlay = {}
-    Object.keys(pageDraft).forEach((id) => { overlay[id] = pageDraft[id].currentValue })
-    return { ..._paramValues, ...overlay }
-  }
-
-  const getTransactionModifiedIds = (pageId) => Object.keys(getPageDraft(pageId))
-
-  const hasTransactionChanges = (pageId) => getTransactionModifiedIds(pageId).length > 0
-
-  const resetTransactionPage = (pageId) => {
-    if (!_transactionDrafts[pageId]) return
-    delete _transactionDrafts[pageId]
-    _notify()
-  }
-
-  const commitTransactionPage = async (pageId) => {
-    const pageDraft = getPageDraft(pageId)
-    const entries = Object.entries(pageDraft)
-    if (!entries.length) return { ok: true, failed: [] }
-
-    const payload = Object.fromEntries(entries.map(([id, draft]) => [id, draft.currentValue]))
-    const previousValues = Object.fromEntries(entries.map(([id]) => [id, _paramValues[id]]))
-
-    Object.entries(payload).forEach(([id, nextValue]) => { _paramValues[id] = nextValue })
-    _notify()
-
-    const result = await setParameters(payload)
-    if (result.ok) {
-      Object.keys(payload).forEach((id) => {
-        if (shouldClearValueOnApply(id)) _paramValues[id] = ''
+    // Refresh dal server dei parametri appena settati
+    console.log("_paramValues",_paramValues)
+    const refreshIds = Object.keys(_paramValues)
+      .map(( id ) => {
+        const param = parameterById.get(id)
+        return param ? { id: param.id, field: param.field } : null
       })
-      delete _transactionDrafts[pageId]
-      _notify()
-      return { ok: true, failed: [] }
-    }
+      .filter(Boolean)
 
-    Object.entries(previousValues).forEach(([id, prevValue]) => { _paramValues[id] = prevValue })
-    _notify()
-    return {
-      ok: false,
-      failed: Object.keys(payload),
-      message: result.message ?? 'Send error: check device connection.',
+    if (refreshIds.length > 0) {
+      const refreshResult = await getParameters(refreshIds)
+      if (refreshResult.ok) {
+        _paramValues = { ...refreshResult.values }
+        _notify()
+      }
     }
   }
 
   const toggleParameter = async (id) => {
-    if (typeof _paramValues[id] === 'boolean') {
-      const previous = _paramValues[id]
-      const newValue = !previous
-      _paramValues[id] = newValue
-      _notify()
-      const result = await setParameters({ [id]: newValue })
-      if (result.ok) return { ok: true }
-      _paramValues[id] = previous
-      _notify()
-      return { ok: false, message: result.message ?? 'Parameter update error.' }
-    }
-    const param = uniqueParameters.find((p) => p.id === id)
-    if (param?.type === 'enum' && param.options?.length > 0) {
-      const currentIndex = param.options.indexOf(String(_paramValues[id]))
-      const nextIndex = currentIndex === -1 ? 0 : (currentIndex + 1) % param.options.length
-      const previous = _paramValues[id]
-      const newValue = param.options[nextIndex]
-      _paramValues[id] = newValue
-      _notify()
-      const result = await setParameters({ [id]: newValue })
-      if (result.ok) return { ok: true }
-      _paramValues[id] = previous
-      _notify()
-      return { ok: false, message: result.message ?? 'Parameter update error.' }
-    }
-    return { ok: false, message: 'Parameter is read-only.' }
+    const v = _paramValues[id]
+    const next = typeof v === 'boolean' ? !v : v
+    await setParametersValues([{ id, value: next }])
   }
-
-  const setParameterValue = async (id, value) => {
-    if (id in _paramValues) {
-      const previous = _paramValues[id]
-      _paramValues[id] = value
-      _notify()
-      const result = await setParameters({ [id]: value })
-      if (result.ok) {
-        if (shouldClearValueOnApply(id)) { _paramValues[id] = ''; _notify() }
-        return { ok: true }
-      }
-      _paramValues[id] = previous
-      _notify()
-      return { ok: false, message: result.message ?? 'Parameter update error.' }
-    }
-    return { ok: false, message: 'Parameter not found.' }
-  }
-
-  const refreshParameters = async (ids) => {
-    const result = await getParameters(ids)
-    if (!result.ok) return
-    let changed = false
-    Object.entries(result.values).forEach(([id, value]) => {
-      if (id in _paramValues) { _paramValues[id] = value; changed = true }
-    })
-    if (changed) _notify()
-  }
-
-  const getManagedParameters = () =>
-    uniqueParameters.map((param) => ({ ...param, value: _paramValues[param.id] }))
-
-  const getManagedParameterIds = () => uniqueParameters.map((param) => param.id)
 
   return {
     parameterValues: _paramValues,
-    toggleParameter,
-    setParameterValue,
-    sendCommand,
-    toggleTransactionParameter,
-    setTransactionParameterValue,
-    getTransactionDisplayValues,
-    getTransactionModifiedIds,
-    hasTransactionChanges,
-    resetTransactionPage,
-    commitTransactionPage,
     refreshParameters,
-    getManagedParameters,
-    getManagedParameterIds,
+    setParametersValues,
+    toggleParameter,
+    sendCommand,
   }
 }
 
-// Module-level exports for use outside React components (e.g., window.hmiDebug)
 export const _getParamValues = () => _paramValues
 export { sendCommand as _sendCommand }

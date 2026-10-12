@@ -1,15 +1,26 @@
 import { useEffect } from 'react'
 import { useParameterStore } from './useParameterStore.js'
 
-export const useCurrentPageParameterRefresh = ({ currentPage, pageParameters }) => {
+export const useCurrentPageParameterRefresh = ({
+  currentPage,
+  currentPanelIndex,
+  pageParameters,
+}) => {
   const { refreshParameters } = useParameterStore()
 
   useEffect(() => {
     if (!currentPage) return
-    const ids = pageParameters.map((param) => param.id)
-    if (ids.length > 0) {
-      refreshParameters(ids)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentPage])
+    if (!pageParameters?.length) return
+
+    const ids = pageParameters.map((p) => ({
+      id: p.id,
+      field: p.field,
+    }))
+
+    refreshParameters(ids)
+  }, [
+    currentPage?.id,
+    currentPanelIndex,
+    pageParameters,
+  ])
 }

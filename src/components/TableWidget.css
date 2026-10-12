@@ -1,0 +1,98 @@
+.table-widget {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  flex: 1 1 auto;
+  border: 1px solid var(--border);
+  border-radius: 0.45rem;
+  background: var(--bg-btn);
+  overflow: hidden;
+  max-height: 100%;
+}
+
+.table-widget__title {
+  flex: 0 0 auto;
+  padding: 0.45rem 0.75rem;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  background: var(--bg-main);
+  border-bottom: 1px solid var(--border);
+}
+
+.table-widget__scroll-area {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch; 
+}
+
+.table-widget__table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.table-widget__table th {
+  position: sticky;
+  top: 0;
+  background: var(--bg-main); 
+  padding: 0.6rem 0.75rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border);
+  z-index: 10;
+}
+
+/* Base della riga */
+.table-widget__row {
+  height: 4rem; /* Leggermente più alta per il touch */
+  transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+  cursor: pointer;
+}
+
+.table-widget__row td {
+  padding: 0.5rem 0.75rem;
+  font-size: 1.1rem;
+  color: var(--text-primary);
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 50%, transparent);
+  transition: inherit;
+}
+
+/* * EFFETTO FOCUS E ZOOM 
+ */
+
+/* 1. Oscura le righe non selezionate quando la tabella ha un focus attivo */
+.table-widget__tbody--focused .table-widget__row:not(.table-widget__row--active) {
+  opacity: 0.4;
+  filter: grayscale(80%);
+}
+
+/* 2. Esalta la riga attiva (Il nostro finto "Zoom") */
+.table-widget__row--active {
+  background: color-mix(in srgb, var(--text-blue) 15%, var(--bg-main)) !important;
+  /* Mette un bordo colorato "sopra" la riga senza rompere l'allineamento della tabella */
+  outline: 2px solid var(--text-blue);
+  outline-offset: -2px;
+  position: relative;
+  z-index: 5;
+}
+
+.table-widget__row--active td {
+  color: var(--text-blue);
+  font-weight: 700;
+  /* Aumenta leggermente il testo della cella in focus */
+  font-size: 1.15rem; 
+  border-bottom-color: transparent;
+}
+
+.table-widget__empty {
+  text-align: center !important;
+  color: var(--text-secondary) !important;
+  font-style: italic;
+  padding: 3rem !important;
+}

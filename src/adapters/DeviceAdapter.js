@@ -64,9 +64,6 @@ export class DeviceAdapter {
    * >}
    */
   // eslint-disable-next-line no-unused-vars
-  async getParameters(ids) {
-    throw new Error('DeviceAdapter.getParameters() must be implemented by subclass.')
-  }
 
   /**
    * Apply a map of parameter updates to the apparatus.
@@ -99,6 +96,10 @@ export class DeviceAdapter {
   async sendCommand(commandId, params = {}) {
     throw new Error('DeviceAdapter.sendCommand() must be implemented by subclass.')
   }
+  async getParameters(ids) {
+    throw new Error('DeviceAdapter.getParameters() must be implemented by subclass.')
+  }
+
 
   /**
    * Subscribe to asynchronous parameter change notifications from the apparatus.

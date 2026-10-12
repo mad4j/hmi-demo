@@ -6,12 +6,16 @@ import EnumEditorModal from './EnumEditorModal.jsx'
 import PercentageEditorModal from './PercentageEditorModal.jsx'
 import TextEditorModal from './TextEditorModal.jsx'
 import DateEditorModal from './DateEditorModal.jsx'
-import TableParameterView from './TableParameterView.jsx'
+import NumberEditorModal from './NumberEditorModal'
+import LinkWidget from './LinkWidget'
+import AlarmPanel from './AlarmPanel.jsx'
 
-const EDITABLE_TYPES = ['percentage', 'text', 'password', 'date', 'enum']
+const EDITABLE_TYPES = ['percentage', 'text', 'password', 'date', 'enum', 'number']
 
 export default function PageParametersView({
+  pageId,
   parameters,
+  submenus = [],  
   parameterValues,
   transactionMode = false,
   modifiedParameterIds = [],
@@ -22,15 +26,27 @@ export default function PageParametersView({
   onSetParameterValue,
   onSubmitTransaction,
   onResetTransaction,
+  onRefreshParameter,
   onPanelChange,
+  onNavigate,
 }) {
-  // editingParamId is intentionally kept as internal state: it controls which modal is
-  // open and has no cross-cutting concern (unlike currentPanel which feeds the notification bar).
   const [editingParamId, setEditingParamId] = useState(null)
+  // Valori locali pendenti: { [id]: value }
+  const [pendingValues, setPendingValues] = useState({})
   const dragRef = useRef({ startX: 0, isDragging: false })
 
   const hasPanels = Array.isArray(panels) && panels.length > 0
   const totalPanels = hasPanels ? panels.length : 1
+  const visibleSubmenus = hasPanels
+  ? (panels[currentPanel]?.submenus ?? []).filter((s) => s.visibility !== 'hidden')
+  : (submenus ?? []).filter((s) => s.visibility !== 'hidden')
+  const hasModifications = Object.keys(pendingValues).length > 0
+
+  // Valore effettivo da mostrare: pending ha priorità su parameterValues
+  const resolvedValues = useMemo(
+    () => ({ ...parameterValues, ...pendingValues }),
+    [parameterValues, pendingValues]
+  )
 
   // Global Enter keydown for transaction submit
   useEffect(() => {
@@ -38,19 +54,18 @@ export default function PageParametersView({
       if (e.key !== 'Enter') return
       if (!transactionMode) return
       if (editingParamId !== null) return
-      if (!canSubmitTransaction) return
+      if (!hasModifications) return
       e.preventDefault()
-      onSubmitTransaction?.()
+      handleSubmit()
     }
     document.addEventListener('keydown', handler)
     return () => document.removeEventListener('keydown', handler)
-  }, [transactionMode, editingParamId, canSubmitTransaction, onSubmitTransaction])
+  }, [transactionMode, editingParamId, hasModifications, pendingValues])
 
-  const visibleParameters = hasPanels ? (panels[currentPanel]?.parameters ?? []) : parameters
-  const tableParameter = visibleParameters.find((param) => param?.type === 'table') ?? null
-  const visibleStandardParameters = tableParameter
-    ? []
-    : visibleParameters
+  const visibleParameters = hasPanels ? (panels[currentPanel]?.parameters ?? []).filter(
+    (p) => p.visibility !== 'hidden'): parameters
+
+
   const allParameters = useMemo(
     () => hasPanels ? panels.flatMap((p) => p.parameters ?? []) : parameters,
     [hasPanels, panels, parameters]
@@ -60,39 +75,12 @@ export default function PageParametersView({
     onPanelChange?.(Math.max(0, Math.min(index, totalPanels - 1)))
   }
 
-  const getWrappedPanelIndex = (index) => {
-    if (totalPanels <= 0) return 0
-    return ((index % totalPanels) + totalPanels) % totalPanels
+  const handlePanelKeydown = (e, panelIndex) => {
+    if (e.key === 'ArrowRight') { e.preventDefault(); goToPanel(panelIndex + 1) }
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); goToPanel(panelIndex - 1) }
+    else if (e.key === 'Home') { e.preventDefault(); goToPanel(0) }
+    else if (e.key === 'End') { e.preventDefault(); goToPanel(totalPanels - 1) }
   }
-
-  useEffect(() => {
-    if (!hasPanels || totalPanels <= 1) return undefined
-
-    const handler = (e) => {
-      if (e.defaultPrevented) return
-
-      const target = e.target
-      const tagName = target?.tagName?.toLowerCase?.() ?? ''
-      const isTypingContext =
-        tagName === 'input' ||
-        tagName === 'textarea' ||
-        tagName === 'select' ||
-        target?.isContentEditable
-
-      if (isTypingContext) return
-
-      if (e.key === 'ArrowRight') {
-        e.preventDefault()
-        goToPanel(getWrappedPanelIndex(currentPanel + 1))
-      } else if (e.key === 'ArrowLeft') {
-        e.preventDefault()
-        goToPanel(getWrappedPanelIndex(currentPanel - 1))
-      }
-    }
-
-    document.addEventListener('keydown', handler)
-    return () => document.removeEventListener('keydown', handler)
-  }, [hasPanels, totalPanels, currentPanel, onPanelChange])
 
   const onDragStart = (e) => {
     dragRef.current.startX = e.touches ? e.touches[0].clientX : e.clientX
@@ -106,28 +94,57 @@ export default function PageParametersView({
     if (Math.abs(delta) > 40) goToPanel(currentPanel + (delta > 0 ? 1 : -1))
   }
 
-  const editingParam = editingParamId ? allParameters.find((p) => p.id === editingParamId) ?? null : null
+  const editingParam = editingParamId
+    ? allParameters.find((p) => p.id === editingParamId) ?? null
+    : null
+
+  // Salva in pendingValues invece di chiamare subito onSetParameterValue
+  const applyPendingValue = (id, newValue) => {
+    setPendingValues((prev) => ({ ...prev, [id]: newValue }))
+  }
 
   const confirmEdit = (newValue) => {
-    if (editingParamId !== null) onSetParameterValue?.(editingParamId, newValue)
+    if (editingParamId !== null) applyPendingValue(editingParamId, newValue)
     setEditingParamId(null)
   }
   const cancelEdit = () => setEditingParamId(null)
 
   const confirmAndNext = (newValue) => {
-    if (editingParamId !== null) onSetParameterValue?.(editingParamId, newValue)
+    if (editingParamId !== null) applyPendingValue(editingParamId, newValue)
     const editableParams = allParameters.filter((p) => !p.readonly && EDITABLE_TYPES.includes(p.type))
     const currentIdx = editableParams.findIndex((p) => p.id === editingParamId)
     const nextParam = editableParams[currentIdx + 1] ?? null
     setEditingParamId(nextParam?.id ?? null)
   }
 
-  const isParameterModified = (paramId) => modifiedParameterIds.includes(paramId)
+  const isParameterModified = (paramId) => paramId in pendingValues
 
   const getTextEditorValue = () => {
     if (!editingParam) return ''
-    if (!editingParam.clearOnApply) return parameterValues[editingParam.id] ?? ''
-    return isParameterModified(editingParam.id) ? (parameterValues[editingParam.id] ?? '') : ''
+    if (!editingParam.clearOnApply) return resolvedValues[editingParam.id] ?? ''
+    return isParameterModified(editingParam.id) ? (resolvedValues[editingParam.id] ?? '') : ''
+  }
+
+  // Submit: manda tutti i pending come [{id: value}, ...]
+  const handleSubmit = async () => {
+    const fieldMap = new Map(
+      visibleParameters.map(p => [p.id, p.field])
+    );
+
+    const payload = Object.entries(pendingValues).map(([id, value]) => ({
+      id,
+      value,
+      field: fieldMap.get(id)
+    }));
+    await onSubmitTransaction?.(payload)
+    setPendingValues({})
+  }
+
+  // Reset: svuota i pending e chiede refresh dei valori originali
+  const handleReset = () => {
+    setPendingValues({})
+    const visibleIds = visibleParameters.map((p) => p.id)
+    onRefreshParameter?.(visibleIds)
   }
 
   const panelWrapperProps = hasPanels ? {
@@ -138,6 +155,10 @@ export default function PageParametersView({
     onTouchEnd: onDragEnd,
   } : {}
 
+  if (pageId === 'allarmi') {
+    return <AlarmPanel />
+  }
+
   return (
     <>
       <div className="page-parameters-view">
@@ -146,42 +167,47 @@ export default function PageParametersView({
             className={`panels-wrapper${hasPanels ? ' panels-wrapper--active' : ''}`}
             {...panelWrapperProps}
           >
-            <div className={`widget-grid${tableParameter ? ' widget-grid--table' : ''}`}>
-              {tableParameter ? (
-                <TableParameterView
-                  title={tableParameter.name}
-                  rawValue={parameterValues[tableParameter.id]}
+            <div className="widget-grid">
+              {visibleParameters.map((param) => (
+                <ParameterWidget
+                  key={param.id}
+                  name={param.name}
+                  type={param.type}
+                  unit={param.unit}
+                  precision={param.type == 'number' ? 1 : param.precision}
+                  options={param.optionsLabel}
+                  optionsValue={param.optionsValue}
+                  value={resolvedValues[param.id]}  
+                  readonly={param.readonly}
+                  modified={isParameterModified(param.id)}
+                  onToggle={() => onToggleParameter?.(param.id)}
+                  onEdit={() => setEditingParamId(param.id)}
                 />
-              ) : (
-                visibleStandardParameters.map((param) => (
-                  <ParameterWidget
-                    key={param.id}
-                    name={param.name}
-                    type={param.type}
-                    unit={param.unit}
-                    precision={param.precision}
-                    options={param.options}
-                    value={parameterValues[param.id]}
-                    readonly={param.readonly}
-                    modified={isParameterModified(param.id)}
-                    onToggle={() => onToggleParameter?.(param.id)}
-                    onEdit={() => setEditingParamId(param.id)}
-                  />
-                ))
-              )}
+              ))}
+
+              {/* <-- AGGIUNGI QUESTO BLOCCO: Stampa i sottomenu se ce ne sono --> */}
+              {visibleSubmenus.map((submenu) => (
+                <LinkWidget
+                  key={submenu.id}
+                  label={submenu.label}
+                  icon={submenu.icon}
+                  onNavigate={() => onNavigate?.(submenu.id)}
+                />
+              ))}
             </div>
 
             {hasPanels && totalPanels > 1 && (
-              <div className="panel-indicators" aria-label="Panels">
+              <div className="panel-indicators" role="tablist" aria-label="Panels">
                 {Array.from({ length: totalPanels }, (_, i) => (
                   <button
                     key={i}
                     className={`panel-dot${i === currentPanel ? ' panel-dot--active' : ''}`}
-                    aria-current={i === currentPanel ? 'true' : undefined}
+                    role="tab"
+                    aria-selected={i === currentPanel}
                     aria-label={`Panel ${i + 1}`}
-                    tabIndex={-1}
-                    onMouseDown={(e) => e.preventDefault()}
+                    tabIndex={i === currentPanel ? 0 : -1}
                     onClick={(e) => { e.stopPropagation(); goToPanel(i) }}
+                    onKeyDown={(e) => handlePanelKeydown(e, i)}
                   />
                 ))}
               </div>
@@ -189,35 +215,49 @@ export default function PageParametersView({
           </div>
         )}
 
-        {transactionMode && (
-          <div className="transaction-actions" role="group" aria-label="Transaction actions">
-            <button
-              className="transaction-button transaction-button--reset"
-              type="button"
-              aria-label="Reset"
-              disabled={!canSubmitTransaction}
-              onClick={onResetTransaction}
-            >
-              <AppIcon name="reset" size={16} />
-            </button>
-            <button
-              className="transaction-button transaction-button--submit"
-              type="button"
-              aria-label="Invia"
-              disabled={!canSubmitTransaction}
-              onClick={onSubmitTransaction}
-            >
-              <AppIcon name="send" size={16} />
-            </button>
-          </div>
-        )}
+         <div
+  className={`transaction-actions ${
+    hasModifications ? "transaction-actions--modified" : ""
+  }`}
+  role="group"
+  aria-label="Transaction actions"
+>
+
+  {/* RESET / RELOAD */}
+  <button
+    className="transaction-button transaction-button--reset"
+    type="button"
+    aria-label={hasModifications ? "Reset" : "Reload"}
+    onClick={handleReset}
+  >
+    <AppIcon
+      name={hasModifications ? "reset" : "reload"}
+      size={hasModifications ?24:24}
+      className={hasModifications ? "is-modified" : ""}
+    />
+  </button>
+
+  {/* SUBMIT */}
+  <button
+    className="transaction-button transaction-button--submit"
+    type="button"
+    aria-label="Invia"
+    onClick={handleSubmit}
+    disabled={!hasModifications}
+  >
+    <AppIcon name="send" size={24} />
+  </button>
+
+</div>
+        
       </div>
 
       {editingParam?.type === 'enum' && (
         <EnumEditorModal
           name={editingParam.name}
-          value={parameterValues[editingParam.id]}
-          options={editingParam.options ?? []}
+          value={resolvedValues[editingParam.id]}
+          optionsValue={editingParam.optionsValue}
+          options={editingParam.optionsLabel ?? []}
           onConfirm={confirmEdit}
           onCancel={cancelEdit}
         />
@@ -225,7 +265,7 @@ export default function PageParametersView({
       {editingParam?.type === 'percentage' && (
         <PercentageEditorModal
           name={editingParam.name}
-          value={Number(parameterValues[editingParam.id] ?? 0)}
+          value={Number(resolvedValues[editingParam.id] ?? 0)}
           onConfirm={confirmEdit}
           onCancel={cancelEdit}
           onConfirmAndNext={confirmAndNext}
@@ -245,7 +285,21 @@ export default function PageParametersView({
       {editingParam?.type === 'date' && (
         <DateEditorModal
           name={editingParam.name}
-          value={parameterValues[editingParam.id] ?? ''}
+          value={resolvedValues[editingParam.id] ?? ''}
+          onConfirm={confirmEdit}
+          onCancel={cancelEdit}
+          onConfirmAndNext={confirmAndNext}
+        />
+      )}
+      {editingParam?.type === 'number' && (
+        <NumberEditorModal
+          key={editingParam.id}
+          name={editingParam.name}
+          value={resolvedValues[editingParam.id]}
+          min={editingParam.min}
+          max={editingParam.max}
+          unit={editingParam.unit}
+          precision={editingParam.precision}
           onConfirm={confirmEdit}
           onCancel={cancelEdit}
           onConfirmAndNext={confirmAndNext}

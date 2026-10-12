@@ -1,7 +1,7 @@
 import { useSyncExternalStore, useEffect } from 'react'
 import { useParameterStore } from './useParameterStore.js'
-import { useEquipmentGateway } from './useEquipmentGateway.js'
-
+import { useRadioGateway } from './useRadioGateway.js'
+import { useHeaderStore } from './useHeaderStore.js' 
 const MISSION_TIME_PLACEHOLDER = '--:--:--'
 const APPARATUS_TIME_PARAM_ID = 'ora_sistema'
 const APPARATUS_TIMEZONE_PARAM_ID = 'timezone_riferimento'
@@ -73,8 +73,7 @@ const updateMissionTimeTick = () => {
 }
 
 export const useHeaderState = () => {
-  const { parameterValues } = useParameterStore()
-  const { getParameters } = useEquipmentGateway()
+  const { headerValues: parameterValues } = useHeaderStore()
 
   // Subscribe to header clock changes
   useSyncExternalStore(_subscribeHeader, _getHeaderSnapshot)
@@ -95,10 +94,12 @@ export const useHeaderState = () => {
     _missionClockStarted = true
 
     const syncMissionTimeFromApparatus = async () => {
+      /*
       const result = await getParameters([APPARATUS_TIME_PARAM_ID, APPARATUS_TIMEZONE_PARAM_ID])
       if (!result.ok) return
       const timeValue = result.values?.[APPARATUS_TIME_PARAM_ID]
       const zoneValue = result.values?.[APPARATUS_TIMEZONE_PARAM_ID]
+      */
       let changed = false
       if (syncMissionTimeFromValue(timeValue)) changed = true
       if (syncMissionTimeZoneFromValue(zoneValue)) changed = true

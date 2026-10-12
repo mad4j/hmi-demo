@@ -38,7 +38,32 @@ const HTTP_STATUS_TO_ERROR_CODE = {
 }
 
 const POLL_INTERVAL_MS = 3000
+const CMD_GET_RADIO_CHANNELS = 39
+const CMD_GET_WAV_INFO_INSTANTIATED = 2 
+function transformResponse(response) {
 
+  if (!response || response.ok !== true) {
+    return {
+      ok: false,
+      values: {}
+    };
+  }
+
+  const arr = response.values || [];
+
+  const values = {};
+
+  arr.forEach(item => {
+
+    values[item.id] = item.value;
+
+  });
+
+  return {
+    ok: true,
+    values
+  };
+}
 // ── Adapter implementation ────────────────────────────────────────────────
 
 export class NetworkAdapter extends DeviceAdapter {
@@ -123,73 +148,320 @@ export class NetworkAdapter extends DeviceAdapter {
    * @param {RequestInit} [init]
    * @returns {Promise<{ ok: true, [key: string]: unknown } | { ok: false, error: DeviceError }>}
    */
-  async _fetch(url, init) {
-    let response
-    try {
-      response = await fetch(url, {
-        headers: { 'Content-Type': 'application/json', ...((init?.headers) ?? {}) },
-        ...init,
-      })
-    } catch (err) {
-      return {
-        ok: false,
-        error: new DeviceError(
-          ErrorCode.NETWORK_ERROR,
-          'Impossibile raggiungere il dispositivo. Verifica la connessione.',
-          err,
-        ),
-      }
-    }
-
-    let body
-    try {
-      body = await response.json()
-    } catch {
-      body = {}
-    }
-
-    const hasApplicationError = body?.ok === false
-
-    if (!response.ok || hasApplicationError) {
-      const code =
-        body?.code ??
-        HTTP_STATUS_TO_ERROR_CODE[response.status] ??
-        ErrorCode.NETWORK_ERROR
-
-      const defaultMessage = response.ok
-        ? `Errore applicativo da ${url}.`
-        : `Errore HTTP ${response.status} da ${url}.`
-
-      return {
-        ok: false,
-        error: new DeviceError(
-          code,
-          body?.message ?? defaultMessage,
-          body?.details,
-        ),
-      }
-    }
-
-    return { ok: true, ...body }
-  }
-
+ 
   // ── DeviceAdapter contract ───────────────────────────────────────────────
+// =========================================================
+// GENERIC HTML FETCH
+// =========================================================
 
-  /** @override */
-  async getParameters(ids) {
-    if (!Array.isArray(ids) || ids.length === 0) return { ok: true, values: {} }
-    const query = encodeURIComponent(ids.join(','))
-    return this._fetch(this._url(`/api/parameters?ids=${query}`))
-  }
+async _fetch(url, init) {
+  let response
 
-  /** @override */
-  async setParameters(updates) {
-    return this._fetch(this._url('/api/parameters'), {
-      method: 'POST',
-      body: JSON.stringify(updates),
+  try {
+    response = await fetch(url, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        ...((init?.headers) ?? {}),
+      },
+      ...init,
     })
+  } catch (err) {
+    return {
+      ok: false,
+      error: new DeviceError(
+        ErrorCode.NETWORK_ERROR,
+        'Impossibile raggiungere il dispositivo. Verifica la connessione.',
+        err,
+      ),
+    }
   }
 
+  let html = ''
+
+  try {
+    html = await response.text()
+  } catch (err) {
+    return {
+      ok: false,
+      error: new DeviceError(
+        ErrorCode.NETWORK_ERROR,
+        'Risposta non valida dal dispositivo.',
+        err,
+      ),
+    }
+  }
+
+  if (!response.ok) {
+    const code =
+      HTTP_STATUS_TO_ERROR_CODE[response.status] ??
+      ErrorCode.NETWORK_ERROR
+
+    return {
+      ok: false,
+      error: new DeviceError(
+        code,
+        `Errore HTTP ${response.status} da ${url}.`,
+      ),
+    }
+  }
+
+  return this._parseHtmlResponse(html)
+}
+
+// =========================================================
+// GENERIC HTML PARSER
+// =========================================================
+
+_parseHtmlResponse(html) {
+  const parser = new DOMParser()
+  const doc = parser.parseFromString(html, 'text/html')
+
+  const getValue = (id) =>
+    doc.getElementById(id)?.textContent?.trim() ?? ''
+
+  const error = getValue('ERROR')
+  const resultRaw = getValue('RESULT')
+
+  let result = resultRaw
+
+  try {
+    result = resultRaw ? JSON.parse(resultRaw) : null
+  } catch {
+    // keep raw string
+  }
+
+  if (error !== '0') {
+    return {
+      ok: false,
+      error: new DeviceError(
+        ErrorCode.DEVICE_ERROR,
+        `Device returned error ${error}`,
+        { error },
+      ),
+    }
+  }
+
+  return {
+    ok: true,
+    values: result,
+    meta: {
+      clientUniqueId: getValue('CLIENT_UNIQUE_ID'),
+      cmdType: getValue('CMD_TYPE'),
+      fragmentationId: getValue('FRAGMENTATION_ID'),
+    },
+  }
+}
+
+// =========================================================
+// GENERIC COMMAND
+// =========================================================
+
+async _postCommand(cmdType, clientUniqueId, parameters = {}) {
+  const body = new URLSearchParams({
+    CLIENT_UNIQUE_ID: clientUniqueId,
+    CMD_TYPE: String(cmdType),
+    PARAMETER_1: parameters.PARAMETER_1 ?? '',
+    PARAMETER_2: parameters.PARAMETER_2 ?? '',
+    PARAMETER_3: parameters.PARAMETER_3 ?? '',
+    PARAMETER_4: parameters.PARAMETER_4 ?? '',
+    PARAMETER_5: parameters.PARAMETER_5 ?? '',
+  })
+
+  return this._fetch(
+    this._url('/platform/browser/html/datapage.html'),
+    {
+      method: 'POST',
+      body: body.toString(),
+    },
+  )
+}
+
+// =========================================================
+// METHODS
+// =========================================================
+
+async getRadioChannels(clientUniqueId) {
+  return this._postCommand(39, clientUniqueId)
+}
+
+async getWavInfoInstantiated(clientUniqueId) {
+  return this._postCommand(40, clientUniqueId)
+}
+
+
+async getWaveformParameter(ids,clientUniqueId){
+  
+const DCE_PROP_SEP = '\x12' + '0' + '\x11';
+const DCE_SEP = '\x10';
+
+const MAX_LEN = 180;
+
+const transcodeType = (type) => {
+
+  switch ((type || '').toLowerCase()) {
+
+  case 'ulong':
+    return 6;
+
+  case 'long':
+    return 4;
+
+  case 'boolean':
+  case 'bool':
+    return 3;
+
+  case 'string':
+    return 2;
+
+  case 'char':
+    return 1;
+
+  case 'short':
+    return 5;
+
+  case 'ushort':
+    return 7;
+    
+  case 'octets':
+    return 8;
+
+  case 'octet':
+    return 8;
+
+
+  case 'float':
+    return 9;
+
+  case 'double':
+    return 10;
+
+  case 'ipaddr':
+    return 11;
+
+  default:
+    return -1;
+  }
+
+}
+
+
+// SERIALIZZAZIONE COMPLETA
+let payload = '';
+
+for (const item of ids) {
+  payload +=
+    item.id +
+    DCE_PROP_SEP +
+    transcodeType(item.field) +
+    DCE_SEP
+}
+
+// SPLIT LEGACY
+const chunks = [];
+
+for (let i = 0; i < payload.length; i += MAX_LEN) {
+  chunks.push(payload.slice(i, i + MAX_LEN));
+}
+
+let result = await this._postCommand(
+  5,
+  clientUniqueId,
+  {
+    PARAMETER_1: `1\x10*`,
+    PARAMETER_2: chunks[0] || '',
+    PARAMETER_3: chunks[1] || '',
+    PARAMETER_4: chunks[2] || '',
+    PARAMETER_5: chunks[3] || ''
+  }
+);
+
+ 
+  let resultFormatted =  transformResponse(result);
+  
+   return resultFormatted;
+}
+
+async setWaveformParameters(payload, clientUniqueId) {
+
+  const DCE_PROP_SEP_1 = '\x12';
+  const DCE_PROP_SEP_2 = '\x11';
+  const DCE_SEP = '\x10';
+
+  const MAX_LEN = 180;
+
+  const transcodeType = (type) => {
+    switch ((type || '').toLowerCase()) {
+      case 'ulong': return 6;
+      case 'long': return 4;
+      case 'boolean':
+      case 'bool': return 3;
+      case 'string': return 2;
+      case 'char': return 1;
+      case 'short': return 5;
+      case 'ushort': return 7;
+      case 'octets':
+      case 'octet': return 8;
+      case 'float': return 9;
+      case 'double': return 10;
+      case 'ipaddr': return 11;
+      default: return -1;
+    }
+  };
+
+  // -----------------------------
+  // SERIALIZZAZIONE DCE
+  // id + type + value
+  // -----------------------------
+  let raw = '';
+
+  for (const item of payload) {
+
+    raw +=
+      item.id +
+      DCE_PROP_SEP_1 +
+      item.value+
+      DCE_PROP_SEP_2+
+      transcodeType(item.field) +
+      DCE_SEP;
+  }
+
+  // -----------------------------
+  // CHUNKING LEGACY
+  // -----------------------------
+  const chunks = [];
+
+  for (let i = 0; i < raw.length; i += MAX_LEN) {
+    chunks.push(raw.slice(i, i + MAX_LEN));
+  }
+
+
+  const result = await this._postCommand(
+    6,
+    clientUniqueId,
+     {
+    PARAMETER_1: `1\x10*`,
+    PARAMETER_2: chunks[0] || '',
+    PARAMETER_3: chunks[1] || '',
+    PARAMETER_4: chunks[2] || '',
+    PARAMETER_5: chunks[3] || ''
+  }
+  );
+
+  return transformResponse(result);
+}
+
+  /** @override */
+async setParameters(updates) {
+  let res = await this.setWaveformParameters(updates,"1779355385957387606308FFFFFFFFF.FFFFFFFFF")
+  return res;
+  }
+  
+    /** @override **/
+async getParameters(ids) {
+
+ let res = await this.getWaveformParameter(ids,"1779355385957387606308FFFFFFFFF.FFFFFFFFF")
+ return res;
+}
   /**
    * Send a named command to the apparatus.
    *

@@ -1,6 +1,8 @@
 import LinkWidget from './LinkWidget.jsx'
 
 export default function HmiLinkGridPage({ items, onNavigate }) {
+
+ 
   return (
     <div className="widget-grid">
       {items.map((item) => (

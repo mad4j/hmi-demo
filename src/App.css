@@ -37,10 +37,9 @@ button:active {
   margin: auto 0;
 }
 
-/* Default: 4 columns (800×600) */
 .widget-grid > * {
   box-sizing: border-box;
-  flex: 0 0 calc(25% - 0.375rem);
+  flex: 0 0 calc((100% - (var(--hmi-columns, 4) - 1) * 0.5rem) / var(--hmi-columns, 4));
 }
 
 /* ── Settings page ──────────────────────────────────────── */
@@ -52,54 +51,6 @@ button:active {
   justify-content: center;
 }
 
-/* Default: 4 columns */
 .settings-widget {
-  width: calc((100% - 1.5rem) / 4);
-}
-
-/* ── 1920×1080: 6 columns ───────────────────────────────── */
-@media (min-width: 1920px) and (min-height: 1080px) {
-  .widget-grid > * {
-    flex: 0 0 calc(16.667% - 0.417rem);
-  }
-
-  .settings-widget {
-    width: calc((100% - 2.5rem) / 6);
-  }
-}
-
-/* Forced profile column overrides */
-html[data-resolution-profile='800x600'] .widget-grid > *,
-html[data-resolution-profile='1024x768'] .widget-grid > * {
-  flex: 0 0 calc(25% - 0.375rem);
-}
-html[data-resolution-profile='800x600'] .settings-widget,
-html[data-resolution-profile='1024x768'] .settings-widget {
-  width: calc((100% - 1.5rem) / 4);
-}
-html[data-resolution-profile='1920x1080'] .widget-grid > * {
-  flex: 0 0 calc(16.667% - 0.417rem);
-}
-html[data-resolution-profile='1920x1080'] .settings-widget {
-  width: calc((100% - 2.5rem) / 6);
-}
-
-@media (max-width: 599px) {
-  .widget-grid > * {
-    flex: 0 0 calc(33.333% - 0.334rem);
-  }
-
-  .settings-widget {
-    width: calc((100% - 1rem) / 3);
-  }
-}
-
-@media (max-width: 399px) {
-  .widget-grid > * {
-    flex: 0 0 calc(50% - 0.25rem);
-  }
-
-  .settings-widget {
-    width: calc((100% - 0.5rem) / 2);
-  }
+  width: calc((100% - (var(--hmi-columns, 4) - 1) * 0.5rem) / var(--hmi-columns, 4));
 }

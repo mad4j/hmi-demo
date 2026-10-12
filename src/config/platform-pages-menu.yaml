@@ -3,589 +3,271 @@ pages:
     label: Menu
     icon: "menu"
     submenus:
-      - id: climatizzazione
-        label: Air Conditioning
+      - id: test
+        label: TEST
         parameters:
-          - id: temp_abitacolo
-            name: Temperature
+          - id: POST
+            name: POST
             type: number
-            unit: "°C"
+            unit: ""
+            precision: 1
+          - id: IBIT
+            name: IBIT
+            type: number
+            unit: ""
+            precision: 1
+          - id: CBIT
+            name: CBIT
+            type: number
+            unit: ""
             precision: 1
             readonly: true
-          - id: temp_impostata
-            name: Set
+          - id: TEST REPORT
+            name: TEST REPORT
             type: number
-            unit: "°C"
-            precision: 1
-          - id: temp_esterna
-            name: Ext. Temp.
-            type: number
-            unit: "°C"
-            precision: 1
-            readonly: true
-          - id: umidita
-            name: Humidity
-            type: percentage
             precision: 0
-            readonly: true
-          - id: ventilazione_attiva
-            name: Ventilation
-            type: boolean
-          - id: aria_ricircolo
-            name: Recirculation
-            type: boolean
-          - id: velocita_ventola
-            name: Fan Speed
-            type: number
-            unit: "lv"
-            precision: 0
-          - id: modalita_clima
-            name: Mode
-            type: enum
-            options: [AUTO, MANUAL, ECO, SPORT]
-      - id: porte
-        label: Doors
+      - id: gnss
+        label: GNSS
         panels:
-          - label: Front Doors
+          - label: GNSS 
             parameters:
-              - id: porta_ant_sx
-                name: Front L
+              - id: GNSS Time
+                name: GNSS Time
                 type: boolean
-              - id: porta_ant_dx
-                name: Front R
+              - id: GNSS Configuration
+                name: GNSS Configuration
                 type: boolean
-              - id: porta_post_sx
-                name: Rear L
-                type: boolean
-              - id: porta_post_dx
-                name: Rear R
-                type: boolean
-          - label: Other Doors
+          - label: SA
             parameters:
-              - id: blocco_centrale
-                name: Central Lock
+              - id: SA Configuration
+                name: SA Configuration
                 type: boolean
-              - id: cofano
-                name: Hood
+      - id: audio_vocoder
+        label: Audio/Vocoder
+        panels:
+          - label: Audio 
+            parameters:
+              - id: General
+                name: General
                 type: boolean
-              - id: portabagagli
-                name: Trunk
+              - id: General Audio Channel
+                name: General Audio Channel
                 type: boolean
-              - id: finestre_chiuse
-                name: Windows
+              - id: Automatic Volume Control
+                name: Automatic Volume Control
                 type: boolean
-              - id: portellone
-                name: Hatch
-                type: boolean
-      - id: visualizzazione_estesa
-        label: Extended View
+          - label: Vocoder
+            parameters:
+              - id: Vocoder Status
+                name: Vocoder Status
+                type: boolean      
+              - id: Payload Control
+                name: Payload Control
+                type: boolean   
+      - id: serial
+        label: SERIAL
         parameters:
-          - id: test_viz_temp_motore
-            name: Engine Temp.
-            type: number
-            unit: "°C"
-            precision: 1
-            readonly: true
-          - id: test_viz_press_turbo
-            name: Turbo Press.
-            type: number
-            unit: "bar"
-            precision: 2
-            readonly: true
-          - id: test_viz_corrente
-            name: Current
-            type: number
-            unit: "A"
-            precision: 1
-            readonly: true
-          - id: test_viz_tensione_aux
-            name: Aux Voltage
-            type: number
-            unit: "V"
-            precision: 1
-            readonly: true
-          - id: test_viz_memoria_libera
-            name: Free Memory
-            type: percentage
-            precision: 0
-            readonly: true
-          - id: test_viz_cpu_load
-            name: CPU load
-            type: percentage
-            precision: 0
-            readonly: true
-          - id: test_viz_ventola_motore
-            name: Engine Fan
-            type: number
-            unit: "rpm"
-            precision: 0
-            readonly: true
-          - id: test_viz_ventola_hmi
-            name: HMI Fan
-            type: number
-            unit: "rpm"
-            precision: 0
-            readonly: true
-          - id: test_viz_freno_usura
-            name: Brake Wear
-            type: percentage
-            precision: 0
-            readonly: true
-          - id: test_viz_stato_bus
-            name: Bus Status
-            type: enum
-            options: [OK, DEGRADED, OFFLINE]
-            readonly: true
-          - id: test_viz_profilo_guida
-            name: Drive Profile
-            type: enum
-            options: [CITY, TOURING, TRACK, ECO]
-          - id: test_viz_manutenzione
-            name: Maintenance
-            type: enum
-            options: [NONE, SOON, DUE, OVERDUE]
-            readonly: true
-          - id: test_viz_last_service
-            name: Last Service
-            type: date
-            readonly: true
-          - id: test_viz_next_service
-            name: Next Service
-            type: date
-          - id: test_viz_note_officina
-            name: Workshop Notes
-            type: text
-          - id: test_viz_codice_intervento
-            name: Work Order
-            type: text
-          - id: test_viz_revisione_cfg
-            name: Config Rev.
-            type: text
-            readonly: true
-          - id: test_viz_build_number
-            name: Build number
-            type: text
-            readonly: true
-      - id: demo_table
-        label: Demo Table
-        parameters:
-          - id: tabella_eventi_demo
-            name: Eventi Missione
-            type: table
-            readonly: true
-      - id: pannelli_transazione
-        label: Transaction Panels
-        mode: transaction
-        goOnApply: STAY_HERE
+            - id: SERIAL PORT STATUS
+              name: SERIAL PORT STATUS
+              type: number
+              unit: ""
+              precision: 1
+            - id: GENERAL CONFIG
+              name:  GENERAL CONFIG
+              type: number
+              unit: ""
+              precision: 1
+            - id: SERIAL OVER IP CONFIG
+              name: SERIAL OVER IP CONFIG
+              type: number
+              unit: ""
+              precision: 1
+              readonly: true
+            - id: PAYLOAD CONTROL
+              name: PAYLOAD CONTROL
+              type: number
+              precision: 0   
+            - id: Bit_Error_Rate
+              label: Bit Error Rate
+              panels: 
+              - label: BER CONFIG 
+                parameters:
+                  - id: BER CONFIG
+                    name: BER CONFIG
+                    type: number
+                    unit: ""
+                    precision: 1
+              - label: BER RESULT 
+                parameters:
+                - id: BER RESULT
+                  name: BER RESULT
+                  type: number
+                  precision: 0  
+
+      - id: USER CONFIG
+        label: USER CONFIG
         panels:
-          - label: Credentials
+          - label: USER PROFILE 
             parameters:
-              - id: test_trx_username
-                name: Username
-                type: text
-                clearOnApply: true
-              - id: test_trx_password
-                name: Password
-                type: password
-                clearOnApply: true
-              - id: test_trx_ruolo
-                name: Role
-                type: enum
-                options: [OPERATOR, SUPERVISOR, MAINTAINER]
-          - label: Limits
+              - id: USER PROFILE 
+                name: USER PROFILE 
+                type: boolean
+          - label: USER MANAGEMENT 
             parameters:
-              - id: test_trx_soglia_warn
-                name: Warning Threshold
-                type: percentage
-                precision: 0
-              - id: test_trx_soglia_alarm
-                name: Alarm Threshold
-                type: percentage
-                precision: 0
-              - id: test_trx_data_validita
-                name: Validity Date
-                type: date
-          - label: Workflow
-            parameters:
-              - id: test_trx_modalita
-                name: Modalita salvataggio
-                type: enum
-                options: [DRAFT, VALIDATA, PUBBLICATA]
-              - id: test_trx_ticket
-                name: Ticket
-                type: text
-              - id: test_trx_note
-                name: Note rilascio
-                type: text
-      - id: pannelli_multipli
-        label: Pannelli multipli
-        panels:
-          - label: Pannello 1
-            parameters:
-              - id: test_panel_1_a
-                name: Nodo 1A
-                type: number
-                unit: "ms"
-                precision: 0
-                readonly: true
-              - id: test_panel_1_b
-                name: Nodo 1B
-                type: number
-                unit: "ms"
-                precision: 0
-                readonly: true
-              - id: test_panel_1_c
-                name: Nodo 1C
-                type: number
-                unit: "ms"
-                precision: 0
-                readonly: true
-              - id: test_panel_1_d
-                name: Nodo 1D
-                type: number
-                unit: "ms"
-                precision: 0
-                readonly: true
-          - label: Pannello 2
-            parameters:
-              - id: test_panel_2_a
-                name: Nodo 2A
-                type: number
-                unit: "ms"
-                precision: 0
-                readonly: true
-              - id: test_panel_2_b
-                name: Nodo 2B
-                type: number
-                unit: "ms"
-                precision: 0
-                readonly: true
-              - id: test_panel_2_c
-                name: Nodo 2C
-                type: number
-                unit: "ms"
-                precision: 0
-                readonly: true
-              - id: test_panel_2_d
-                name: Nodo 2D
-                type: number
-                unit: "ms"
-                precision: 0
-                readonly: true
-          - label: Pannello 3
-            parameters:
-              - id: test_panel_3_a
-                name: Nodo 3A
-                type: number
-                unit: "ms"
-                precision: 0
-                readonly: true
-              - id: test_panel_3_b
-                name: Nodo 3B
-                type: number
-                unit: "ms"
-                precision: 0
-                readonly: true
-              - id: test_panel_3_c
-                name: Nodo 3C
-                type: number
-                unit: "ms"
-                precision: 0
-                readonly: true
-              - id: test_panel_3_d
-                name: Nodo 3D
-                type: number
-                unit: "ms"
-                precision: 0
-                readonly: true
-          - label: Pannello 4
-            parameters:
-              - id: test_panel_4_a
-                name: Nodo 4A
-                type: number
-                unit: "ms"
-                precision: 0
-                readonly: true
-              - id: test_panel_4_b
-                name: Nodo 4B
-                type: number
-                unit: "ms"
-                precision: 0
-                readonly: true
-              - id: test_panel_4_c
-                name: Nodo 4C
-                type: number
-                unit: "ms"
-                precision: 0
-                readonly: true
-              - id: test_panel_4_d
-                name: Nodo 4D
-                type: number
-                unit: "ms"
-                precision: 0
-                readonly: true
-          - label: Pannello 5
-            parameters:
-              - id: test_panel_5_a
-                name: Nodo 5A
-                type: number
-                unit: "ms"
-                precision: 0
-                readonly: true
-              - id: test_panel_5_b
-                name: Nodo 5B
-                type: number
-                unit: "ms"
-                precision: 0
-                readonly: true
-              - id: test_panel_5_c
-                name: Nodo 5C
-                type: number
-                unit: "ms"
-                precision: 0
-                readonly: true
-              - id: test_panel_5_d
-                name: Nodo 5D
-                type: number
-                unit: "ms"
-                precision: 0
-                readonly: true
-      - id: navigazione_profonda
-        label: Navigazione 2 livelli
+              - id:  USER MANAGEMENT 
+                name:  USER MANAGEMENT 
+                type: boolean       
+      - id: NETWORK
+        label: NETWORK
         submenus:
-          - id: livello_2_diagnostica
-            label: Diagnostica rapida
+          - id: NETWORK CONFIG
+            label: NETWORK CONFIG
             parameters:
-              - id: test_l2_diag_stato
-                name: Stato test
+              - id: NETWORK CONFIG
+                name: NETWORK CONFIG
                 type: enum
                 options: [IDLE, RUNNING, DONE]
-              - id: test_l2_diag_note
-                name: Note test
-                type: text
-          - id: livello_2_commissioning
-            label: Commissioning
-            mode: transaction
-            goOnApply: STAY_HERE
+          - id: ROUTING 
+            label: ROUTING TABLE
+            panels:
+            - label: ROUTING TABLE
+              parameters:
+                - id:  ROUTING TABLE
+                  name:  ROUTING TABLE
+                  type: text
+                  clearOnApply: true
+            - label: ROUTING FILE
+              parameters:
+                - id:  ROUTING FILE
+                  name:  ROUTING FILE
+                  type: text
+                  clearOnApply: true
+          - id: IGMP 
+            label: IGMP
+            panels:
+            - label: IGMP SERVICE
+              parameters:
+                - id:   IGMP SERVICE
+                  name:   IGMP SERVICE
+                  type: text
+                  clearOnApply: true
+            - label:  IGMP CONFIG
+              parameters:
+                - id:  IGMP CONFIG
+                  name:  IGMP CONFIG
+                  type: text
+                  clearOnApply: true
+          - id: OSPF 
+            label: OSPF
+            panels:
+            - label: OSPF SERVICE
+              parameters:
+                - id:   OSPF SERVICE
+                  name:   OSPF SERVICE
+                  type: text
+                  clearOnApply: true
+            - label:  OSPF CONFIG
+              parameters:
+                - id:  OSPF CONFIG
+                  name:  OSPF CONFIG
+                  type: text
+                  clearOnApply: true
+          - id: SNMP 
+            label: SNMP
+            panels:
+            - label: SNMP STATUS
+              parameters:
+                - id:   SNMP STATUS
+                  name:   SNMP STATUS
+                  type: text
+                  clearOnApply: true
+            - label:  TRAP MANAGEMENT
+              parameters:
+                - id:  TRAP MANAGEMENT
+                  name:  TRAP MANAGEMENT
+                  type: text
+                  clearOnApply: true
+          - id: VOIP 
+            label: VOIP
+            panels:
+            - label: VOIP SERVICE
+              parameters:
+                - id:   OSPF SERVICE
+                  name:   OSPF SERVICE
+                  type: text
+                  clearOnApply: true
+      - id: SW UPGRADE
+        label: SW UPGRADE
+        submenus:
+          - id: SFTP LOGIN 
+            label:  SFTP LOGIN 
             parameters:
-              - id: test_l2_comm_id
-                name: ID sessione
-                type: text
-                clearOnApply: true
-              - id: test_l2_comm_token
-                name: Token
-                type: password
-                clearOnApply: true
-              - id: test_l2_comm_validita
-                name: Validita
-                type: date
-          - id: livello_2_readonly
-            label: Snapshot readonly
+              - id:  SFTP LOGIN 
+                name:  SFTP LOGIN 
+                type: enum
+                options: [IDLE, RUNNING, DONE]
+          - id: SW VERSION
+            label:  SW VERSION
+            panels:
+            - label: SW 
+              parameters:
+                - id:  SW VERSION
+                  name:   SW VERSION
+                  type: text
+                  clearOnApply: true
+            - label: CSS STATUS
+              parameters:
+                - id:  CSS STATUS
+                  name: CSS STATUS
+                  type: text
+                  clearOnApply: true
+          - id: WF UPGRADE 
+            label:  WF UPGRADE 
             parameters:
-              - id: test_l2_ro_temp
-                name: Temp linea
-                type: number
-                unit: "°C"
-                precision: 1
-                readonly: true
-              - id: test_l2_ro_pressione
-                name: Pressione linea
-                type: number
-                unit: "bar"
-                precision: 1
-                readonly: true
-              - id: test_l2_ro_carico
-                name: Carico
-                type: percentage
-                precision: 0
-                readonly: true
-      - id: app-configurazione
+              - id:  WF UPGRADE 
+                name:  WF UPGRADE  
+                type: enum
+                options: [IDLE, RUNNING, DONE]
+          - id: PTF UPGRADE 
+            label: PTF UPGRADE 
+            panels:
+            - label: PTF UPGRADE 
+              parameters:
+                - id:   PTF UPGRADE 
+                  name:   PTF UPGRADE 
+                  type: text
+                  clearOnApply: true
+            - label: CSS UPGRADE
+              parameters:
+                - id:  CSS UPGRADE
+                  name: CSS UPGRADE
+                  type: text
+                  clearOnApply: true
+            - label: CONTROL PANEL UPGRADE
+              parameters:
+                - id:  CONTROL PANEL UPGRADE
+                  name:  CONTROL PANEL UPGRADE
+                  type: text
+                  clearOnApply: true
+      - id: conf
         label: Configuration
-        panels:
-          - label: Clima
-            parameters:
-              - id: temp_abitacolo
-                name: Temp. Abitacolo
-                type: number
-                unit: "°C"
-                precision: 1
-                readonly: true
-              - id: temp_impostata
-                name: Set Temp.
-                type: number
-                unit: "°C"
-                precision: 1
-              - id: temp_esterna
-                name: Temp. Esterna
-                type: number
-                unit: "°C"
-                precision: 1
-                readonly: true
-              - id: umidita
-                name: Umidità
-                type: percentage
-                precision: 0
-                readonly: true
-              - id: modalita_clima
-                name: Modalità
-                type: enum
-                options: [AUTO, MANUAL, ECO, SPORT]
-              - id: ventilazione_attiva
-                name: Ventilazione
-                type: boolean
-              - id: aria_ricircolo
-                name: Ricircolo
-                type: boolean
-              - id: velocita_ventola
-                name: Velocità Ventola
-                type: number
-                unit: "lv"
-                precision: 0
-          - label: Porte
-            parameters:
-              - id: porta_ant_sx
-                name: Ant. Sx
-                type: boolean
-              - id: porta_ant_dx
-                name: Ant. Dx
-                type: boolean
-              - id: porta_post_sx
-                name: Post. Sx
-                type: boolean
-              - id: porta_post_dx
-                name: Post. Dx
-                type: boolean
-              - id: blocco_centrale
-                name: Blocco Centrale
-                type: boolean
-              - id: cofano
-                name: Cofano
-                type: boolean
-              - id: portabagagli
-                name: Portabagagli
-                type: boolean
-              - id: portellone
-                name: Portellone
-                type: boolean
-          - label: Motore
-            parameters:
-              - id: test_viz_temp_motore
-                name: Temp. Motore
-                type: number
-                unit: "°C"
-                precision: 1
-                readonly: true
-              - id: test_viz_press_turbo
-                name: Press. Turbo
-                type: number
-                unit: "bar"
-                precision: 2
-                readonly: true
-              - id: test_viz_ventola_motore
-                name: Ventola Motore
-                type: number
-                unit: "rpm"
-                precision: 0
-                readonly: true
-              - id: test_viz_ventola_hmi
-                name: Ventola HMI
-                type: number
-                unit: "rpm"
-                precision: 0
-                readonly: true
-              - id: test_viz_freno_usura
-                name: Usura Freni
-                type: percentage
-                precision: 0
-                readonly: true
-              - id: test_viz_cpu_load
-                name: CPU Load
-                type: percentage
-                precision: 0
-                readonly: true
-          - label: Elettrico
-            parameters:
-              - id: tensione_batteria
-                name: Tensione Batt.
-                type: number
-                unit: "V"
-                precision: 1
-                readonly: true
-              - id: test_viz_corrente
-                name: Corrente
-                type: number
-                unit: "A"
-                precision: 1
-                readonly: true
-              - id: test_viz_tensione_aux
-                name: Tensione Aux
-                type: number
-                unit: "V"
-                precision: 1
-                readonly: true
-              - id: test_viz_memoria_libera
-                name: Memoria Libera
-                type: percentage
-                precision: 0
-                readonly: true
-          - label: Stato
-            parameters:
-              - id: test_viz_stato_bus
-                name: Stato Bus
-                type: enum
-                options: [OK, DEGRADED, OFFLINE]
-                readonly: true
-              - id: test_viz_profilo_guida
-                name: Profilo Guida
-                type: enum
-                options: [CITY, TOURING, TRACK, ECO]
-              - id: test_viz_manutenzione
-                name: Manutenzione
-                type: enum
-                options: [NONE, SOON, DUE, OVERDUE]
-                readonly: true
-              - id: test_viz_revisione_cfg
-                name: Rev. Config.
-                type: text
-                readonly: true
-              - id: test_viz_build_number
-                name: Build Number
-                type: text
-                readonly: true
-          - label: Manutenzione
-            parameters:
-              - id: test_viz_last_service
-                name: Ultimo Servizio
-                type: date
-                readonly: true
-              - id: test_viz_next_service
-                name: Prossimo Servizio
-                type: date
-              - id: test_viz_note_officina
-                name: Note Officina
-                type: text
-              - id: test_viz_codice_intervento
-                name: Codice Intervento
-                type: text
-          - label: Accesso
-            parameters:
-              - id: test_trx_username
-                name: Utente
-                type: text
-              - id: test_trx_password
-                name: Password
-                type: password
-              - id: test_trx_ruolo
-                name: Ruolo
-                type: enum
-                options: [OPERATOR, SUPERVISOR, MAINTAINER]
-              - id: test_trx_data_validita
-                name: Validità
-                type: date
-      - id: pagina_nascosta_test
-        label: Pagina nascosta test
-        visibility: hidden
         parameters:
-          - id: test_hidden_flag
-            name: Hidden flag
-            type: boolean
+            - id:  TIMING
+              name: TIMING
+              type: boolean
+            - id:  BATTERY STATUS
+              name: BATTERY STATUS
+              type: boolean
+            - id: RADIO ID
+              label: RADIO ID
+              panels:
+              - label: UTU ID
+                parameters:
+                  - id:  UTU ID
+                    name:  UTU ID
+                    type: boolean
+              - label: SA ID
+                parameters:
+                  - id:  SA ID
+                    name:  SA ID
+                    type: boolean

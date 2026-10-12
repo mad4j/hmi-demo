@@ -1,0 +1,1457 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<waveforminterface>  
+        <shortsummary>
+
+		<simple
+			id="DCE:d446c8dc-fa48-429e-b19c-e0f5a790df24"
+			type="octet"
+			modtype="textbox"
+			mode="readwrite"
+			position="72,4"
+			name="Channel"
+			fontsize="12"
+			namefixdim="90"
+			fieldfixdim="90"
+			textalign="center"
+			>
+		</simple>
+				
+		<simple
+			id="DCE:59d79625-bc9a-40eb-bcfd-2732941a2435"
+			type="string"
+			modtype="textbox"
+			mode="readonly"
+			name="Caller Identity 1"
+			position="5,48"
+			fontsize="11"
+			namefixdim="240"
+			fieldfixdim="240"
+			textalign="center"
+		    >
+		</simple>
+		
+		<simple
+			id="DCE:672bf46c-4945-4dcb-9c3f-b0c9a3de96d7"
+			type="string"
+			modtype="textbox"
+			mode="readonly"
+			position="5,96"
+			name="Caller Identity 2"
+			fontsize="11"
+			namefixdim="240"
+			fieldfixdim="240"
+			textalign="center"
+			>
+		</simple>
+        
+	</shortsummary>
+
+	<summary>
+
+		<simple
+			id="DCE:d446c8dc-fa48-429e-b19c-e0f5a790df24"
+			type="octet"
+			modtype="textbox"
+			mode="readwrite"
+			position="190,50"
+			name="Channel"
+			fontsize="12"
+			digits="4"
+			>
+		    <range max="144" min="1"/>
+		</simple>
+
+		<simple
+			id="DCE:59d79625-bc9a-40eb-bcfd-2732941a2435"
+			type="string"
+			modtype="textbox"
+			mode="readonly"
+			name="Caller Identity 1"
+			position="80,110"
+			fontsize="12"
+			digits="35"
+		>
+		</simple>
+		
+		<simple
+			id="DCE:672bf46c-4945-4dcb-9c3f-b0c9a3de96d7"
+			type="string"
+			modtype="textbox"
+			mode="readonly"
+			name="Caller Identity 2"
+			position="80,170"
+			fontsize="12"
+			digits="35"
+			>
+		</simple>
+
+	</summary>
+
+
+	<parametersmenu>
+		<node name="menu" id="root">
+			<node name="RF Control" id="1" icon="../icons32/modulazione.gif">
+
+				<simple
+					id="DCE:d446c8dc-fa48-429e-b19c-e0f5a790df24"
+					type="octet"
+					modtype="textbox"
+					mode="readwrite"
+					position="160,50"
+					name="Channel"
+                    fontsize="12"
+                    digits="4"
+                    namefixdim="60"
+                    fieldfixdim="90"
+					>
+                    <range max="144" min="1"/>
+					
+				</simple>
+			
+				<simple
+					id="DCE:133c3822-808e-4ec6-942d-df2bf795da52"
+					type="long"
+					modtype="select"
+					mode="readwrite"
+					name="Tx Power"
+					position="160,110"
+                    fontsize="12"
+                    digits="13"
+                    namefixdim="60"
+                    fieldfixdim="90"
+					>
+					<description>Tipo di traffico</description>
+					<range max="3" min="0"/>
+					<enumerations> 
+						<enumeration label="Full" value="0"/>
+						<enumeration label="Half" value="1"/>
+						<enumeration label="One Tenth" value="2"/>
+						<enumeration label="Minimum" value="3"/>
+					</enumerations>
+				</simple>
+            </node>
+
+			<node name="Local Info" id="2" icon="../icons32/modulazione.gif">			
+
+                <simple
+					id="DCE:46cee676-32a3-4911-a958-c25ad2aba840"
+					type="string"
+					modtype="textbox"
+					mode="readwrite"
+					name="Own Nickname"
+					position="110,50"
+                    fontsize="12"
+                    digits="25"
+                    namefixdim="90"
+					>
+				</simple>
+			
+				<simple
+					id="DCE:cac0412a-8560-499b-803e-e251f00d0066"
+					type="octet"
+					modtype="textbox"
+					mode="readonly"
+					position="160,110"
+					name="Soft Unit ID"
+					isstep="false"
+					fontsize="12"
+                    digits="9"
+                    namefixdim="70"
+                    fieldfixdim="90"
+					>
+					<range max="31" min="0"/>
+				</simple>
+			
+				<simple
+					id="DCE:bf5a09b6-3118-4737-99bf-d1b82621bcfe"
+					type="ulong"
+					modtype="textbox"
+					mode="readonly"
+					position="160,170"
+					name="Hard Unit ID"
+					isstep="false"
+					fontsize="12"
+                    digits="9"
+                    namefixdim="70"
+                    fieldfixdim="90"
+					>
+                </simple>
+			
+				<simple
+					id="DCE:b9ab5481-2632-4d33-8e55-9ce52175b6bb"
+					type="long"
+                    mode="readonly"
+                    name="WF Status"
+					modtype="select"
+					position="160,230"
+                    fontsize="12"
+                    digits="9"
+                    noarrowinselreadonly="TRUE"
+					>
+					<range max="4" min="1"/>
+                    <enumerations>
+                        <enumeration label="Idle" value="1"/>
+                        <enumeration label="Init" value="2"/>
+                        <enumeration label="Locked" value="3"/>
+                        <enumeration label="Active" value="4"/>
+                    </enumerations>
+				</simple>
+			
+			</node>
+
+
+			<node name="PTT Control" id="3" icon="../icons32/modulazione.gif">
+				<node name="Upper PTT" id="4" icon="../icons32/modulazione.gif">
+                    <simple
+                        id="DCE:28ca8731-f770-4cf1-9b9f-fed4d1fdb602"
+                        type="long"
+                        modtype="select"
+                        mode="readwrite"
+                        name="Destination Group"
+                        position="160,50"
+                        fontsize="12"
+                        digits="5"
+                        namefixdim="120"
+                        >
+                        <range max="3" min="0"/>
+                        <enumerations> 
+                            <enumeration label="None" value="0"/>
+                            <enumeration label="01" value="1"/>
+                            <enumeration label="02" value="2"/>
+                            <enumeration label="03" value="3"/>
+                            <enumeration label="04" value="4"/>
+                            <enumeration label="05" value="5"/>
+                            <enumeration label="06" value="6"/>
+                            <enumeration label="07" value="7"/>
+                            <enumeration label="08" value="8"/>
+                            <enumeration label="09" value="9"/>
+                        </enumerations>
+                    </simple>
+                
+                    <simple
+                        id="DCE:410dd685-97bb-4432-b23a-e834251b2772"
+                        type="boolean"
+                        modtype="select"
+                        mode="readwrite"
+                        name="Commander Enabled"
+                        position="160,110"
+                        fontsize="12"
+                        digits="5"
+                        namefixdim="120"
+                        >
+                        <range max="1" min="0"/>
+                        <enumerations> 
+                            <enumeration label="FALSE" value="0"/>
+                            <enumeration label="TRUE" value="1"/>
+                        </enumerations>
+                    </simple>
+                </node>
+                        
+				<node name="Lower PTT" id="5" icon="../icons32/modulazione.gif">
+                    <simple
+                        id="DCE:27fc3e4e-6bfe-4621-9647-e0690315e67f"
+                        type="long"
+                        modtype="select"
+                        mode="readwrite"
+                        name="Destination Group"
+                        position="160,50"
+                        fontsize="12"
+                        digits="5"
+                        namefixdim="120"
+                        >
+                        <range max="3" min="0"/>
+                        <enumerations> 
+                            <enumeration label="None" value="0"/>
+                            <enumeration label="01" value="1"/>
+                            <enumeration label="02" value="2"/>
+                            <enumeration label="03" value="3"/>
+                            <enumeration label="04" value="4"/>
+                            <enumeration label="05" value="5"/>
+                            <enumeration label="06" value="6"/>
+                            <enumeration label="07" value="7"/>
+                            <enumeration label="08" value="8"/>
+                            <enumeration label="09" value="9"/>
+                        </enumerations>
+                    </simple>
+                
+                    <simple
+                        id="DCE:0f10c5c9-1d99-48b1-946d-2bdd832ed19c"
+                        type="boolean"
+                        modtype="select"
+                        mode="readwrite"
+                        name="Commander Enabled"
+                        position="160,110"
+                        fontsize="12"
+                        digits="5"
+                        namefixdim="120"
+                        >
+                        <range max="1" min="0"/>
+                        <enumerations> 
+                            <enumeration label="FALSE" value="0"/>
+                            <enumeration label="TRUE" value="1"/>
+                        </enumerations>
+                    </simple>
+                </node>
+			</node>
+			<node name="Network Info" id="6" icon="../icons32/modulazione.gif">
+				<node name="Nodes Properties" id="7" icon="../icons32/modulazione.gif">
+				    <simplesequence 
+					id="DCE:5c5dc897-71e4-401e-8931-4c4b978de326" 
+					type="string" 
+					mode="readonly" 
+					name="List Nodes in Network" 
+					modtype="select"   
+					position="100,50"
+					fontsize="12"
+					digits="35"
+					live="true" 
+					liveperiod="5"
+					dimensions="200"
+					returnindex="true"
+					>
+					<simpleref seqid="DCE:b2991cac-94fc-4a1d-a1b1-1519af3b82bd" type="octet"/>
+							</simplesequence>
+				    <simple
+					id="DCE:a8976fd5-aa41-4018-8fe1-48b7a5c51fa6"
+					type="octet"
+					modtype="textbox"
+					mode="readwrite"
+					name="Monitor Interval"
+					position="150,100"
+					fontsize="12"
+					digits="1"
+					namefixdim="100"
+					>
+					<units>secs</units>
+					<range max="25" min="0"/>
+				    </simple>
+
+				    <simple
+					id="DCE:cac0412a-8560-499b-803e-e251f00d0066"
+					type="octet"
+					modtype="textbox"
+					mode="readonly"
+					name="Soft Unit ID"
+					position="150,150"
+					fontsize="12"
+					digits="1"
+					live="true" 
+					liveperiod="5"
+					namefixdim="130"
+					fieldfixdim="30"
+					>
+				    </simple>
+				    <simple
+					id="DCE:5140e091-0876-480b-ac0e-7ea21d35ec6b"
+					type="octet"
+					modtype="textbox"
+					mode="readonly"
+					name="Who Is Master"
+					position="150,200"
+					fontsize="12"
+					digits="1"
+					live="true" 
+					liveperiod="5"
+					namefixdim="130"
+					fieldfixdim="30"
+					>
+				    </simple>
+				    <simple
+					id="DCE:45452b64-a401-486b-9cff-27c010d5e893"
+					type="ushort"
+					modtype="textbox"
+					mode="readonly"
+					name="Max Nodes In Network"
+					position="150,250"
+					fontsize="12"
+					digits="2"
+					live="true" 
+					liveperiod="5"
+					namefixdim="130"
+					fieldfixdim="30"
+					>
+				    </simple>
+				    <simple
+					id="DCE:173d981c-4af0-4fb4-89d3-2fda229818ed"
+					type="octet"
+					modtype="textbox"
+					mode="readonly"
+					name="No. Nodes in Network"
+					position="150,300"
+					fontsize="12"
+					digits="2"
+					live="true" 
+					liveperiod="5"
+					namefixdim="130"
+					fieldfixdim="30"
+					>
+					<range max="64" min="1"/>
+				    </simple>
+				</node>
+			          <node name="Node Report" id="8" icon="../icons32/modulazione.gif">
+
+			    <simple
+				id="DCE:41c3a611-bb6d-4900-92fd-14d85d12eab6"
+				type="string"
+				modtype="textbox"
+				mode="readonly"
+				name="Node Selected"
+				position="100,40"
+				fontsize="12"
+				digits="25"
+				>
+			    </simple>
+
+			    <simplesequence 
+				id="DCE:7120405b-f5bc-46b0-b6a0-7889d7b51cc5" 
+				type="octet" 
+				mode="readonly" 
+				name="->Neighbors Link Status" 
+				modtype="select"   
+				position="130,90"
+				digits="13"
+				fontsize="12"
+				live="true" 
+				liveperiod="5"
+				dimensions="200"
+				>
+						</simplesequence>
+
+			    <simple
+				id="DCE:ac18b8b6-68f6-4216-a645-d9d199c1a382"
+				type="octet"
+				modtype="textbox"
+				mode="readonly"
+				name="->Received UMF"
+				position="160,140"
+				fontsize="12"
+				digits="3"
+				live="true" 
+				liveperiod="5"
+				namefixdim="100"
+				fieldfixdim="40"
+				>
+				<range max="9" min="0"/>
+			    </simple>
+			
+			    <simple
+				id="DCE:9fdc4cf8-f065-487f-a514-47d1222c24ef"
+				type="ushort"
+				modtype="textbox"
+				mode="readonly"
+				name="->Last link quality"
+				position="160,190"
+				fontsize="12"
+				digits="3"
+				live="true" 
+				liveperiod="5"
+				namefixdim="100"
+				fieldfixdim="40"
+				>
+			    </simple>
+			
+			    <simple
+				id="DCE:414e7193-627c-470c-9f82-24fd4770acc3"
+				type="boolean"
+				modtype="select"
+				mode="readonly"
+				name="->Is master"
+				position="160,240"
+				fontsize="12"
+				digits="5"
+				live="true" 
+				liveperiod="5"
+				namefixdim="100"
+				fieldfixdim="40"
+				noarrowinselreadonly="TRUE"
+				>
+				<range max="1" min="0"/>
+				<enumerations> 
+				    <enumeration label="FALSE" value="0"/>
+				    <enumeration label="TRUE" value="1"/>
+				</enumerations> 
+			    </simple>
+			
+			    <simple
+				id="DCE:98c1d28a-28f2-4c78-821a-43b6523acc2a"
+				type="boolean"
+				modtype="select"
+				mode="readonly"
+				name="->Is relay"
+				position="160,290"
+				fontsize="12"
+				digits="5"
+				live="true" 
+				liveperiod="5"
+				namefixdim="100"
+				fieldfixdim="40"
+				noarrowinselreadonly="TRUE"
+				>
+				<range max="1" min="0"/>
+				<enumerations> 
+				    <enumeration label="FALSE" value="0"/>
+				    <enumeration label="TRUE" value="1"/>
+				</enumerations> 
+			    </simple>
+			
+			    <simple
+				id="DCE:65313131-9026-4f2e-8a74-c2f9bf214d14"
+				type="boolean"
+				modtype="select"
+				mode="readonly"
+				name="->Is seen directly"
+				position="160,340"
+				fontsize="12"
+				digits="5"
+				live="true" 
+				liveperiod="5"
+				namefixdim="100"
+				fieldfixdim="40"
+				noarrowinselreadonly="TRUE"
+				>
+				<enumerations> 
+				    <enumeration label="FALSE" value="0"/>
+				    <enumeration label="TRUE" value="1"/>
+				</enumerations>
+			    </simple>
+
+			    <simple
+				id="DCE:9dfa6c4a-770d-4495-99d8-e36018d0144a"
+				type="boolean"
+				modtype="select"
+				mode="readonly"
+				name="->Is seen relayed"
+				position="160,390"
+				fontsize="12"
+				digits="5"
+				live="true" 
+				liveperiod="5"
+				namefixdim="100"
+				fieldfixdim="40"
+				noarrowinselreadonly="TRUE"
+				>
+				<enumerations> 
+				    <enumeration label="FALSE" value="0"/>
+				    <enumeration label="TRUE" value="1"/>
+				</enumerations>
+			    </simple>
+			</node>
+
+				<node name="Parameters" id="9" icon="../icons32/modulazione.gif">
+				    <simple
+					id="DCE:a752ce5e-fa47-453b-b3a4-0a5a1a8096aa"
+					type="ushort"
+					modtype="textbox"
+					mode="readwrite"
+					name="->RSSI 0"
+					position="180,40"
+					fontsize="12"
+					digits="5"
+					>
+				    </simple>
+				    <simple
+					id="DCE:ac436f39-bb1a-4dd2-9a9f-2341923939f1"
+					type="ushort"
+					modtype="textbox"
+					mode="readwrite"
+					name="->RSSI 1"
+					position="180,80"
+					fontsize="12"
+					digits="5"
+					>
+				    </simple>
+				    <simple
+					id="DCE:d34c2255-e321-4f8e-aa90-b9d2c50d6ee6"
+					type="ushort"
+					modtype="textbox"
+					mode="readwrite"
+					name="->RSSI 2"
+					position="180,120"
+					fontsize="12"
+					digits="5"
+					>
+				    </simple>
+				    <simple
+					id="DCE:908f6d93-1ed1-4be6-b53b-1c3c3364b07a"
+					type="ushort"
+					modtype="textbox"
+					mode="readwrite"
+					name="->RSSI 3"
+					position="180,160"
+					fontsize="12"
+					digits="5"
+					>
+				    </simple>
+				    <simple
+					id="DCE:8f23a1b3-5cc7-4d33-8b13-572a0e004971"
+					type="ulong"
+					modtype="textbox"
+					mode="readwrite"
+					name="->RSSI AVG"
+					position="170,200"
+					fontsize="12"
+					digits="5"
+					>
+					<range max="50" min="0"/>
+				    </simple>
+				    <simple
+					id="DCE:5e2e904f-4f58-41c0-96ab-8b546b78146c"
+					type="boolean"
+					mode="readwrite"
+					name="Low Hysteresis"
+					modtype="select"
+					position="160,240"
+					fontsize="12"
+					digits="5"
+				    >
+				    <range max="1" min="0"/>
+				    <enumerations> 
+					<enumeration label="FALSE" value="0"/>
+					<enumeration label="TRUE" value="1"/>
+				    </enumerations> 
+				    </simple>
+				</node>
+                			</node>
+			<node name="Radio Silence" id="10" icon="../icons32/modulazione.gif">
+
+				<simple
+					id="DCE:2b4f5371-3211-4d69-be60-463305be8273"
+					type="boolean"
+					mode="readwrite"
+					name="Radio Silence"
+					modtype="select"
+					position="160,50"
+                    fontsize="12"
+                    digits="5"
+                    >
+                    <range max="1" min="0"/>
+                    <enumerations> 
+                        <enumeration label="FALSE" value="0"/>
+                        <enumeration label="TRUE" value="1"/>
+                    </enumerations> 
+				</simple>
+
+            </node>
+
+			<node name="Power Saving" id="11" icon="../icons32/modulazione.gif">
+
+				<simple
+					id="DCE:416aca19-ce04-4177-a438-4df170a7447c"
+					type="boolean"
+					mode="readwrite"
+					name="Standby"
+					modtype="select"
+					position="140,30"
+                    fontsize="12"
+                    digits="5"
+                    namefixdim="120"
+                    fieldfixdim="100"
+					>
+                    <range max="1" min="0"/>
+                    <enumerations> 
+                        <enumeration label="FALSE" value="0"/>
+                        <enumeration label="TRUE" value="1"/>
+                    </enumerations>
+				</simple>
+
+				<simple
+					id="DCE:9aa5a466-b56f-4737-9324-67a5a84a2714"
+					type="ushort"
+					mode="readwrite"
+					name="Idle/Active period"
+					modtype="textbox"
+					position="140,80"
+                    fontsize="12"
+                    digits="5"
+                    namefixdim="120"
+                    fieldfixdim="100"
+					>
+                    <range max="1000" min="0"/>
+				</simple>
+			
+			</node>
+		
+			<node name="Voice Parameters" id="12" icon="../icons32/modulazione.gif">
+
+				<simple
+					id="DCE:6bc8e72f-a2cf-488a-9e1a-d25b48976ef8"
+					type="long"
+					mode="readonly"
+					name="Call Status"
+					modtype="select"
+					position="155,20"
+                    fontsize="12"
+                    digits="25"
+                    noarrowinselreadonly="TRUE"
+					>
+					<range max="16" min="0"/>
+                    <enumerations>
+                        <enumeration label="No Call" value="0"/>
+                        <enumeration label="Connecting" value="1"/>
+                        <enumeration label="Destination Busy" value="2"/>
+                        <enumeration label="No Destination" value="3"/>
+                        <enumeration label="Destination Out Of Range" value="4"/>
+                        <enumeration label="Connected" value="5"/>
+                        <enumeration label="Incoming Call" value="6"/>
+                        <enumeration label="Call Ended" value="7"/>
+                        <enumeration label="Error" value="8"/>
+                        <enumeration label="Emergency Call" value="9"/>
+                        <enumeration label="Call Aborted" value="10"/>
+                        <enumeration label="Destination Free" value="11"/>
+                        <enumeration label="Emergency Call Ended" value="12"/>
+                        <enumeration label="Guard Channel" value="13"/>
+                        <enumeration label="Guard Channel Ended" value="14"/>
+                        <enumeration label="No Resource" value="15"/>
+                        <enumeration label="No Resource Ended" value="16"/>
+                    </enumerations>
+				</simple>
+			
+				<simple
+					id="DCE:59d79625-bc9a-40eb-bcfd-2732941a2435"
+					type="string"
+					mode="readonly"
+					modtype="textbox"
+					name="Caller Identity 1"
+					position="80,60"
+					fontsize="12"
+					digits="25"
+					namefixdim="100"
+					fieldfixdim="230"
+					>
+				</simple>
+			
+				<simple
+					id="DCE:672bf46c-4945-4dcb-9c3f-b0c9a3de96d7"
+					type="string"
+					mode="readonly"
+					modtype="textbox"
+					name="Caller Identity 2"
+					position="80,100"
+					fontsize="12"
+					digits="25"
+					namefixdim="100"
+					fieldfixdim="230"
+					>
+				</simple>
+			
+				<simple
+					id="DCE:5f9f37d9-1a8d-4c66-a55a-d9e63f88db49"
+					type="long"
+					mode="readwrite"
+					name="Audio Mix"
+					modtype="select"
+					position="130,140"
+                    fontsize="12"
+                    digits="12"
+                    namefixdim="120"
+                    fieldfixdim="100"
+					>
+					<range max="2" min="0"/>
+					<enumerations>
+						<enumeration label="Mix On" value="0"/>
+						<enumeration label="Prio Upper Ptt" value="1"/>
+						<enumeration label="Prio Lower Ptt" value="2"/>
+					</enumerations>
+				</simple>
+			
+				<simple
+					id="DCE:31405b05-1271-4c5e-9449-0ee362eb72e0"
+					type="ushort"
+					mode="readwrite"
+					name="Conversation Timeout"
+					modtype="textbox"
+					position="130,180"
+                    fontsize="12"
+                    digits="5"
+                    namefixdim="120"
+                    fieldfixdim="100"
+					>
+                    <range max="5000" min="0"/>
+				</simple>
+                
+                <simple
+					id="DCE:ad36e639-dba7-4e98-9089-36316ce41408"
+					type="boolean"
+					mode="readwrite"
+					name="Listen Only"
+					modtype="select"
+					position="130,220"
+                    fontsize="12"
+                    digits="5"
+                    namefixdim="120"
+                    fieldfixdim="100"
+					>
+                    <range max="1" min="0"/>
+                    <enumerations> 
+                        <enumeration label="FALSE" value="0"/>
+                        <enumeration label="TRUE" value="1"/>
+                    </enumerations>
+				</simple>
+			
+				<simple
+					id="DCE:92da5026-9640-403b-a0e6-3c0cb1990b30"
+					type="boolean"
+					modtype="select"
+					mode="readwrite"
+					name="Sidetone Enable"
+					position="130,260"
+					fontsize="12"
+					digits="3"
+					namefixdim="120"
+					fieldfixdim="100"
+					>
+					<description>Abilitazione sidetone</description>
+					<enumerations>
+						<enumeration label="ON" value="1" />
+						<enumeration label="OFF" value="0" />
+					</enumerations>
+				</simple>
+
+				<simple
+					id="DCE:69c51a12-16cd-4264-b4a6-f1d2a5d741f6"
+					type="long"
+					modtype="select"
+					mode="readwrite"
+					name="Audio Volume"
+					position="130,300"
+					fontsize="12"
+					digits="3"
+					namefixdim="120"
+					fieldfixdim="100"
+					>
+					<description>Volume dell'audio in uscita</description>
+					<range max="10" min="0"/>
+					<enumerations>
+						<enumeration label="MUTE" value="0" />
+						<enumeration label="1" value="1" />
+						<enumeration label="2" value="2" />
+						<enumeration label="3" value="3" />
+						<enumeration label="4" value="4" />
+						<enumeration label="5" value="5" />
+						<enumeration label="6" value="6" />
+						<enumeration label="7" value="7" />
+						<enumeration label="8" value="8" />
+						<enumeration label="9" value="9" />
+						<enumeration label="MAX" value="10" />
+					</enumerations>
+				</simple>
+			
+				<simple
+					id="DCE:2ac5ea49-6934-4a59-9095-1a5de93472e1"
+					type="float"
+					modtype="textbox"
+					mode="readwrite"
+					name="Audio Input Gain"
+					position="130,340"
+					fontsize="12"
+					digits="5"
+					namefixdim="120"
+					fieldfixdim="100"
+					>
+					<description>Guadagno in dB dell'audio in ingresso (rispetto al valore nominale)</description>
+					<range max="30.0" min="-10.0"/>
+				</simple>
+			</node>
+
+			<node name="Data Parameters" id="13" icon="../icons32/modulazione.gif">
+				<simplesequence 
+				id="DCE:f6260e1e-86fe-4725-bffe-52b3459e15c2" 
+				type="boolean" 
+				mode="readonly" 
+				name="->List active VLan" 
+				modtype="select"   
+				position="160,50"
+				fontsize="12"
+				digits="35"
+				live="true" 
+				liveperiod="5"
+				dimensions="200"
+				>
+				</simplesequence>
+			</node>
+            		<node name="BER Test" id="14" icon="../icons32/modulazione.gif">
+
+				<simple
+					id="DCE:51e2e93f-b052-48b7-b6a7-f1998d643c5e"
+					type="long"
+					mode="readwrite"
+					name="Activation Mode"
+					modtype="select"
+					position="140,50"
+                    fontsize="12"
+                    digits="8"
+                    namefixdim="110"
+                    fieldfixdim="90"
+					>
+					<range max="2" min="0"/>
+                    <enumerations>
+                            <enumeration label="Off" value="0"/>
+                            <enumeration label="Tx Mode" value="1"/>
+                            <enumeration label="Rx Mode" value="2"/>
+                    </enumerations>
+				</simple>
+			
+				<simple
+					id="DCE:1a00d282-7630-467d-b4b4-981b2aa02c30"
+					type="ushort"
+					mode="readonly"
+					name="->Barkers"
+					modtype="textbox"
+					position="140,110"
+                    fontsize="12"
+                    digits="5"
+                    live="true" 
+                    liveperiod="2"
+                    namefixdim="110"
+                    fieldfixdim="90"
+					>
+				</simple>
+                
+                <simple
+					id="DCE:9e191986-9359-46f2-8227-b993671b2a36"
+					type="ulong"
+					mode="readonly"
+					name="->Errors"
+					modtype="textbox"
+					position="140,170"
+                    fontsize="12"
+                    digits="5"
+                    live="true" 
+                    liveperiod="2"
+                    namefixdim="110"
+                    fieldfixdim="90"
+					>
+				</simple>
+                
+                <simple
+					id="DCE:4b4cd092-3986-4969-976c-1cd985f69ade"
+					type="ushort"
+					mode="readonly"
+					name="->Link Quality Level"
+					modtype="textbox"
+					position="140,230"
+                    fontsize="12"
+                    digits="3"
+                    live="true" 
+                    liveperiod="2"
+                    namefixdim="110"
+                    fieldfixdim="90"
+					>
+				</simple>
+			
+			</node>
+            
+			<node name="Crypto Control" id="15" icon="../icons32/modulazione.gif">
+				
+				<!-- simple
+					id="DCE:8762869a-a640-4407-b9d8-3576254f28ca"
+					type="long"
+					mode="readwrite"
+					name="Mode"
+					modtype="select"
+					position="160,50"
+                    fontsize="12"
+                    digits="12"
+					>
+                    <range max="10" min="0"/>
+                    <enumerations>
+                        <enumeration label="Plain Text" value="0"/>
+                        <enumeration label="Key_1" value="1"/>
+                        <enumeration label="Key_2" value="2"/>
+                        <enumeration label="Key_3" value="3"/>
+                        <enumeration label="Key_4" value="4"/>
+                        <enumeration label="Key_5" value="5"/>
+                        <enumeration label="Key_6" value="6"/>
+                        <enumeration label="Key_7" value="7"/>
+                        <enumeration label="Key_8" value="8"/>
+                        <enumeration label="Key_9" value="9"/>
+                        <enumeration label="Key_10" value="10"/>                        
+                    </enumerations>
+				</simple-->
+				
+				 <simplesequence 
+					id="DCE:15162118-6354-4aeb-b69f-fe0d80b54253" 
+					type="string" 
+					mode="readwrite"
+					name="Mode and Key Available" 
+					modtype="select"					
+					position="150,200"
+					fontsize="12"
+					digits="1"
+					live="true" 
+					liveperiod="5"
+					namefixdim="130"
+					fieldfixdim="30"               
+					>			
+                    <simpleref seqid="DCE:8762869a-a640-4407-b9d8-3576254f28ca" type="long"/>
+				</simplesequence>
+				
+				
+			</node>
+            
+			<node name="Statistics Info" id="17" icon="../icons32/modulazione.gif">
+				<node name="Configuration" id="18" icon="../icons32/modulazione.gif">
+                    <simple 
+                        id="DCE:158d9fd0-1e1a-4d54-9c68-cae388ac087b" 
+                        type="boolean" 
+                        mode="readwrite" 
+                        name="Enable" 
+                        modtype="select" 
+                        position="160,50" 
+                        fontsize="12"
+                        digits="5"
+                        namefixdim="90"
+                        >
+                        <range max="1" min="0"/>
+                        <enumerations> 
+                            <enumeration label="FALSE" value="0"/>
+                            <enumeration label="TRUE" value="1"/>
+                        </enumerations>
+                    </simple>
+                    
+                    <simple 
+                        id="DCE:a46bcf7c-5b73-4fad-a417-2ab34a4713ac" 
+                        type="boolean" 
+                        mode="readwrite" 
+                        name="Reset Counters" 
+                        modtype="select" 
+                        position="160,110" 
+                        fontsize="12"
+                        digits="5"
+                        namefixdim="90"
+                        >
+                        <range max="1" min="0"/>
+                        <enumerations> 
+                            <enumeration label="FALSE" value="0"/>
+                            <enumeration label="TRUE" value="1"/>
+                        </enumerations>
+                    </simple>
+                    
+                </node>
+                
+				<node name="Report" id="19" icon="../icons32/modulazione.gif">
+                
+                    <simple 
+                            id="DCE:4f7a40b3-e044-46a9-b1b9-eb5f88d1a241" 
+                            type="ulong" 
+                            mode="readonly"
+                            name="Voice Packets Tx"
+                            modtype="textbox" 
+                            position="45,20" 
+                            fontsize="12"
+                            digits="8" 
+                            live="true" 
+                            liveperiod="1"
+                            namefixdim="100"
+                            >
+                    </simple>
+                    
+                    <simple 
+                            id="DCE:bb08fdb8-5000-412c-9c57-6c9eb7fe62bb"
+                            type="ulong" 
+                            mode="readonly" 
+                            name="Voice Packets Rx" 
+                            modtype="textbox" 
+                            position="45,80" 
+                            fontsize="12"
+                            digits="8"  
+                            live="true"
+                            liveperiod="1"
+                            namefixdim="100"
+                            >
+                    </simple>
+                    
+                    <simple 
+                            id="DCE:374520c5-51d7-4c0a-9ba0-235915a43ffd"
+                            type="ulong" 
+                            mode="readonly" 
+                            name="Data Packets Tx" 
+                            modtype="textbox" 
+                            position="45,140" 
+                            fontsize="12"
+                            digits="8" 
+                            live="true" 
+                            liveperiod="1"
+                            namefixdim="100"
+                            >
+                    </simple>
+                    
+                    <simple 
+                            id="DCE:7131d8b6-da07-4747-945c-8fef350f7bc8" 
+                            type="ulong" 
+                            mode="readonly" 
+                            name="Data Packets Rx" 
+                            modtype="textbox" 
+                            position="45,200" 
+                            fontsize="12"
+                            digits="8" 
+                            live="true" 
+                            liveperiod="1"
+                            namefixdim="100"
+                            >
+                    </simple>
+                    
+                    <simple 
+                            id="DCE:7de25675-61db-41fd-ba2b-efa97314f3f7"
+                            type="ushort" 
+                            mode="readonly"
+                            name="Packets/s Tx" 
+                            modtype="textbox" 
+                            position="45,260" 
+                            fontsize="12"
+                            digits="8" 
+                            live="true" 
+                            liveperiod="1"
+                            namefixdim="100"
+                            >
+                    </simple>
+                    
+                    <simple 
+                            id="DCE:6689ccf5-3e88-458f-8209-cd04ff820f74"
+                            type="ushort" 
+                            mode="readonly" 
+                            name="Packets/s Rx" 
+                            modtype="textbox" 
+                            position="45,320" 
+                            fontsize="12"
+                            digits="8"  
+                            live="true" 
+                            liveperiod="1"
+                            namefixdim="100"
+                            >
+                    </simple>
+                    
+                    <simple 
+                            id="DCE:b91c441f-836f-4ed7-9986-d5add2d2c1d8" 
+                            type="ushort" 
+                            mode="readonly" 
+                            name="Kbit/s Tx" 
+                            modtype="textbox" 
+                            position="45,380" 
+                            fontsize="12"
+                            digits="8" 
+                            live="true" 
+                            liveperiod="1"
+                            namefixdim="100"
+                            >
+                    </simple>
+                    
+                    <simple 
+                            id="DCE:24461572-f12b-42f5-99cd-9811636cae05" 
+                            type="ulong" 
+                            mode="readonly" 
+                            name="Kbit/s Rx" 
+                            modtype="textbox" 
+                            position="290,20" 
+                            fontsize="12"
+                            digits="8"  
+                            live="true" 
+                            liveperiod="1"
+                            namefixdim="90"
+                            >
+                    </simple>
+                    
+                    <simple 
+                            id="DCE:8edd29a1-2bd5-4948-85b4-3751cf7efc19"
+                            type="ulong" 
+                            mode="readonly" 
+                            name="! Tx Timeout" 
+                            modtype="textbox" 
+                            position="290,80" 
+                            fontsize="12"
+                            digits="8" 
+                            live="true" 
+                            liveperiod="1"
+                            namefixdim="90"
+                            >
+                    </simple>
+                    
+                    <simple 
+                            id="DCE:6660d2bc-db52-4853-9d10-04e45e961566" 
+                            type="ulong" 
+                            mode="readonly" 
+                            name="! Tx Queue Full" 
+                            modtype="textbox" 
+                            position="290,140" 
+                            fontsize="12"
+                            digits="8"  
+                            live="true" 
+                            liveperiod="1"
+                            namefixdim="90"
+                            >
+                    </simple>
+                    
+                    <simple 
+                            id="DCE:310f0b22-f8e3-47ab-942a-c2940e6b1ff6" 
+                            type="ulong" 
+                            mode="readonly"
+                            name="! Tx Nack" 
+                            modtype="textbox" 
+                            position="290,200" 
+                            fontsize="12"
+                            digits="8"  
+                            live="true" 
+                            liveperiod="1"
+                            namefixdim="90"
+                            >
+                    </simple>
+                    
+                    <simple 
+                            id="DCE:ef182aaa-d797-4b06-8e16-9c5de4965ec5" 
+                            type="ulong" 
+                            mode="readonly"
+                            name="! Error Rx CRC"
+                            modtype="textbox" 
+                            position="290,260" 
+                            fontsize="12"
+                            digits="8" 
+                            live="true" 
+                            liveperiod="1"
+                            namefixdim="90"
+                            >
+                    </simple>
+                    
+                    <simple 
+                            id="DCE:238053be-032a-41f2-9880-e5a19d8ab75a"
+                            type="ulong" 
+                            mode="readonly"
+                            name="Tot Bytes Tx"
+                            modtype="textbox" 
+                            position="290,320" 
+                            fontsize="12"
+                            digits="8" 
+                            live="true" 
+                            liveperiod="1"
+                            namefixdim="90"
+                            >
+                    </simple>
+                    
+                    <simple 
+                            id="DCE:01b35d5d-ab2d-4e81-a919-47d37e306f24" 
+                            type="ulong" 
+                            mode="readonly" 
+                            name="Tot Bytes Rx"
+                            modtype="textbox" 
+                            position="290,380" 
+                            fontsize="12"
+                            digits="8" 
+                            live="true" 
+                            liveperiod="1"
+                            namefixdim="90"
+                            >
+                    </simple>
+                    
+                </node>
+                
+			</node>
+			<node name="Tones Control" id="20" icon="../icons32/modulazione.gif">
+            
+                <simple
+                    id="DCE:943b4a7f-0666-405d-b1a2-c719d1d45929"
+                    type="boolean"
+                    modtype="select"
+                    mode="readwrite"
+                    position="160,50"
+                    name="Tx tones enable"
+                    fontsize="12"
+                    digits="5"
+                    >
+                    <range max="1" min="0"/>
+                    <enumerations> 
+                        <enumeration label="FALSE" value="0"/>
+                        <enumeration label="TRUE" value="1"/>
+                    </enumerations>
+                </simple>
+
+                <simple
+                    id="DCE:5fc8b0b0-d6bb-440a-af02-313c556bc86c"
+                    type="boolean"
+                    modtype="select"
+                    mode="readwrite"
+                    position="160,110"
+                    name="Rx tones enable"
+                    fontsize="12"
+                    digits="5"
+                    >
+                    <range max="1" min="0"/>
+                    <enumerations> 
+                        <enumeration label="FALSE" value="0"/>
+                        <enumeration label="TRUE" value="1"/>
+                    </enumerations>
+                </simple>
+                
+            </node>
+
+			<node name="Audio Compressor" id="21" icon="../icons32/modulazione.gif">
+
+				<simple
+					id="DCE:b5f2f316-0325-46bf-813c-27dbd022a2ff"
+					type="boolean"
+					mode="readwrite"
+					name="Enable"
+					modtype="select"
+					position="160,50"
+                    fontsize="12"
+                    digits="3"
+                    namefixdim="80"
+                    fieldfixdim="80"
+					>
+					<description>Abilitazione compressore audio tx (ACP)</description>
+					<enumerations>
+						<enumeration label="ON" value="1" />
+						<enumeration label="OFF" value="0" />
+					</enumerations>
+				</simple>
+
+				<simple
+					id="DCE:c5b02a52-5e0a-4912-b317-ed99b02180e6"
+					type="long"
+					mode="readwrite"
+					name="Min Threshold"
+					modtype="select"
+					position="160,110"
+                    fontsize="12"
+                    digits="7"
+                    namefixdim="80"
+                    fieldfixdim="80"
+					>
+					<description>Soglia  minima del compressore audio (dBm)</description>
+					<range max="2" min="0"/>
+					<enumerations> 
+						<enumeration label="-5 dBm" value="0"/>
+						<enumeration label="-15 dBm" value="1"/>
+						<enumeration label="-25 dBm" value="2"/>
+					</enumerations>
+				</simple>
+			
+				<simple
+					id="DCE:cb852a11-cf42-4b33-b6d9-27e115a9f9cd"
+					type="ushort"
+					mode="readwrite"
+					name="Attack Time"
+					modtype="textbox"
+					position="160,170"
+                    fontsize="12"
+                    digits="2"
+                    namefixdim="80"
+                    fieldfixdim="57"
+					>
+					<description>Tempo di attacco del compressore audio tx (ms)</description>
+					<units>ms</units>
+					<range max="50" min="5"/>
+				</simple>
+			
+				<simple
+					id="DCE:bbeca81b-512b-47fe-8cb2-f6d539b87fb9"
+					type="ushort"
+					mode="readwrite"
+					name="Hold Time"
+					modtype="textbox"
+					position="160,230"
+                    fontsize="12"
+                    digits="4"
+                    namefixdim="80"
+                    fieldfixdim="57"
+					>
+					<description>Tempo di tenuta del compressore audio tx (ms)</description>
+					<units>ms</units>
+					<range max="5000" min="5"/>
+				</simple>
+			
+				<simple
+					id="DCE:31b25926-04f3-4504-9f46-e9e75f5b3f3b"
+					type="ushort"
+					mode="readwrite"
+					name="Release Time"
+					modtype="textbox"
+					position="160,290"
+                    fontsize="12"
+                    digits="3"
+                    namefixdim="80"
+                    fieldfixdim="57"
+					>
+					<description>Tempo di rilascio del compressore audio tx (ms)</description>
+					<units>ms</units>
+					<range max="500" min="5"/>
+				</simple>
+			
+			</node>
+			            
+			<node name="WF Release Info" id="22" icon="../icons32/modulazione.gif">
+            
+                <simple 
+                    id="DCE:f3579812-eeac-4b23-95e7-f7440532b5aa"
+                    type="string" 
+                    mode="readonly" 
+                    name="WF Part Number:" 
+                    modtype="textbox" 
+                    position="155,30" 
+                    fontsize="12"
+                    digits="20"  
+                    live="false"
+                    namefixdim="40"
+                    >
+                </simple>
+                               
+                <simple 
+                    id="DCE:d06d9c92-d1fd-4815-996b-e0ae85351d17"
+                    type="string" 
+                    mode="readonly" 
+                    name="WF Version:" 
+                    modtype="textbox" 
+                    position="155,80" 
+                    fontsize="12"
+                    digits="20"  
+                    live="false"
+                    namefixdim="40"
+                    >
+                </simple>
+
+                <simple 
+                    id="DCE:278bf8c5-9cec-432f-bdf2-cb5ff6e57f5a"
+                    type="string" 
+                    mode="readonly" 
+                    name="SW Part Number:" 
+                    modtype="textbox" 
+                    position="155,130" 
+                    fontsize="12"
+                    digits="20"  
+                    live="false"
+                    namefixdim="40"
+                    >
+                </simple>
+
+	      <simple 
+                    id="DCE:f3de5d5b-7c14-4748-a995-2b4697680c2d"
+                    type="string" 
+                    mode="readonly" 
+                    name="SW Version:" 
+                    modtype="textbox" 
+                    position="155,180" 
+                    fontsize="12"
+                    digits="20"  
+                    live="false"
+                    namefixdim="40"
+                    >
+                </simple>
+
+                <simple 
+                    id="DCE:43c3c004-5ecc-440b-8150-5773770cb189" 
+                    type="string" 
+                    mode="readonly" 
+                    name="MAC: " 
+                    modtype="textbox" 
+                    position="155,230" 
+                    fontsize="12"
+                    digits="20"   
+                    live="false"
+                    namefixdim="40"
+                    >
+                </simple>			
+                
+            </node>
+            
+		</node>
+	</parametersmenu>
+</waveforminterface>
